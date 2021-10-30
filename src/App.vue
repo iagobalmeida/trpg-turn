@@ -1,69 +1,44 @@
 <template>
   <!-- Toast -->
   <div :class="`custom-toast container ${toast.show ? 'o-100' : 'o-0'}`">
-    <div class="p-3 rounded bg-white shadow w-100 h-100 mt-10" v-html="toast.text" />
+    <div class="p-3 rounded bg-white shadow h-100 mx-auto" v-html="toast.text" />
   </div>
   <!-- Enemy -->
-  <div class="container w-50">
+  <div class="container w-md-50 rounded-top"  :style="`background-image:url(${require('@/assets/background.jpg')});background-size:cover;-webkit-box-shadow: inset 5px 5px 50px 30px #000000; 
+box-shadow: inset 5px 5px 50px 30px #000000;`">
     <!-- Enemy Card -->
-    <div class="card mb-3">
-      <div :class="`card-body ${enemy.status == 'standing' ? 'bg-light' : ''}`">
-        <!-- Name -->
-        <img class="mx-auto" style="max-height:150px" :src="require(`@/assets/${enemy.image}`)" v-if="enemy.image">
-        <h5 class="text-start">{{enemy.name}} <small class="text-muted">Lvl. {{enemy.level}}</small></h5>
-        <!-- Life -->
-        <div class="row mb-3">
-          <div class="col-1">
-            <i class="fas fa-heartbeat bg-success rounded-pill px-3 py-1 text-white border border-2 border-dark"></i> 
-          </div>
-          <div class="col-9">
-            <div class="progress bg-dark w-auto mb-3 h-100 border border-2 border-dark">
-              <div
-              :class="`progress-bar ${ animating ? 'progress-bar-striped progress-bar-animated' : ''} bg-success`"
-              role="progressbar"
-              :style="`width:${enemy.life.current*100/enemy.life.maximum}%`"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              />
-            </div>
-          </div>
-          <div class="col-2 d-flex justify-content-evenly align-items-center">
-            {{enemy.life.current}}
-            <small class="text-muted">/ {{enemy.life.maximum}}</small>
-          </div>
-        </div>
-        <!-- Energy -->
-        <div class="row">
-          <div class="col-1">
-            <i class="fas fa-fire bg-info rounded-pill px-3 py-1 text-white border border-2 border-dark"></i> 
-          </div>
-          <div class="col-9">
-            <div class="progress bg-dark w-auto mb-3 h-100 border border-2 border-dark">
-              <div
-              :class="`progress-bar ${ animating ? 'progress-bar-striped progress-bar-animated' : ''} bg-info`"
-              role="progressbar"
-              :style="`width:${enemy.energy.current*100/enemy.energy.maximum}%`"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              />
-            </div>
-          </div>
-          <div class="col-2 d-flex justify-content-evenly align-items-center">
-            {{enemy.energy.current}}
-            <small class="text-muted">/ {{enemy.energy.maximum}}</small>
-          </div>
-        </div>
-      </div>
+    <div class="mb-3 px-2 px-md-0">
+      <!-- Name -->
+      <h5 class="text-white"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
+      <!-- Life -->
+      <ProgressBar 
+        :current="enemy.life.current"
+        :maximum="enemy.life.maximum"
+        :animating="animating"
+        className="bg-danger"
+        iconName="fas fa-heart"
+        class="mb-3"
+      />
+      <!-- Energy -->
+      <ProgressBar 
+        :current="enemy.energy.current"
+        :maximum="enemy.energy.maximum"
+        :animating="animating"
+        className="bg-info"
+        iconName="fas fa-fire"
+      />
     </div>
+    <img class="mx-auto my-5 monster-img" :src="require(`@/assets/${enemy.image}`)" v-if="enemy.image">
+  </div>
+  <!-- Gauges -->
+  <div class="container w-md-50">
     <!-- Enemy Gauge -->
     <div class="border g-1 pb-2 row mb-3 align-items-center py-1 px-2 bg-light rounded-pill">
       <div class="col" v-for="enemyGauge, enemyGaugeIndex in biggestGauge" :key="`enemyGauge${enemyGaugeIndex}`">
-        <div :class="`rounded-pill border gauge border-2 ${enemy.gauge.current >= enemyGauge ? (enemy.status =='standing' ? 'bg-warning border-danger' : ' border-danger') : (enemy.isBursted ? 'bg-danger' : (enemyGauge > enemy.gauge.threshold ? (enemyGauge > enemy.gauge.maximum ? 'bg-light' : 'bg-secondary') : 'bg-dark '))}`" style="height:1rem;width:100%;">
+        <div :class="`rounded-pill border gauge border-2 ${enemy.gauge.current >= enemyGauge ? (enemy.status =='standing' ? 'bg-danger border-warning' : ' border-danger') : (enemy.isBursted ? 'bg-warning' : (enemyGauge > enemy.gauge.threshold ? (enemyGauge > enemy.gauge.maximum ? 'bg-light' : 'bg-secondary') : 'bg-dark '))}`" style="height:1rem;width:100%;">
         </div>
       </div>
-      <div :class="`col-2 ${enemy.status == 'standing' ? 'text-warning' : 'text-secondary'}`">
+      <div :class="`col-3 col-md-2 ${enemy.status == 'standing' ? 'text-danger' : 'text-secondary'}`">
         <i class="fas fa-crosshairs mx-1"></i> <b>{{enemy.gauge.current}}</b>
       </div>
     </div>
@@ -73,12 +48,15 @@
         <div :class="`rounded-pill border gauge border-2 ${player.gauge.current >= playerGauge ? (player.status =='standing' ? 'bg-primary border-info' : 'border-primary') : player.isBursted ? 'bg-danger' : (playerGauge > player.gauge.maximum ? 'bg-light' : 'bg-dark')}`" style="height:1rem;width:100%;">
         </div>
       </div>
-      <div :class="`col-2 ${player.status == 'standing' ? 'text-primary' : 'text-secondary'}`">
+      <div :class="`col-3 col-md-2 ${player.status == 'standing' ? 'text-primary' : 'text-secondary'}`">
         <i class="fas fa-crosshairs mx-1"></i> <b>{{player.gauge.current}}</b>
       </div>
     </div>
+  </div>
+  <!-- Player -->
+  <div class="container w-md-50">
     <!-- Energy Actions -->
-    <div class="row mb-3">
+    <div class="row mb-3 d-none">
       <div class="col">
         <button
         :class="`btn ${!(animating || player.status == 'standing') && player.energy.current >= 20 ? 'btn-success text-white shadow' : 'btn-secondary'} text-white w-100`"
@@ -117,109 +95,72 @@
       </div>
     </div>
     <!-- Player Card -->
-    <div class="card mb-3">
-      <div :class="`card-body ${player.status == 'standing' ? 'bg-light' : ''}`">
-        <!-- Player -->
-        <div class="text-start d-flex justify-content-between align-items-stretch mb-3">
-          <h5 class="mb-0" style="align-self:center;">
-            {{player.name}} 
-            <small class="text-muted">Lvl. {{player.level}} - {{player.damage}} DMG</small>
-          </h5>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
-            <i class="fa fa-info mx-2"></i>
-            Help
-          </small>
+    <div class="mb-3 px-2 px-md-0">
+      <!-- Player -->
+      <div class="text-start d-flex justify-content-between align-items-stretch mb-3">
+        <h5 class="mb-0 text-white" style="align-self:center;">
+          {{player.name}} 
+          <small class="text-muted">Lvl. {{player.level}} - {{player.damage}} DMG</small>
+        </h5>
+        <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
+          <i class="fa fa-info mx-2"></i>
+          Help
+        </small>
+      </div>
+      
+      <div class="row">
+        <div class="order-1 order-md-0 col-6 col-md-2 d-md-flex justify-content-center align-items-stretch flex-column">
+          <button :class="`m-0 h-100 btn btn-light ${!(animating || player.status == 'standing') ? 'shadow' : ''} border w-100`" v-on:click="handlePlayerAction('drawCard')" :disabled="(animating || player.status == 'standing')">
+            {{player.cards.length}}
+            <i class="far fa-caret-square-up me-2"></i>
+            <br>
+            Draw Card
+          </button>
         </div>
-        
-        <!-- Level -->
-        <div class="row my-3">
-          <div class="col-1">
-            <i class="fa fa-arrow-up bg-primary rounded-pill px-3 py-1 text-white border border-2 border-dark"></i> 
-          </div>
-          <div class="col-9">
-            <div class="progress bg-dark w-auto mb-3 h-100 border border-2 border-dark">
-              <div
-                :class="`progress-bar progress-bar-striped progress-bar-animated bg-primary`"
-                role="progressbar"
-                :style="`width:${player.exp.current*100/player.exp.next}%`"
-                aria-valuenow="0"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                />
-            </div>
-          </div>
-          <div class="col-2 d-flex justify-content-evenly align-items-center">
-            {{player.exp.current}}
-            <small class="text-muted">/ {{player.exp.next}}</small>
-          </div>
+        <div class="order-0 order-md-1 col-12 col-md-8">
+          <!-- Level -->
+          <ProgressBar 
+            :current="player.exp.current"
+            :maximum="player.exp.next"
+            :animating="true"
+            className="bg-primary"
+            iconName="fa fa-arrow-up"
+            class="mb-3"
+          />
+          <!-- Life -->
+          <ProgressBar 
+            :current="player.life.current"
+            :maximum="player.life.maximum"
+            :animating="animating"
+            className="bg-danger"
+            iconName="fas fa-heartbeat"
+            class="mb-3"
+          />
+          <!-- Energy -->
+          <ProgressBar 
+            :current="player.energy.current"
+            :maximum="player.energy.maximum"
+            :animating="animating"
+            className="bg-info"
+            iconName="fas fa-fire"
+            class="mb-3"
+          />
         </div>
-        <!-- Life -->
-        <div class="row">
-          <div class="col-1">
-            <i class="fas fa-heartbeat bg-success rounded-pill px-3 py-1 text-white border border-2 border-dark"></i> 
-          </div>
-          <div class="col-9">
-            <div class="progress bg-dark w-auto mb-3 h-100 border border-2 border-dark">
-              <div
-              :class="`progress-bar ${ (animating || player.status == 'standing') ? 'progress-bar-striped progress-bar-animated' : ''} bg-success`"
-              role="progressbar"
-              :style="`width:${player.life.current*100/player.life.maximum}%`"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              />
-            </div>
-          </div>
-          <div class="col-2 d-flex justify-content-evenly align-items-center">
-            {{player.life.current}}
-            <small class="text-muted">/ {{player.life.maximum}}</small>
-          </div>
-        </div>
-        <!-- Energy -->
-        <div class="row my-3">
-          <div class="col-1">
-            <i class="fas fa-fire bg-info rounded-pill px-3 py-1 text-white border border-2 border-dark"></i> 
-          </div>
-          <div class="col-9">
-            <div class="progress bg-dark w-auto mb-3 h-100 border border-2 border-dark">
-              <div
-              :class="`progress-bar ${ (animating || player.status == 'standing') ? 'progress-bar-striped progress-bar-animated' : ''} bg-info `"
-              role="progressbar"
-              :style="`width:${player.energy.current*100/player.energy.maximum}%`"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              />
-            </div>
-          </div>
-          <div class="col-2 d-flex justify-content-evenly align-items-center">
-            {{player.energy.current}}
-            <small class="text-muted">/ {{player.energy.maximum}}</small>
-          </div>
-        </div>
-        <!-- Player Actions -->
-        <div class="row">
-          <div class="col">
-            <button :class="`btn btn-light ${!(animating || player.status == 'standing') ? 'shadow' : ''} border w-100`" v-on:click="handlePlayerAction('drawCard')" :disabled="(animating || player.status == 'standing')">
-              {{player.cards.length}}
-              <i class="far fa-caret-square-up me-2"></i>
-              Draw Card
-            </button>
-          </div>
-          <div class="col">
-            <button :class="`btn btn-light ${!(animating || player.status == 'standing') ? 'shadow' : ''} border w-100`" v-on:click="handlePlayerAction('stand')" :disabled="(animating || player.status == 'standing')">
-              <i class="far fa-caret-square-down me-2"></i>
-              Stand
-            </button>
-          </div>
+        <div class="order-2 col-6 col-md-2 d-md-flex justify-content-center align-items-stretch flex-column">
+          <!-- Player Actions -->
+          <button :class="`m-0 h-100 btn btn-light ${!(animating || player.status == 'standing') ? 'shadow' : ''} border w-100`" v-on:click="handlePlayerAction('stand')" :disabled="(animating || player.status == 'standing')">
+            <i class="far fa-caret-square-down me-2"></i>
+            <br>
+            Stand
+          </button>
         </div>
       </div>
     </div>
-  </div>  
+  </div>
 </template>
 
 <script>
-
+import ProgressBar from './components/ProgressBar.vue';
 import enemies from './assets/enemies.json';
 
 Array.prototype.shuffle = function() {
@@ -375,6 +316,9 @@ const gaugeDifference = (player, enemy) => {
 
 export default {
   name: "App",
+  components: {
+    ProgressBar
+  },
   data: () => ({
     player:     ceatePlayer('Tidus', 1, 12, 50, 50, 5),
     enemy:      randomEnemy(),
@@ -515,7 +459,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Roboto Mono', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -546,10 +490,6 @@ h4{
   width: 90%;
 }
 
-.container {
-  min-width: 700px;
-}
-
 .btn, .card-body, .gauge {
   transition: all 125ms ease-in-out;
 }
@@ -557,10 +497,10 @@ h4{
 .custom-toast {
   position: fixed;
   top: 3%;
+  left: 50%;
   z-index: 99;
+  transform: translateX(-50%);
   transition: all 125ms ease-in-out;
-  width: 50%;
-  min-width: 700px;
 }
 
 .o-0 {
@@ -570,5 +510,24 @@ h4{
 
 .o-100 {
   opacity: 100;
+}
+
+.monster-img {
+  -webkit-box-shadow: 2px 50px 32px -30px rgba(0,0,0,0.65); 
+box-shadow: 2px 50px 32px -30px rgba(0,0,0,0.65);
+max-height:250px
+}
+@media screen and (max-width:410px) {
+  .monster-img {
+    max-height: 125px;
+  }
+}
+
+.text-white {
+  filter: drop-shadow(2px 4px 6px black);
+}
+
+.container {
+  max-width: 690px;
 }
 </style>
