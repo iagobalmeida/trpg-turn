@@ -9,26 +9,26 @@
     <!-- Enemy Card -->
     <div class="mb-3 px-2 px-md-0">
       <!-- Name -->
-      <h5 class="text-white"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
-      <!-- Life -->
-      <ProgressBar 
-        :current="enemy.life.current"
-        :maximum="enemy.life.maximum"
-        :animating="animating"
-        className="bg-danger"
-        iconName="fas fa-heart"
-        class="mb-3"
-      />
-      <!-- Energy -->
-      <ProgressBar 
-        :current="enemy.energy.current"
-        :maximum="enemy.energy.maximum"
-        :animating="animating"
-        className="bg-info"
-        iconName="fas fa-fire"
-      />
+      <h5 class="text-white mb-3"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
+        <!-- Life -->
+        <ProgressBar 
+          :current="enemy.life.current"
+          :maximum="enemy.life.maximum"
+          :animating="animating"
+          className="bg-danger"
+          iconName="fas fa-heart"
+          class="mb-3"
+          :labelOnTop="false"
+        />
+        <ProgressBar 
+          :current="enemy.energy.current"
+          :maximum="enemy.energy.maximum"
+          :animating="animating"
+          className="bg-info"
+          iconName="fas fa-fire"
+        />
     </div>
-    <img class="mx-auto my-3 monster-img" :src="require(`@/assets/enemies/${enemy.image}`)" v-if="enemy.image">
+    <img class="mx-auto monster-img" :src="require(`@/assets/enemies/${enemy.image}`)" v-if="enemy.image">
   </div>
   <!-- Gauges -->
   <div class="container w-md-50" style="z-index:98;">
@@ -97,33 +97,8 @@
   <div class="container w-md-50">
     <!-- Player Card -->
     <div class="mb-3 px-2 px-md-0">
-      <!-- Player -->
-      <div class="text-start d-flex justify-content-between align-items-stretch mb-3">
-        <h5 class="mb-0 text-white" style="align-self:center;">
-          {{player.name}} 
-          <small class="text-muted">Lvl. {{player.level}}</small>
-        </h5>
-        <div>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
-            <i class="fa fa-info"></i>
-            Help
-          </small>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2">
-            <i class="fa fa-user"></i>
-            Player
-          </small>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2">
-            <i class="fas fa-map"></i>
-            Map
-          </small>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
-            <i class="fas fa-box"></i>
-            Backpack
-          </small>
-        </div>
-      </div>
       
-      <div class="row">
+      <div class="row mb-3">
         <div class="order-1 order-md-0 col-6 col-md-2 d-md-flex justify-content-center align-items-stretch flex-column">
           <button
             :class="`player-action m-0 h-100 btn btn-light ${!(animating || player.status == 'standing') ? 'shadow' : ''} border w-100 p-2`"
@@ -138,34 +113,42 @@
             </div>
           </button>
         </div>
-        <div class="order-0 order-md-1 col-12 col-md-8">
-          <!-- Level -->
-          <ProgressBar 
-            :current="player.exp.current"
-            :maximum="player.exp.next"
-            :animating="true"
-            className="bg-primary"
-            iconName="fa fa-arrow-up"
-            class="mb-3"
-          />
-          <!-- Life -->
-          <ProgressBar 
-            :current="player.life.current"
-            :maximum="player.life.maximum"
-            :animating="animating"
-            className="bg-danger"
-            iconName="fas fa-heartbeat"
-            class="mb-3"
-          />
-          <!-- Energy -->
-          <ProgressBar 
-            :current="player.energy.current"
-            :maximum="player.energy.maximum"
-            :animating="animating"
-            className="bg-info"
-            iconName="fas fa-fire"
-            class="mb-3"
-          />
+        <div class="order-0 order-md-1 col-12 col-md-8 row">
+          <div class="col-6">
+            <!-- Life -->
+            <ProgressBar 
+              :current="player.life.current"
+              :maximum="player.life.maximum"
+              :animating="animating"
+              className="bg-danger"
+              iconName="fas fa-heartbeat"
+              class="mb-3"
+              :labelOnTop="true"
+            />
+          </div>
+          <div class="col-6">
+            <!-- Energy -->
+            <ProgressBar 
+              :current="player.energy.current"
+              :maximum="player.energy.maximum"
+              :animating="animating"
+              className="bg-info"
+              iconName="fas fa-fire"
+              class="mb-3"
+              :labelOnTop="true"
+            />
+          </div>
+          <div class="col-12">
+            <!-- Level -->
+            <ProgressBar 
+              :current="player.exp.current"
+              :maximum="player.exp.next"
+              :animating="true"
+              className="bg-primary"
+              iconName="fa fa-arrow-up"
+              class="mb-3"
+            />
+          </div>
         </div>
         <div class="order-2 col-6 col-md-2 d-md-flex justify-content-center align-items-stretch flex-column">
           <!-- Player Actions -->
@@ -181,6 +164,32 @@
               <small>Stand</small>
             </div>
           </button>
+        </div>
+      </div>
+
+      <!-- Player -->
+      <div class="row">
+        <h5 class="mb-0 text-white col" style="align-self:center;">
+          {{player.name}} 
+          <small class="text-muted">Lvl. {{player.level}}</small>
+        </h5>
+        <div class="col-9">
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill px-3">
+            <i class="fa fa-info"></i>
+            Help
+          </small>
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2 px-3">
+            <i class="fa fa-user"></i>
+            Player
+          </small>
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2 px-3">
+            <i class="fas fa-map"></i>
+            Map
+          </small>
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill px-3">
+            <i class="fas fa-box"></i>
+            Backpack
+          </small>
         </div>
       </div>
     </div>
@@ -575,6 +584,8 @@ h4{
   max-height: 125px;
   animation: monsterBreath 1.5s ease-in-out infinite alternate;
   transform-origin: bottom;
+  margin-top: 100px;
+  margin-bottom: 25px;
 }
 @media screen and (max-width:410px) {
   .monster-img {
@@ -604,7 +615,7 @@ h4{
   background-position:center;
   position: absolute;
   top: 15%;
-  bottom: 15%;
+  bottom: 35%;
   right: 15%;
   left: 15%;
   opacity: 0.4;

@@ -1,13 +1,13 @@
 <template>
   <div class="row d-flex">
-    <div class="col text d-flex text-white justify-content-start align-items-center">
+    <div :class="`col${labelOnTop ? '-12 mb-1' : ''} text d-flex text-white justify-content-start align-items-center`" v-if="!hideLabel">
       <!--
       <i :class="`${iconName} ${className} d-flex h-100 align-items-center justify-content-center  rounded-pill  text-dark border border-2 border-white`"></i>
       -->
       <i :class="`${iconName} me-3`"></i>
       {{current}}&nbsp;<small>/{{maximum}}</small> 
     </div>
-    <div class="col flex-grow">
+    <div :class="`col${labelOnTop ? '-12' : ''} flex-grow`">
       <div class="progress bg-dark w-auto mb-3 h-100 border border-2 border-white shadow">
         <div
         :class="`progress-bar ${ animating ? 'progress-bar-striped progress-bar-animated' : ''} ${className}`"
@@ -30,7 +30,9 @@ export default {
     maximum: Number,
     animating: Boolean,
     className: String,
-    iconName: String
+    iconName: String,
+    labelOnTop: { type: Boolean, default: false },
+    hideLabel: { type: Boolean, default: false }
   }
 }
 </script>
