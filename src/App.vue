@@ -56,40 +56,15 @@
   <div class="container w-md-50 habilityCard-container">
     <div class="row mb-3 flex-nowrap" v-on:dragStart="console.log($event)">
       <HabilityCard
-        name="Unbalance"
-        :cost="20"
+        :name="card.name"
+        :cost="card.cost"
         :current="player.energy.current"
-        description="Double your oponents cards"
-        image="clumsy.jpg"
+        :description="card.description"
+        :image="card.image"
         :forceDisable="animating" 
-        v-on:handleClick="handlePlayerAction('life', 10, 20)"
-      />
-      <HabilityCard
-        name="Curative"
-        :cost="15"
-        :current="player.energy.current"
-        description="Heal 10 HP"
-        image="wound.jpg"
-        :forceDisable="animating" 
-        v-on:handleClick="handlePlayerAction('life', 10, 15)"
-      />
-      <HabilityCard
-        name="Confusion"
-        :cost="30"
-        :current="player.energy.current"
-        description="Add 50% chance to stand to every oponent card drawn"
-        image="regret.jpg"
-        :forceDisable="animating" 
-        v-on:handleClick="handlePlayerAction('life', 20, 30)"
-      />
-      <HabilityCard
-        name="Necronomicom"
-        :cost="25"
-        :current="player.energy.current"
-        description="Add 6 to your gauge"
-        image="necronomicurse.jpg"
-        :forceDisable="animating" 
-        v-on:handleClick="handlePlayerAction('modifier', 6, 25)"
+        v-on:handleClick="handlePlayerAction(card.type, card.modifier, card.cost)"
+        v-for="card, cardIndex in player.habilityCards"
+        :key="`card_${cardIndex}`"
       />
     </div>
   </div>
@@ -201,15 +176,6 @@ import ProgressBar from './components/ProgressBar.vue';
 import AttackGauge from './components/AttackGauge.vue';
 import HabilityCard from './components/HabilityCard.vue';
 import Battle from './assets/Battle.js';
-
-Array.prototype.shuffle = function() {
-  for (var i = this.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = this[i];
-      this[i] = this[j];
-      this[j] = temp;
-  }
-}
 
 export default {
   name: "App",

@@ -5,7 +5,7 @@
         v-on:click="!(cost > current || forceDisable) ? $emit('handleClick') : () => {}"
         draggable="true"
         >
-            <div class="w-100 habilityCard-img" :style="`background-image:url(${require(`@/assets/skills/${image}`)});`">
+            <div class="w-100 habilityCard-img" :style="`background-image:url(${loadedImage});`">
                 <small :class="`position-absolute top-0 left-0 px-2 py-1 ${cost > current || forceDisable ? 'bg-secondary border-secondary text-dark' : 'bg-white text-primary'}`">
                     {{cost}}
                     <i :class="`fas fa-fire ${cost > current || forceDisable ? 'text-dark' : 'text-primary'}`"></i>
@@ -30,7 +30,20 @@ export default {
     image: String,
     forceDisable: Boolean
   },
-  methods: {
+  data() { 
+    return {
+      images: {
+        'wound': require('@/assets/skills/wound.jpg'),
+        'regret': require('@/assets/skills/regret.jpg'),
+        'necronomicurse': require('@/assets/skills/necronomicurse.jpg'),
+        'clumsy': require('@/assets/skills/clumsy.jpg'),
+      }
+    }
+  },
+  computed: {
+    loadedImage() {
+      return this.images[this.image];
+    }
   }
 }
 </script>

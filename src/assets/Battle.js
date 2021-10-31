@@ -1,4 +1,5 @@
 import enemies from './enemies.json';
+import habilityCards from './habilityCards.json';
 
 Array.prototype.shuffle = function() {
     for (var i = this.length - 1; i > 0; i--) {
@@ -91,6 +92,7 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
 
 const createPlayer = (name, level, gaugeSize, life, energy, damage) => ({
     ...createEntity(name, level, gaugeSize, life, energy, damage),
+    habilityCards: habilityCards,
     exp: {
         current: 0,
         next: 100

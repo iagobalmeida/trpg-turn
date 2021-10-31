@@ -1,0 +1,34 @@
+[
+    {
+        "type": "life",
+        "cost": 20,
+        "modifier": 10,
+        "name": "Unbalance",
+        "image": "clumsy",
+        "description": "Double your oponents cards"
+    },
+    {
+        "type": "life",
+        "cost": 15,
+        "modifier": 10,
+        "name": "Curative",
+        "image": "wound",
+        "description": "Heal 10 HP"
+    },
+    {
+        "type": "life",
+        "cost": 30,
+        "modifier": 20,
+        "name": "Confusion",
+        "image": "regret",
+        "description": "Add 50% chance to stand to every oponent card drawn"
+    },
+    {
+        "type": "modifier",
+        "cost": 25,
+        "modifier": 6,
+        "name": "Necomicom",
+        "image": "necronomicurse",
+        "description": "Add 6 to your attack gauge"
+    }
+]
