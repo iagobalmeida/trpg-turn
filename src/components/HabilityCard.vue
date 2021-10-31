@@ -1,5 +1,5 @@
 <template>
-    <div class="col-3" style="position: relative;">
+    <div class="col-6 col-md-3" style="position: relative;">
         <button
         :class="`habilityCard m-0 btn p-0 w-100 border-4 border  btn-light ${cost > current || forceDisable ? 'o-50 bg-secondary border-secondary' : 'border-white'}`"
         v-on:click="!(cost > current || forceDisable) ? $emit('handleClick') : () => {}"
@@ -76,7 +76,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  transform: scale(1.1) perspective(105em) rotateX(18deg) translateY(-20%);
+  transform: scale(1.1) perspective(105em) rotateX(18deg);
   z-index: 99;
   box-shadow: 0 0.5rem 3rem rgb(0 0 0);
 }
@@ -100,12 +100,10 @@ export default {
 
 @keyframes habilityCardImageMove {
   0% {
-    background-size: 100%;
     filter:brightness(1.0);
   }
   100% {
-    background-size: 102%;
-    filter:brightness(1.1);
+    filter:brightness(1.2);
   }
 }
 </style>

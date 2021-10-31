@@ -52,10 +52,9 @@
     className="primary"
     />
   </div>
-  <!-- Player -->
-  <div class="container w-md-50">
-    <!-- Energy Actions -->
-    <div class="row mb-3">
+  <!-- Player Actions -->
+  <div class="container w-md-50 habilityCard-container">
+    <div class="row mb-3 flex-nowrap" v-on:dragStart="console.log($event)">
       <HabilityCard
         name="Unbalance"
         cost="20"
@@ -93,6 +92,9 @@
         v-on:handleClick="handlePlayerAction('modifier', 6, 25)"
       />
     </div>
+  </div>
+  <!-- Player Actions -->
+  <div class="container w-md-50">
     <!-- Player Card -->
     <div class="mb-3 px-2 px-md-0">
       <!-- Player -->
@@ -102,23 +104,23 @@
           <small class="text-muted">Lvl. {{player.level}}</small>
         </h5>
         <div>
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
+            <i class="fa fa-info"></i>
+            Help
+          </small>
           <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2">
             <i class="fa fa-user"></i>
             Player
-          </small>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
-            <i class="fas fa-box"></i>
-            Backpack
           </small>
           <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2">
             <i class="fas fa-map"></i>
             Map
           </small>
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
+            <i class="fas fa-box"></i>
+            Backpack
+          </small>
         </div>
-        <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
-          <i class="fa fa-info"></i>
-          Help
-        </small>
       </div>
       
       <div class="row">
@@ -254,6 +256,7 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
   },
   addLife: function(value) {
     this.life.current += value;
+    this.life.current = this.life.current >= this.life.maximum ? this.life.maximum : this.life.current;
   },
   addEnergy: function(value) {
     this.energy.current += value;
@@ -531,6 +534,12 @@ h4{
 
 .btn, .card-body, .gauge {
   transition: all 125ms ease-in-out;
+}
+
+@media screen and (max-width:700px){
+  .habilityCard-container {
+    overflow-x: scroll;
+  }
 }
 
 .custom-toast {
