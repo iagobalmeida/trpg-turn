@@ -57,7 +57,7 @@
     <div class="row mb-3 flex-nowrap" v-on:dragStart="console.log($event)">
       <HabilityCard
         name="Unbalance"
-        cost="20"
+        :cost="20"
         :current="player.energy.current"
         description="Double your oponents cards"
         image="clumsy.jpg"
@@ -66,7 +66,7 @@
       />
       <HabilityCard
         name="Curative"
-        cost="15"
+        :cost="15"
         :current="player.energy.current"
         description="Heal 10 HP"
         image="wound.jpg"
@@ -75,7 +75,7 @@
       />
       <HabilityCard
         name="Confusion"
-        cost="30"
+        :cost="30"
         :current="player.energy.current"
         description="Add 50% chance to stand to every oponent card drawn"
         image="regret.jpg"
@@ -84,7 +84,7 @@
       />
       <HabilityCard
         name="Necronomicom"
-        cost="25"
+        :cost="25"
         :current="player.energy.current"
         description="Add 6 to your gauge"
         image="necronomicurse.jpg"
@@ -200,7 +200,7 @@
 import ProgressBar from './components/ProgressBar.vue';
 import AttackGauge from './components/AttackGauge.vue';
 import HabilityCard from './components/HabilityCard.vue';
-import enemies from './assets/enemies.json';
+import Battle from './assets/Battle.js';
 
 Array.prototype.shuffle = function() {
   for (var i = this.length - 1; i > 0; i--) {
@@ -211,153 +211,6 @@ Array.prototype.shuffle = function() {
   }
 }
 
-const animationBuffer = 500;
-
-const baseDeck = [
-  1, 1, 1, 1,
-  2, 2, 2, 2,
-  3, 3, 3, 3,
-  4, 4, 4, 4,
-  5, 5, 5, 5,
-  6, 6, 6, 6
-]
-
-const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
-  // Attributes
-  name:       name,
-  level:      level,
-  cards:      [...baseDeck],
-  status:     'drawing',
-  isBursted:  false,
-  damage:     damage,
-  gauge: {
-    current: 0,
-    maximum: gaugeSize
-  },
-  life: {
-    current: life,
-    maximum: life
-  },
-  energy: {
-    current: (energy/4).toFixed(),
-    maximum: energy
-  },
-  // Methods
-  isAlive: function() {
-    return this.life.current > 0;
-  },
-  resetGauge: function() {
-    this.gauge.current = 0;
-  },
-  addGauge: function(value) {
-    this.gauge.current += value;
-    if(this.gauge.threshold && this.gauge.current >= this.gauge.threshold) {
-      this.status = 'standing';
-    }
-    if(this.gauge.current > this.gauge.maximum) {
-      this.status         = 'standing';
-      this.isBursted      = true;
-      this.gauge.current  = Math.floor(this.gauge.maximum/2);
-    }
-    if(this.gauge.current == this.gauge.maximum) {
-      this.status = 'standing';
-    }
-  },
-  addLife: function(value) {
-    this.life.current += value;
-    this.life.current = this.life.current >= this.life.maximum ? this.life.maximum : this.life.current;
-  },
-  addEnergy: function(value) {
-    this.energy.current += value;
-    this.energy.current = this.energy.current >= this.energy.maximum ? this.energy.maximum : this.energy.current;
-  },
-  setStatus: function(status) {
-    this.status = status;
-  },
-  drawCard: function() {
-    let nextCard = this.cards.shift();
-    this.addGauge(nextCard);
-    if(this.cards.length == 0){
-      this.cards = [...baseDeck];
-      this.cards.shuffle();
-    }
-  },
-  reset: function(resetLife = false) {
-    this.resetGauge();
-    this.status = 'drawing';
-    this.isBursted = false;
-    if(resetLife) {
-      this.cards = [...baseDeck];
-      this.cards.shuffle();
-      this.life.current = this.life.maximum;
-    }
-  }
-});
-
-const ceatePlayer = (name, level, gaugeSize, life, energy, damage) => ({
-  ...createEntity(name, level, gaugeSize, life, energy, damage),
-  exp: {
-    current: 0,
-    next: 100
-  },
-  addExp: function (exp) {
-    console.log('adding exp...');
-    this.exp.current += exp;
-    if(this.exp.current >= this.exp.next){
-      this.level += 1;
-      this.damage += 4;
-      this.life.maximum = Math.ceil(this.life.maximum * 1.3);
-      this.life.current = this.life.maximum;
-      this.energy.maximum = Math.ceil(this.energy.maximum * 1.05);
-      this.energy.current = this.energy.maximum;
-      this.exp.current -= this.exp.next;
-      this.exp.next += 35;  
-    }
-  },
-});
-
-const createEnemy = (name, level, gaugeSize, life, energy, damage, threshold, image, exp) => ({
-  ...createEntity(name, level, gaugeSize, life, energy, damage),
-  image:      image,
-  exp:        exp,
-  gauge: {
-    current: 0,
-    maximum: gaugeSize,
-    threshold: threshold
-  }
-})
-
-const randomEnemy = () => {
-  let enemyId = Math.floor(Math.random()*enemies.length);
-  let enemy = enemies[enemyId];
-  return createEnemy(enemy.name, enemy.level, enemy.gaugeSize, enemy.life, enemy.energy, enemy.damage, enemy.threshold, enemy.image, enemy.exp);
-}
-
-const gaugeDifference = (player, enemy) => {
-  if(player.isBursted){
-    return {
-      winner: enemy.name,
-      diff: enemy.gauge.current/2
-    };
-  }
-  if(enemy.isBursted) {
-    return {
-      winner: player.name,
-      diff: player.gauge.current/2
-    };
-  }
-  if(player.gauge.current == enemy.gauge.current) {
-    return {
-      winner: 'draft',
-      diff: 0
-    }
-  }
-  return {
-    winner: player.gauge.current > enemy.gauge.current ? player.name : enemy.name,
-    diff: Math.abs(player.gauge.current - enemy.gauge.current)
-  };
-}
-
 export default {
   name: "App",
   components: {
@@ -366,14 +219,12 @@ export default {
     HabilityCard
   },
   data: () => ({
-    player:     ceatePlayer('Tidus', 1, 12, 50, 50, 5),
-    enemy:      randomEnemy(),
+    battle: Battle(),
     toast: {
       show: false,
       text: '',
       timeout: null
     },
-    animating:  false,
   }),
   created: function() {
     this.player.cards.shuffle();
@@ -382,6 +233,15 @@ export default {
   computed: {
     biggestGauge() {
       return this.player.gauge.maximum > this.enemy.gauge.maximum ? this.player.gauge.maximum : this.enemy.gauge.maximum;
+    },
+    player() {
+      return this.battle.player;
+    },
+    enemy() {
+      return this.battle.enemy;
+    },
+    animating() {
+      return this.battle.animating;
     }
   },
   methods: {
@@ -394,109 +254,8 @@ export default {
       }, duration);
     },
 
-    reset() {
-      if(!this.player.isAlive()){
-        this.player.reset(true);
-        this.enemy = randomEnemy();
-      }else{
-        this.player.reset(false);
-      }
-      if(!this.enemy.isAlive()) {
-        this.player.addExp(this.enemy.exp);
-        this.enemy = randomEnemy();
-      }else{
-        this.enemy.reset();
-      }
-      //Checking if any one died
-      this.animating = false;
-    },
-
-    checkResult() {
-      // Getting result
-      let result = gaugeDifference(this.player, this.enemy);
-      let playerWins = result.winner == this.player.name;
-      // Applying damage to entities
-      this.enemy.addLife(playerWins ?  -(result.diff * this.player.damage) : 0);
-      this.player.addLife(!playerWins ?  -(result.diff * this.enemy.damage) : 0);
-      // Adding energy to entitites
-      this.enemy.addEnergy(!playerWins ? result.diff*Math.round(this.enemy.energy.maximum * 0.2) : (result.winner == 'draft' ? Math.round(this.enemy.energy.maximum * 0.1) : 0));
-      this.player.addEnergy(playerWins ? result.diff*Math.round(this.player.energy.maximum * 0.2) : (result.winner == 'draft' ? Math.round(this.player.energy.maximum * 0.1) : 0));
-      // Showing result
-      let energy = playerWins ? `<b class="text-info">${result.diff*6} <i class="fas fa-fire"></i> energy</b> gained` : '';
-      let damage = `${result.diff * ( playerWins ? this.player.damage : this.enemy.damage )} <i class="fas fa-crosshairs"></i> <small>(${result.diff}x${playerWins ? this.player.damage : this.enemy.damage})</small>`;
-      this.showToast(
-        result.winner != 'draft' ?
-        `<b>${result.winner}</b> wins! <b class="text-primary">${damage} damage</b> dealt! ${energy}`
-        :
-        `Draft! <b class="text-info">${Math.round(this.player.energy.maximum * 0.1)} <i class="fas fa-fire"></i> energy</b> gained`
-      );
-      // Reseting entities gauge
-      setTimeout(this.reset, 1750)
-    },
-
-    checkStatus() {
-      // Check if its time to check the results
-      console.log(`Checking status: player - ${this.player.status} | enemy - ${this.enemy.status}`);
-      let bursted = this.player.isBursted || this.enemy.isBursted;
-      if(bursted || (this.player.status == 'standing' && this.enemy.status == 'standing')){
-        this.animating = true;
-        setTimeout(this.checkResult, animationBuffer);
-      }
-    },
-
-    // Returns if enemy shall play next
-    playerTurn(action, modifier, cost) {
-      switch(action) {
-        // Draw a card
-        case 'drawCard':
-          this.player.drawCard();
-          return true;
-        // Use gauge modifier
-        case 'modifier':
-          if(this.player.energy.current >= cost) {
-            this.player.energy.current -= cost;
-            this.player.addGauge(modifier);
-          }
-          return this.player.status == 'standing';
-        // Use life modifier
-        case 'life' :
-          if(this.player.energy.current >= cost) {
-            this.player.energy.current -= cost;
-            this.player.addLife(modifier);
-          }
-          return false;
-        // Stand
-        case 'stand':
-          this.player.setStatus('standing');
-          return true;
-      }
-    },
-
-    enemyTurn() {
-      // If enemy is not 'standing'
-      if(!this.player.isBursted && this.enemy.status == 'drawing'){
-        this.enemy.drawCard()
-        if(this.player.status == 'standing' && this.enemy.status == 'drawing') {
-          setTimeout(this.enemyTurn, animationBuffer);
-        }
-        // Enemy draw cards while is 'drawing'
-      }
-      this.animating = false;
-      // Checking the result
-      this.checkStatus();
-    },
-
-    
     handlePlayerAction(action, modifier, cost) {
-      // Executing player turn
-      let enemyNext = this.playerTurn(action, modifier, cost);
-      // Executing enemy turn
-      if(enemyNext){
-        this.animating = true;
-        setTimeout(this.enemyTurn, animationBuffer);
-      }else{
-        this.checkStatus();
-      }
+      this.battle.handlePlayerAction(action, modifier, cost, this.showToast);
     },
   }
 };
