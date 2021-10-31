@@ -4,8 +4,8 @@
     <div class="p-3 rounded bg-white shadow h-100 mx-auto" v-html="toast.text" />
   </div>
   <!-- Enemy -->
-  <div class="container w-md-50 rounded-top"  :style="`background-image:url(${require('@/assets/background.jpg')});background-size:cover;-webkit-box-shadow: inset 5px 5px 50px 30px #000000; 
-box-shadow: inset 5px 5px 50px 30px #000000;`">
+  <div class="container w-md-50 rounded-top">
+    <div class="background" :style="`background-image:url(${require('@/assets/background.jpg')});`"></div>
     <!-- Enemy Card -->
     <div class="mb-3 px-2 px-md-0">
       <!-- Name -->
@@ -28,71 +28,70 @@ box-shadow: inset 5px 5px 50px 30px #000000;`">
         iconName="fas fa-fire"
       />
     </div>
-    <img class="mx-auto my-5 monster-img" :src="require(`@/assets/${enemy.image}`)" v-if="enemy.image">
+    <img class="mx-auto my-5 monster-img" :src="require(`@/assets/enemies/${enemy.image}`)" v-if="enemy.image">
   </div>
   <!-- Gauges -->
   <div class="container w-md-50">
     <!-- Enemy Gauge -->
-    <div class="border g-1 pb-2 row mb-3 align-items-center py-1 px-2 bg-light rounded-pill">
-      <div class="col" v-for="enemyGauge, enemyGaugeIndex in biggestGauge" :key="`enemyGauge${enemyGaugeIndex}`">
-        <div :class="`rounded-pill border gauge border-2 ${enemy.gauge.current >= enemyGauge ? (enemy.status =='standing' ? 'bg-danger border-warning' : ' border-danger') : (enemy.isBursted ? 'bg-warning' : (enemyGauge > enemy.gauge.threshold ? (enemyGauge > enemy.gauge.maximum ? 'bg-light' : 'bg-secondary') : 'bg-dark '))}`" style="height:1rem;width:100%;">
-        </div>
-      </div>
-      <div :class="`col-3 col-md-2 ${enemy.status == 'standing' ? 'text-danger' : 'text-secondary'}`">
-        <i class="fas fa-crosshairs mx-1"></i> <b>{{enemy.gauge.current}}</b>
-      </div>
-    </div>
+    <AttackGauge 
+    :current="enemy.gauge.current"
+    :maximum="enemy.gauge.maximum"
+    :biggestGauge="biggestGauge"
+    :threshold="enemy.gauge.threshold"
+    :standing="enemy.status == 'standing'"
+    :bursted="enemy.isBursted"
+    className="danger"
+    />
     <!-- Player Gauge -->
-    <div class="border g-1 pb-2 row mb-3 align-items-center py-1 px-2 bg-light rounded-pill">
-      <div class="col" v-for="playerGauge, playerGaugeIndex in biggestGauge" :key="`playerGauge${playerGaugeIndex}`">
-        <div :class="`rounded-pill border gauge border-2 ${player.gauge.current >= playerGauge ? (player.status =='standing' ? 'bg-primary border-info' : 'border-primary') : player.isBursted ? 'bg-danger' : (playerGauge > player.gauge.maximum ? 'bg-light' : 'bg-dark')}`" style="height:1rem;width:100%;">
-        </div>
-      </div>
-      <div :class="`col-3 col-md-2 ${player.status == 'standing' ? 'text-primary' : 'text-secondary'}`">
-        <i class="fas fa-crosshairs mx-1"></i> <b>{{player.gauge.current}}</b>
-      </div>
-    </div>
+    <AttackGauge 
+    :current="player.gauge.current"
+    :maximum="player.gauge.maximum"
+    :biggestGauge="biggestGauge"
+    :standing="player.status == 'standing'"
+    :bursted="player.isBursted"
+    className="primary"
+    />
   </div>
   <!-- Player -->
   <div class="container w-md-50">
     <!-- Energy Actions -->
-    <div class="row mb-3 d-none">
-      <div class="col">
-        <button
-        :class="`btn ${!(animating || player.status == 'standing') && player.energy.current >= 20 ? 'btn-success text-white shadow' : 'btn-secondary'} text-white w-100`"
-        v-on:click="handlePlayerAction('life', 10, 20)"
-        :disabled="(animating || player.status == 'standing') || player.energy.current < 20"
-        >
-          <b :class="`px-2 py-1 ${!(animating || player.status == 'standing') && player.energy.current >= 20 ? 'text-success' : 'text-muted'} bg-white me-2 rounded-pill`">
-            +10 <i class="fas fa-heartbeat mx-1"></i>
-          </b>
-          <b>20</b> <i class="fas fa-fire"></i>
-        </button>
-      </div>
-      <div class="col">
-        <button
-        :class="`btn ${!(animating || player.status == 'standing') && player.energy.current >= 10 ? 'btn-info text-white shadow' : 'btn-secondary'} text-white w-100`"
-        v-on:click="handlePlayerAction('modifier', 2, 10)"
-        :disabled="(animating || player.status == 'standing') || player.energy.current < 10"
-        >
-          <b :class="`px-2 py-1 ${!(animating || player.status == 'standing') && player.energy.current >= 10 ? 'text-info' : 'text-muted'} bg-white me-2 rounded-pill`">
-            +2 <i class="fas fa-crosshairs mx-1"></i>
-          </b>
-          <b>10</b> <i class="fas fa-fire"></i>
-        </button>
-      </div>
-      <div class="col">
-        <button
-        :class="`btn ${!(animating || player.status == 'standing') && player.energy.current >= 5 ? 'btn-info text-white shadow' : 'btn-secondary'} text-white w-100`"
-        v-on:click="handlePlayerAction('modifier', Math.floor(1 + Math.random()*3), 5)"
-        :disabled="(animating || player.status == 'standing') || player.energy.current < 5"
-        >
-          <b :class="`px-2 py-1 ${!(animating || player.status == 'standing') && player.energy.current >= 5 ? 'text-info' : 'text-muted'} bg-white me-2 rounded-pill`">
-            +1/3 <i class="fas fa-crosshairs mx-1"></i>
-          </b>
-          <b>5</b> <i class="fas fa-fire"></i>
-        </button>
-      </div>
+    <div class="row mb-3">
+      <HabilityCard
+        name="Unbalance"
+        cost="20"
+        :current="player.energy.current"
+        description="Double your oponents cards"
+        image="clumsy.jpg"
+        :forceDisable="animating" 
+        v-on:handleClick="handlePlayerAction('life', 10, 20)"
+      />
+      <HabilityCard
+        name="Curative"
+        cost="15"
+        :current="player.energy.current"
+        description="Heal 10 HP"
+        image="wound.jpg"
+        :forceDisable="animating" 
+        v-on:handleClick="handlePlayerAction('life', 10, 15)"
+      />
+      <HabilityCard
+        name="Confusion"
+        cost="30"
+        :current="player.energy.current"
+        description="Add 50% chance to stand to every oponent card drawn"
+        image="regret.jpg"
+        :forceDisable="animating" 
+        v-on:handleClick="handlePlayerAction('life', 20, 30)"
+      />
+      <HabilityCard
+        name="Necronomicom"
+        cost="25"
+        :current="player.energy.current"
+        description="Add 6 to your gauge"
+        image="necronomicurse.jpg"
+        :forceDisable="animating" 
+        v-on:handleClick="handlePlayerAction('modifier', 6, 25)"
+      />
     </div>
     <!-- Player Card -->
     <div class="mb-3 px-2 px-md-0">
@@ -161,6 +160,8 @@ box-shadow: inset 5px 5px 50px 30px #000000;`">
 
 <script>
 import ProgressBar from './components/ProgressBar.vue';
+import AttackGauge from './components/AttackGauge.vue';
+import HabilityCard from './components/HabilityCard.vue';
 import enemies from './assets/enemies.json';
 
 Array.prototype.shuffle = function() {
@@ -266,6 +267,10 @@ const ceatePlayer = (name, level, gaugeSize, life, energy, damage) => ({
     if(this.exp.current >= this.exp.next){
       this.level += 1;
       this.damage += 4;
+      this.life.maximum = Math.ceil(this.life.maximum * 1.3);
+      this.life.current = this.life.maximum;
+      this.energy.maximum = Math.ceil(this.energy.maximum * 1.05);
+      this.energy.current = this.energy.maximum;
       this.exp.current -= this.exp.next;
       this.exp.next += 35;  
     }
@@ -317,7 +322,9 @@ const gaugeDifference = (player, enemy) => {
 export default {
   name: "App",
   components: {
-    ProgressBar
+    ProgressBar,
+    AttackGauge,
+    HabilityCard
   },
   data: () => ({
     player:     ceatePlayer('Tidus', 1, 12, 50, 50, 5),
@@ -349,7 +356,12 @@ export default {
     },
 
     reset() {
-      this.player.reset(!this.player.isAlive());
+      if(!this.player.isAlive()){
+        this.player.reset(true);
+        this.enemy = randomEnemy();
+      }else{
+        this.player.reset(false);
+      }
       if(!this.enemy.isAlive()) {
         this.player.addExp(this.enemy.exp);
         this.enemy = randomEnemy();
@@ -368,8 +380,8 @@ export default {
       this.enemy.addLife(playerWins ?  -(result.diff * this.player.damage) : 0);
       this.player.addLife(!playerWins ?  -(result.diff * this.enemy.damage) : 0);
       // Adding energy to entitites
-      this.enemy.addEnergy(!playerWins ? result.diff*6 : (result.winner == 'draft' ? 3 : 0));
-      this.player.addEnergy(playerWins ? result.diff*6 : (result.winner == 'draft' ? 3 : 0));
+      this.enemy.addEnergy(!playerWins ? result.diff*Math.round(this.enemy.energy.maximum * 0.2) : (result.winner == 'draft' ? Math.round(this.enemy.energy.maximum * 0.1) : 0));
+      this.player.addEnergy(playerWins ? result.diff*Math.round(this.player.energy.maximum * 0.2) : (result.winner == 'draft' ? Math.round(this.player.energy.maximum * 0.1) : 0));
       // Showing result
       let energy = playerWins ? `<b class="text-info">${result.diff*6} <i class="fas fa-fire"></i> energy</b> gained` : '';
       let damage = `${result.diff * ( playerWins ? this.player.damage : this.enemy.damage )} <i class="fas fa-crosshairs"></i> <small>(${result.diff}x${playerWins ? this.player.damage : this.enemy.damage})</small>`;
@@ -377,7 +389,7 @@ export default {
         result.winner != 'draft' ?
         `<b>${result.winner}</b> wins! <b class="text-primary">${damage} damage</b> dealt! ${energy}`
         :
-        `Draft! <b class="text-info">3 <i class="fas fa-fire"></i> energy</b> gained`
+        `Draft! <b class="text-info">${Math.round(this.player.energy.maximum * 0.1)} <i class="fas fa-fire"></i> energy</b> gained`
       );
       // Reseting entities gauge
       setTimeout(this.reset, 1750)
@@ -496,10 +508,10 @@ h4{
 
 .custom-toast {
   position: fixed;
-  top: 3%;
+  top: 50%;
   left: 50%;
   z-index: 99;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(-50%);
   transition: all 125ms ease-in-out;
 }
 
@@ -513,13 +525,24 @@ h4{
 }
 
 .monster-img {
-  -webkit-box-shadow: 2px 50px 32px -30px rgba(0,0,0,0.65); 
-box-shadow: 2px 50px 32px -30px rgba(0,0,0,0.65);
-max-height:250px
+  filter: drop-shadow(1px 26px 29px #000000);
+  -webkit-filter: drop-shadow(1px 26px 29px #000000);
+  -moz-filter: drop-shadow(1px 26px 29px #000000);
+  max-height:250px;
+  animation: monsterBreath 1.5s ease-in-out infinite alternate;
+  transform-origin: bottom;
 }
 @media screen and (max-width:410px) {
   .monster-img {
     max-height: 125px;
+  }
+}
+@keyframes monsterBreath {
+  0% {
+    transform: scale(1.0) ;
+  }
+  100% {
+    transform: scaleX(1.01) scaleY(1.015) ;
   }
 }
 
@@ -530,4 +553,68 @@ max-height:250px
 .container {
   max-width: 690px;
 }
+
+.background {
+  background-size:cover;-webkit-box-shadow: inset 5px 5px 50px 30px #000000; 
+  box-shadow: inset 5px 5px 50px 30px #000000;
+  background-position:center;
+  position: absolute;
+  top: 15%;
+  bottom: 15%;
+  right: 15%;
+  left: 15%;
+  opacity: 0.4;
+  z-index: -1;
+  animation: dungeonTorches 5s ease-in-out infinite alternate-reverse;
+}
+
+@media screen and (max-width: 700px) {
+  .background {
+    bottom: 40%;
+  }
+}
+
+@keyframes dungeonTorches {
+  0% {
+    opacity: 0.4;
+  }
+  5% {
+    opacity: 0.38;
+  }
+  10% {
+    opacity: 0.4;
+  }
+
+  30% {
+    opacity: 0.4;
+  }
+  37% {
+    opacity: 0.38;
+  }
+  42% {
+    opacity: 0.4;
+  }
+  
+  60% {
+    opacity: 0.4;
+  }
+  67% {
+    opacity: 0.38;
+  }
+  62% {
+    opacity: 0.4;
+  }
+  
+  90% {
+    opacity: 0.4;
+  }
+  97% {
+    opacity: 0.38;
+  }
+  92% {
+    opacity: 0.4;
+  }
+}
+
+
 </style>
