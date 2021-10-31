@@ -5,12 +5,11 @@
         v-on:click="!(cost > current || forceDisable) ? $emit('handleClick') : () => {}"
         draggable="true"
         >
-            <div class="w-100">
-                <small :class="`  position-absolute top-0 px-2 py-1 ${cost > current || forceDisable ? 'bg-secondary border-secondary text-dark' : 'bg-white text-primary'}`">
+            <div class="w-100 habilityCard-img" :style="`background-image:url(${require(`@/assets/skills/${image}`)});`">
+                <small :class="`position-absolute top-0 left-0 px-2 py-1 ${cost > current || forceDisable ? 'bg-secondary border-secondary text-dark' : 'bg-white text-primary'}`">
                     {{cost}}
                     <i :class="`fas fa-fire ${cost > current || forceDisable ? 'text-dark' : 'text-primary'}`"></i>
                 </small> 
-                <img class="w-100" :src="require(`@/assets/skills/${image}`)" draggable="false" style="pointer-events:none;">
             </div>
             <div class="py-2 px-1 d-flex justify-content-between align-items-center">
                 <b>{{name}}</b>
@@ -39,7 +38,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .o-50 {
-    opacity: 0.75;
+  filter: grayscale(0.5);
 }
 .habilityCard {
   position: inherit;
@@ -58,8 +57,18 @@ export default {
   transition-delay: 0s;
   transition-duration: 0s;
 }
-.habilityCard img{
+
+.habilityCard-img {
+  height: 50px;
+  background-position: center;
+  background-size: cover;
   z-index: 0;
+  transition-delay: 0s;
+  transition-duration: 0s;
+}
+
+.habilityCard-img small {
+  border-bottom-right-radius: 15px;
 }
 
 .habilityCard:hover {
@@ -76,5 +85,26 @@ export default {
   margin-bottom: 10px;
   transition-delay: 50ms;
   transition-duration: 275ms;
+  font-size: 80%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.habilityCard:hover .habilityCard-img {
+  height: 100px;
+  transition-delay: 50ms;
+  transition-duration: 275ms;
+  animation: habilityCardImageMove 1s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes habilityCardImageMove {
+  0% {
+    background-size: 100%;
+    filter:brightness(1.0);
+  }
+  100% {
+    background-size: 102%;
+    filter:brightness(1.1);
+  }
 }
 </style>

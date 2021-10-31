@@ -28,10 +28,10 @@
         iconName="fas fa-fire"
       />
     </div>
-    <img class="mx-auto my-5 monster-img" :src="require(`@/assets/enemies/${enemy.image}`)" v-if="enemy.image">
+    <img class="mx-auto my-3 monster-img" :src="require(`@/assets/enemies/${enemy.image}`)" v-if="enemy.image">
   </div>
   <!-- Gauges -->
-  <div class="container w-md-50">
+  <div class="container w-md-50" style="z-index:98;">
     <!-- Enemy Gauge -->
     <AttackGauge 
     :current="enemy.gauge.current"
@@ -99,21 +99,41 @@
       <div class="text-start d-flex justify-content-between align-items-stretch mb-3">
         <h5 class="mb-0 text-white" style="align-self:center;">
           {{player.name}} 
-          <small class="text-muted">Lvl. {{player.level}} - {{player.damage}} DMG</small>
+          <small class="text-muted">Lvl. {{player.level}}</small>
         </h5>
+        <div>
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2">
+            <i class="fa fa-user"></i>
+            Player
+          </small>
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
+            <i class="fas fa-box"></i>
+            Backpack
+          </small>
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2">
+            <i class="fas fa-map"></i>
+            Map
+          </small>
+        </div>
         <small class="float-end btn btn-sm btn-outline-secondary rounded-pill">
-          <i class="fa fa-info mx-2"></i>
+          <i class="fa fa-info"></i>
           Help
         </small>
       </div>
       
       <div class="row">
         <div class="order-1 order-md-0 col-6 col-md-2 d-md-flex justify-content-center align-items-stretch flex-column">
-          <button :class="`m-0 h-100 btn btn-light ${!(animating || player.status == 'standing') ? 'shadow' : ''} border w-100`" v-on:click="handlePlayerAction('drawCard')" :disabled="(animating || player.status == 'standing')">
-            {{player.cards.length}}
-            <i class="far fa-caret-square-up me-2"></i>
-            <br>
-            Draw Card
+          <button
+            :class="`player-action m-0 h-100 btn btn-light ${!(animating || player.status == 'standing') ? 'shadow' : ''} border w-100 p-2`"
+            v-on:click="handlePlayerAction('drawCard')" :disabled="(animating || player.status == 'standing')"
+          >
+            <div class="border border-2 border-primary text-primary rounded w-100 h-100 d-flex justify-content-center align-items-center flex-column">
+              <span>
+                {{player.cards.length}}
+                <i class="far fa-caret-square-up fa-lg"></i>
+              </span>
+              <small style="font-size:70%">Draw Card</small>
+            </div>
           </button>
         </div>
         <div class="order-0 order-md-1 col-12 col-md-8">
@@ -147,10 +167,17 @@
         </div>
         <div class="order-2 col-6 col-md-2 d-md-flex justify-content-center align-items-stretch flex-column">
           <!-- Player Actions -->
-          <button :class="`m-0 h-100 btn btn-light ${!(animating || player.status == 'standing') ? 'shadow' : ''} border w-100`" v-on:click="handlePlayerAction('stand')" :disabled="(animating || player.status == 'standing')">
-            <i class="far fa-caret-square-down me-2"></i>
-            <br>
-            Stand
+          <button
+            :class="`player-action m-0 h-100 btn btn-light ${!(animating || player.status == 'standing') ? 'shadow' : ''} border w-100 p-2`"
+            v-on:click="handlePlayerAction('stand')" :disabled="(animating || player.status == 'standing')"
+          >
+            
+            <div class="border border-2 border-primary text-primary rounded w-100 h-100 d-flex justify-content-center align-items-center flex-column">
+              <span>
+                <i class="far fa-caret-square-down fa-lg"></i>
+              </span>
+              <small>Stand</small>
+            </div>
           </button>
         </div>
       </div>
@@ -524,11 +551,19 @@ h4{
   opacity: 100;
 }
 
+.player-action {
+  transition: all 125ms ease-in-out;
+}
+
+.player-action:hover {
+  transform: translateY(-10px) scale(1.03);
+}
+
 .monster-img {
   filter: drop-shadow(1px 26px 29px #000000);
   -webkit-filter: drop-shadow(1px 26px 29px #000000);
   -moz-filter: drop-shadow(1px 26px 29px #000000);
-  max-height:250px;
+  max-height: 125px;
   animation: monsterBreath 1.5s ease-in-out infinite alternate;
   transform-origin: bottom;
 }
