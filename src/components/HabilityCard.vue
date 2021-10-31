@@ -38,7 +38,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .o-50 {
-  filter: grayscale(0.5);
+  filter: grayscale(1);
 }
 .habilityCard {
   position: inherit;
@@ -69,6 +69,7 @@ export default {
 
 .habilityCard-img small {
   border-bottom-right-radius: 15px;
+  left: 0;
 }
 
 .habilityCard:hover {
