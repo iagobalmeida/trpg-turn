@@ -8,7 +8,7 @@
       {{current}}&nbsp;<small>/{{maximum}}</small> 
     </div>
     <div :class="`col${labelOnTop ? '-12' : ''} flex-grow`">
-      <div class="progress bg-dark w-auto mb-3 h-100 border border-2 border-white shadow">
+      <div class="progress bg-dark w-auto mb-3 h-100 border border-2 border-white">
         <div
         :class="`progress-bar ${ animating ? 'progress-bar-striped progress-bar-animated' : ''} ${className}`"
         role="progressbar"
@@ -44,5 +44,10 @@ export default {
 }
 .text {
   min-width: 130px;
+}
+.progress {
+  filter: drop-shadow(1px 8px 8px #00000060);
+  -webkit-filter: drop-shadow(1px 8px 8px #00000060);
+  -moz-filter: drop-shadow(1px 8px 8px #00000060);
 }
 </style>

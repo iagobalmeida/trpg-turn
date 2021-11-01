@@ -5,7 +5,7 @@
   </div>
   <!-- Enemy -->
   <div class="container w-md-50 rounded-top">
-    <div class="background" :style="`background-image:url(${require('@/assets/background.jpg')});`"></div>
+    <div class="background" :style="`background-image:url(${require('@/assets/backgrounds/Cemetery.png')});`"></div>
     <!-- Enemy Card -->
     <div class="mb-3 px-2 px-md-0">
       <!-- Name -->
@@ -53,9 +53,9 @@
     />
   </div>
   <!-- Player Actions -->
-  <div class="container w-md-50 habilityCard-container">
-    <div class="row mb-3 flex-nowrap" v-on:dragStart="console.log($event)">
-      <HabilityCard
+  <div class="container w-md-50 abilityCard-container">
+    <div class="row pb-3 flex-nowrap align-items-stretch" v-on:dragStart="console.log($event)">
+      <AbilityCard
         :name="card.name"
         :cost="card.cost"
         :current="player.energy.current"
@@ -63,8 +63,9 @@
         :image="card.image"
         :forceDisable="animating" 
         v-on:handleClick="handlePlayerAction(card.type, card.modifier, card.cost)"
-        v-for="card, cardIndex in player.habilityCards"
+        v-for="card, cardIndex in player.abilityCards"
         :key="`card_${cardIndex}`"
+        class="col-6 col-md-3"
       />
     </div>
   </div>
@@ -88,41 +89,43 @@
             </div>
           </button>
         </div>
-        <div class="order-0 order-md-1 col-12 col-md-8 row">
-          <div class="col-6">
-            <!-- Life -->
-            <ProgressBar 
-              :current="Math.round(player.life.current)"
-              :maximum="Math.round(player.life.maximum)"
-              :animating="animating"
-              className="bg-danger"
-              iconName="fas fa-heart"
-              class="mb-3"
-              :labelOnTop="true"
-            />
-          </div>
-          <div class="col-6">
-            <!-- Energy -->
-            <ProgressBar 
-              :current="Math.round(player.energy.current)"
-              :maximum="Math.round(player.energy.maximum)"
-              :animating="animating"
-              className="bg-info"
-              iconName="fas fa-fire"
-              class="mb-3"
-              :labelOnTop="true"
-            />
-          </div>
-          <div class="col-12">
-            <!-- Level -->
-            <ProgressBar 
-              :current="Math.round(player.exp.current)"
-              :maximum="Math.round(player.exp.next)"
-              :animating="true"
-              className="bg-primary"
-              iconName="fa fa-arrow-up"
-              class="mb-3"
-            />
+        <div class="order-0 order-md-1 col-12 col-md-8">
+          <div class="row">
+            <div class="col-6">
+              <!-- Life -->
+              <ProgressBar 
+                :current="Math.round(player.life.current)"
+                :maximum="Math.round(player.life.maximum)"
+                :animating="animating"
+                className="bg-danger"
+                iconName="fas fa-heart"
+                class="mb-3"
+                :labelOnTop="true"
+              />
+            </div>
+            <div class="col-6">
+              <!-- Energy -->
+              <ProgressBar 
+                :current="Math.round(player.energy.current)"
+                :maximum="Math.round(player.energy.maximum)"
+                :animating="animating"
+                className="bg-info"
+                iconName="fas fa-fire"
+                class="mb-3"
+                :labelOnTop="true"
+              />
+            </div>
+            <div class="col-12 d-none d-md-block">
+              <!-- Level -->
+              <ProgressBar 
+                :current="Math.round(player.exp.current)"
+                :maximum="Math.round(player.exp.next)"
+                :animating="true"
+                className="bg-primary"
+                iconName="fa fa-arrow-up"
+                class="mb-3"
+              />
+            </div>
           </div>
         </div>
         <div class="order-2 col-6 col-md-2 d-md-flex justify-content-center align-items-stretch flex-column">
@@ -146,24 +149,24 @@
       <div class="row">
         <h5 class="mb-0 text-white col" style="align-self:center;">
           {{player.name}} 
-          <small class="text-muted">Lvl. {{player.level}}</small>
+          <small class="text-muted d-none d-md-inline">Lvl. {{player.level}}</small>
         </h5>
         <div class="col-9">
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalHelp" ref="helpButton">
-            <i class="fa fa-info"></i>
-            Help
+          <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalHelp" ref="helpButton">
+            <i class="fa fa-info me-md-2"></i>
+            <span class="d-none d-md-inline">Help</span>
           </small>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2 px-3" data-bs-toggle="modal" data-bs-target="#modalPlayer">
-            <i class="fa fa-user"></i>
-            Player
+          <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalPlayer">
+            <i class="fa fa-user me-md-2"></i>
+            <span class="d-none d-md-inline">Player</span>
           </small>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2 px-3">
-            <i class="fas fa-map"></i>
-            Map
+          <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalMap">
+            <i class="fas fa-map me-md-2"></i>
+            <span class="d-none d-md-inline">Map</span>
           </small>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill px-3">
-            <i class="fas fa-box"></i>
-            Backpack
+          <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalBackPack">
+            <i class="fas fa-box me-md-2"></i>
+            <span class="d-none d-md-inline">Backpack</span>
           </small>
         </div>
       </div>
@@ -216,28 +219,95 @@
             class="mb-3"
           />
           <h4>Atributes</h4>
-          <div class="row">
+          <div class="row container">
             <div class="col-6 text-start px-4">
               <i class="fas fa-heart me-3"></i>
-              {{player.life.current}}<small>/{{player.life.maximum}}</small> 
+              {{Math.round(player.life.current)}}<small>/{{Math.round(player.life.maximum)}}</small> 
             </div>
             <div class="col-6 text-start px-4">
               <i class="fas fa-fire me-3"></i>
-              {{player.energy.current}}<small>/{{player.energy.maximum}}</small> 
+              {{Math.round(player.energy.current)}}<small>/{{Math.round(player.energy.maximum)}}</small> 
             </div>
             <div class="col-6 text-start px-4">
               <i class="fas fa-crosshairs me-3"></i>
-              {{player.gauge.current}}<small>/{{player.gauge.maximum}}</small> 
+              {{Math.round(player.gauge.current)}}<small>/{{Math.round(player.gauge.maximum)}}</small> 
             </div>
             <div class="col-6 text-start px-4">
               <i class="fas fa-hand-rock me-3"></i>
-              {{player.damage}}
+              {{Math.round(player.damage)}}
             </div>
           </div>
           <h4>Cards</h4>
-          <div class="row">
-            <div class="col-2 text-center" v-for="card, cardIndex in shuffledCards" :key="`player_card_${cardIndex}`">{{card}}</div>
+          <div class="container">
+            <div class="row">
+              <div class="col-1 text-center my-3" v-for="card, cardIndex in shuffledCards" :key="`player_card_${cardIndex}`">
+                <span class="px-2 py-2 shadow-sm border rounded text-primary">{{card}}</span>
+              </div>
+            </div>
+            <small class="text-muted"><i>The cards are not in the same order as in the current deck</i></small>
           </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Backpack -->
+  <div class="modal fade" id="modalBackPack" tabindex="-1" aria-labelledby="modalBackPackLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalBackPackLabel"><i class="fa fa-box me-2"></i>Backpack</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-start">
+          <h5>Equipments</h5>
+          <p class="text-muted">No equipment found yet.</p>
+
+          <h5>Abilities</h5>
+          <div class="row g-3 pb-3 align-items-stretch" v-on:dragStart="console.log($event)">
+            <AbilityCard
+              :name="card.name"
+              :cost="card.cost"
+              :current="card.cost"
+              :description="card.description"
+              :image="card.image"
+              v-for="card, cardIndex in player.abilityCards"
+              :key="`card_${cardIndex}`"
+              class="col-6"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Map -->
+  <div class="modal fade" id="modalMap" tabindex="-1" aria-labelledby="modalMapLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalMapLabel"><i class="fa fa-map me-2"></i>Map</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-start">
+          <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Cemetery.png')}); background-size: cover;`">
+            <h5 class="text-white">Cemitery</h5>
+          </button>
+          <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Church.png')}); background-size: cover;filter:grayscale(1)`">
+            <h5 class="text-white">Church</h5>
+          </button>
+          <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Forest.png')}); background-size: cover;filter:grayscale(1)`">
+            <h5 class="text-white">Forest</h5>
+          </button>
+          <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Mansion.png')}); background-size: cover;filter:grayscale(1)`">
+            <h5 class="text-white">Mansion</h5>
+          </button>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -250,7 +320,7 @@
 <script>
 import ProgressBar from './components/ProgressBar.vue';
 import AttackGauge from './components/AttackGauge.vue';
-import HabilityCard from './components/HabilityCard.vue';
+import AbilityCard from './components/AbilityCard.vue';
 import Battle from './assets/Battle.js';
 
 export default {
@@ -258,7 +328,7 @@ export default {
   components: {
     ProgressBar,
     AttackGauge,
-    HabilityCard
+    AbilityCard
   },
   data: () => ({
     battle: Battle(),
@@ -316,7 +386,16 @@ export default {
 
 </script>
 
-<style>
+<style>/* Hide scrollbar for Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 #app {
   height: 100vh;
   display: flex;
@@ -328,6 +407,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  
 }
 button {
   padding: 0.5rem 1rem;
@@ -359,8 +439,13 @@ h4{
 }
 
 @media screen and (max-width:700px){
-  .habilityCard-container {
+  .abilityCard-container {
     overflow-x: scroll;
+    overflow-y: hidden;
+  }
+  .abilityCard-container .row{
+    height: 100%;
+    overflow-y: hidden;
   }
 }
 
@@ -390,14 +475,18 @@ h4{
   transform: translateY(-10px) scale(1.03);
 }
 
+.player-action:active {
+  transform: none;
+}
+
 .monster-img {
-  filter: drop-shadow(1px 26px 29px #000000);
-  -webkit-filter: drop-shadow(1px 26px 29px #000000);
-  -moz-filter: drop-shadow(1px 26px 29px #000000);
+  filter: drop-shadow(0px 30px 25px #00000085);
+  -webkit-filter: drop-shadow(0px 30px 25px #00000085);
+  -moz-filter: drop-shadow(0px 30px 25px #00000085);
   max-height: 125px;
   animation: monsterBreath 1.5s ease-in-out infinite alternate;
   transform-origin: bottom;
-  margin-top: 100px;
+  margin-top: 50px;
   margin-bottom: 25px;
 }
 @media screen and (max-width:410px) {
@@ -410,12 +499,12 @@ h4{
     transform: scale(1.0) ;
   }
   100% {
-    transform: scaleX(1.01) scaleY(1.015) ;
+    transform: scaleX(1.02) scaleY(1.025) ;
   }
 }
 
 .text-white {
-  filter: drop-shadow(2px 4px 6px black);
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
 }
 
 .container {
@@ -424,21 +513,27 @@ h4{
 
 .background {
   background-size:cover;-webkit-box-shadow: inset 5px 5px 50px 30px #000000; 
+  border-radius: 100%;
   box-shadow: inset 5px 5px 50px 30px #000000;
   background-position:center;
   position: absolute;
-  top: 15%;
-  bottom: 35%;
-  right: 15%;
-  left: 15%;
-  opacity: 0.4;
+  /* top: -10%;
+  bottom: 30%;
+  right: 30%;
+  left: 30%; */
+  top: 0;
+  bottom: 50%;
+  left: 0;
+  right: 0;
   z-index: -1;
-  animation: dungeonTorches 5s ease-in-out infinite alternate-reverse;
+  filter:brightness(0.7);
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (min-width: 700px) {
   .background {
-    bottom: 40%;
+    left: 30%;
+    right: 30%;
+    bottom: 30%;
   }
 }
 

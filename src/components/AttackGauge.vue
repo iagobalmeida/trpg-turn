@@ -1,5 +1,5 @@
 <template>
-  <div class="g-1 row mb-3 align-items-center">
+  <div class="g-0 row mb-3 align-items-center">
     <div
     class="col mx-1"
     v-for="gauge, gaugeIndex in biggestGauge"
@@ -8,8 +8,8 @@
      style="height:15px"
     >
     </div>
-    <div :class="`col-3 col-md-2 ${standing ? `text-${className}` : 'text-light'}`">
-      <i class="fas fa-crosshairs mx-1"></i> <b>{{current}}</b>
+    <div :class="`col-2 ${standing ? `text-${className}` : 'text-light'}`">
+      <i class="fas fa-crosshairs mx-1 d-none d-md-inline"></i> <b>{{current}}</b>
     </div>
   </div>
 </template>
@@ -19,12 +19,12 @@ export default {
   name: 'AttackGauge',
   props: {
     biggestGauge: Number,
-    current: Number,
-    maximum: Number,
-    threshold: Number,
-    standing: Boolean,
-    bursted: Boolean,
-    className: String
+    current:      Number,
+    maximum:      Number,
+    threshold:    Number,
+    standing:     Boolean,
+    bursted:      Boolean,
+    className:    String
   },
   methods: {
     getClass(value) {
@@ -54,5 +54,10 @@ export default {
 <style scoped>
 .o-50 {
   opacity: 50;
+}
+.col {
+  filter: drop-shadow(1px 8px 8px #00000060);
+  -webkit-filter: drop-shadow(1px 8px 8px #00000060);
+  -moz-filter: drop-shadow(1px 8px 8px #00000060);
 }
 </style>
