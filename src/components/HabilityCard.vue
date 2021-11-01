@@ -37,6 +37,7 @@ export default {
         'regret': require('@/assets/skills/regret.jpg'),
         'necronomicurse': require('@/assets/skills/necronomicurse.jpg'),
         'clumsy': require('@/assets/skills/clumsy.jpg'),
+        'writhe': require('@/assets/skills/writhe.jpg'),
       }
     }
   },

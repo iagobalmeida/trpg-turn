@@ -1,17 +1,9 @@
 [
     {
         "type": "life",
-        "cost": 20,
-        "modifier": 10,
-        "name": "Unbalance",
-        "image": "clumsy",
-        "description": "Double your oponents cards"
-    },
-    {
-        "type": "life",
         "cost": 15,
         "modifier": 10,
-        "name": "Curative",
+        "name": "Curative I",
         "image": "wound",
         "description": "Heal 10 HP"
     },
@@ -19,16 +11,24 @@
         "type": "life",
         "cost": 30,
         "modifier": 20,
-        "name": "Confusion",
-        "image": "regret",
-        "description": "Add 50% chance to stand to every oponent card drawn"
+        "name": "Curative II",
+        "image": "wound",
+        "description": "Heal 20 HP"
     },
     {
         "type": "modifier",
         "cost": 25,
         "modifier": 6,
-        "name": "Necomicom",
-        "image": "necronomicurse",
+        "name": "Overcharge I",
+        "image": "writhe",
         "description": "Add 6 to your attack gauge"
+    },
+    {
+        "type": "modifier",
+        "cost": 35,
+        "modifier": 10,
+        "name": "Overcharge II",
+        "image": "writhe",
+        "description": "Add 10 to your attack gauge"
     }
 ]

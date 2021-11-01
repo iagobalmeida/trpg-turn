@@ -74,7 +74,7 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
         let nextCard = this.cards.shift();
         this.addGauge(nextCard);
         if(this.cards.length == 0){
-        this.cards = [...baseDeck(this.gaugeSize)];
+        this.cards = [...baseDeck(this.gauge.maximum)];
         this.cards.shuffle();
         }
     },
@@ -83,7 +83,7 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
         this.status = 'drawing';
         this.isBursted = false;
         if(resetLife) {
-        this.cards = [...baseDeck(this.gaugeSize)];
+        this.cards = [...baseDeck(this.gauge.maximum)];
         this.cards.shuffle();
         this.life.current = this.life.maximum;
         }
@@ -98,7 +98,6 @@ const createPlayer = (name, level, gaugeSize, life, energy, damage) => ({
         next: 100
     },
     addExp: function (exp) {
-        console.log('adding exp...');
         this.exp.current += exp;
         if(this.exp.current >= this.exp.next){
         this.level += 1;
@@ -203,7 +202,6 @@ const Battle = () => ({
     },
     // Enemy Turn
     enemyTurn: function() {
-        console.log('enemyTurn', this.player);
         // If enemy is not 'standing'
         if(!this.player.isBursted && this.enemy.status == 'drawing'){
             this.enemy.drawCard()
@@ -219,7 +217,6 @@ const Battle = () => ({
     // Check Status
     checkStatus: function () {
         // Check if its time to check the results
-        console.log(`Checking status: player - ${this.player.status} | enemy - ${this.enemy.status}`);
         let bursted = this.player.isBursted || this.enemy.isBursted;
         if(bursted || (this.player.status == 'standing' && this.enemy.status == 'standing')){
             this.animating = true;
@@ -259,7 +256,7 @@ const Battle = () => ({
         }
         if(!this.enemy.isAlive()) {
             this.player.addExp(this.enemy.exp);
-            this.battle.enemy = randomEnemy();
+            this.enemy = randomEnemy();
         }else{
             this.enemy.reset();
         }
