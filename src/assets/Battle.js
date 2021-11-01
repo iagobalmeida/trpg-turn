@@ -162,10 +162,18 @@ const gaugeDifference = (player, enemy) => {
 
 const animationBuffer = 500;
 
-let storagePlayer = localStorage.getItem('player');
+const loadStoragePlayer = () => {
+    let storagePlayer = localStorage.getItem('player');
+    if(storagePlayer) {
+        let playerData = JSON.parse(storagePlayer);
+        return { ...createPlayer('Tidus', 1, 12, 50, 50, 5), ...playerData };
+    }else{
+        return createPlayer('Tidus', 1, 12, 50, 50, 5);
+    }
+}
 
 const Battle = () => ({
-    player:     storagePlayer ? JSON.parse(storagePlayer) : createPlayer('Tidus', 1, 12, 50, 50, 5),
+    player:     loadStoragePlayer(),
     enemy:      randomEnemy(),
     animating:  false,
     // Handle player input
