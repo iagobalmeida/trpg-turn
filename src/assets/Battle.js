@@ -229,19 +229,23 @@ const Battle = () => ({
         let result = gaugeDifference(this.player, this.enemy);
         let playerWins = result.winner == this.player.name;
         // Applying damage to entities
-        this.enemy.addLife(playerWins ?  -(result.diff * this.player.damage) : 0);
-        this.player.addLife(!playerWins ?  -(result.diff * this.enemy.damage) : 0);
+        this.enemy.addLife(playerWins   ?  -(result.diff * this.player.damage) : 0);
+        this.player.addLife(!playerWins ?  -(result.diff * this.enemy.damage)  : 0);
         // Adding energy to entitites
-        this.enemy.addEnergy(!playerWins ? result.diff*Math.round(this.enemy.energy.maximum * 0.2) : (result.winner == 'draft' ? Math.round(this.enemy.energy.maximum * 0.1) : 0));
-        this.player.addEnergy(playerWins ? result.diff*Math.round(this.player.energy.maximum * 0.2) : (result.winner == 'draft' ? Math.round(this.player.energy.maximum * 0.1) : 0));
+        let enemyEnergy  = !playerWins ? (result.diff * (this.enemy.energy.maximum * 0.1))  : (result.winner == 'draft' ? (this.enemy.energy.maximum * 0.1) : 0);
+        let playerEnergy = playerWins  ? (result.diff * (this.player.energy.maximum * 0.1)) : (result.winner == 'draft' ? (this.player.energy.maximum * 0.1) : 0);
+        this.enemy.addEnergy(enemyEnergy);
+        this.player.addEnergy(playerEnergy);
+        // this.enemy.addEnergy(!playerWins ? result.diff* (this.enemy.energy.maximum * 0.02).toFixed(1) : (result.winner == 'draft' ? (this.enemy.energy.maximum * 0.01).toFixed(1) : 0));
+        // this.player.addEnergy(playerWins ? result.diff* (this.player.energy.maximum * 0.02).toFixed(1) : (result.winner == 'draft' ? (this.player.energy.maximum * 0.01).toFixed(1) : 0));
         // Showing result
-        let energy = playerWins ? `<b class="text-info">${result.diff*6} <i class="fas fa-fire"></i> energy</b> gained` : '';
-        let damage = `${result.diff * ( playerWins ? this.player.damage : this.enemy.damage )} <i class="fas fa-crosshairs"></i> <small>(${result.diff}x${playerWins ? this.player.damage : this.enemy.damage})</small>`;
+        let energy = `<b class="text-info">${playerEnergy.toFixed(2)} <i class="fas fa-fire"></i> energy</b> gained`;
+        let damage = `${(result.diff * ( playerWins ? this.player.damage : this.enemy.damage).toFixed(2) )} <i class="fas fa-crosshairs"></i> <small>(${result.diff}x${playerWins ? this.player.damage : this.enemy.damage})</small>`;
         this.toastFunction(
             result.winner != 'draft' ?
-            `<b>${result.winner}</b> wins! <b class="text-primary">${damage} damage</b> dealt! ${energy}`
+            `<b>${result.winner}</b> wins!<br><b class="text-primary">${damage} damage</b> dealt!<br>${energy}`
             :
-            `Draft! <b class="text-info">${Math.round(this.player.energy.maximum * 0.1)} <i class="fas fa-fire"></i> energy</b> gained`
+            `<b>Draft!</b><br>${energy}`
         );
         // Reseting entities gauge
         setTimeout(()=>{this.reset()}, 1750)
@@ -250,7 +254,7 @@ const Battle = () => ({
     reset: function() {
         if(!this.player.isAlive()){
             this.player.reset(true);
-            this.battle.enemy = this.battle.randomEnemy();
+            this.enemy = randomEnemy();
         }else{
             this.player.reset(false);
         }

@@ -1,7 +1,7 @@
 <template>
   <!-- Toast -->
   <div :class="`custom-toast container ${toast.show ? 'o-100' : 'o-0'}`">
-    <div class="p-3 rounded bg-white shadow h-100 mx-auto" v-html="toast.text" />
+    <div class="p-3 rounded border border-2 text-white rounded shadow h-100 mx-auto" v-html="toast.text" style="background-color:#00000095"/>
   </div>
   <!-- Enemy -->
   <div class="container w-md-50 rounded-top">
@@ -12,8 +12,8 @@
       <h5 class="text-white mb-3"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
         <!-- Life -->
         <ProgressBar 
-          :current="enemy.life.current"
-          :maximum="enemy.life.maximum"
+          :current="Math.round(enemy.life.current)"
+          :maximum="Math.round(enemy.life.maximum)"
           :animating="animating"
           className="bg-danger"
           iconName="fas fa-heart"
@@ -21,8 +21,8 @@
           :labelOnTop="false"
         />
         <ProgressBar 
-          :current="enemy.energy.current"
-          :maximum="enemy.energy.maximum"
+          :current="Math.round(enemy.energy.current)"
+          :maximum="Math.round(enemy.energy.maximum)"
           :animating="animating"
           className="bg-info"
           iconName="fas fa-fire"
@@ -92,8 +92,8 @@
           <div class="col-6">
             <!-- Life -->
             <ProgressBar 
-              :current="player.life.current"
-              :maximum="player.life.maximum"
+              :current="Math.round(player.life.current)"
+              :maximum="Math.round(player.life.maximum)"
               :animating="animating"
               className="bg-danger"
               iconName="fas fa-heart"
@@ -104,8 +104,8 @@
           <div class="col-6">
             <!-- Energy -->
             <ProgressBar 
-              :current="player.energy.current"
-              :maximum="player.energy.maximum"
+              :current="Math.round(player.energy.current)"
+              :maximum="Math.round(player.energy.maximum)"
               :animating="animating"
               className="bg-info"
               iconName="fas fa-fire"
@@ -116,8 +116,8 @@
           <div class="col-12">
             <!-- Level -->
             <ProgressBar 
-              :current="player.exp.current"
-              :maximum="player.exp.next"
+              :current="Math.round(player.exp.current)"
+              :maximum="Math.round(player.exp.next)"
               :animating="true"
               className="bg-primary"
               iconName="fa fa-arrow-up"
@@ -149,11 +149,11 @@
           <small class="text-muted">Lvl. {{player.level}}</small>
         </h5>
         <div class="col-9">
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill px-3">
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#modalHelp" ref="helpButton">
             <i class="fa fa-info"></i>
             Help
           </small>
-          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2 px-3">
+          <small class="float-end btn btn-sm btn-outline-secondary rounded-pill mx-2 px-3" data-bs-toggle="modal" data-bs-target="#modalPlayer">
             <i class="fa fa-user"></i>
             Player
           </small>
@@ -165,6 +165,82 @@
             <i class="fas fa-box"></i>
             Backpack
           </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Help -->
+  <div class="modal fade" id="modalHelp" tabindex="-1" aria-labelledby="modalHelpLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalHelpLabel"><i class="fa fa-info me-2"></i>Help</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-start">
+          <h5>How to Play</h5>
+          <p>Both your enemy and you have an attack gauge that can be filled by drawing cards.</p>
+          <p>The one who have the most filled attack gauge wins the round, causing a number of attacks equivalent to the difference of the gauges.</p>
+          <p>If you or your enemy overchages the attack gauge, the gauge is set to half of it maximum value and the oponnent instantly wins the round.</p>
+
+          <h5>Your Deck</h5>
+          <p>Your deck is made of 4 cards of each integer between 1 and half of your gauge size.</p>
+          <p>[1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, ...]<br><small><i>Example Deck</i></small></p>
+          <p>When you run out of cards, a new deck is shuffled for you.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Plyer -->
+  <div class="modal fade" id="modalPlayer" tabindex="-1" aria-labelledby="modalPlayerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalPlayerLabel"><i class="fa fa-user me-2"></i>Player</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-start">
+          <h5>{{player.name}}<small class="text-muted ms-3">Lvl. {{player.level}}</small></h5>
+          <ProgressBar 
+            :current="player.exp.current"
+            :maximum="player.exp.next"
+            :animating="true"
+            className="bg-primary"
+            iconName="fa fa-arrow-up"
+            :hideLabel="true"
+            class="mb-3"
+          />
+          <h4>Atributes</h4>
+          <div class="row">
+            <div class="col-6 text-start px-4">
+              <i class="fas fa-heart me-3"></i>
+              {{player.life.current}}<small>/{{player.life.maximum}}</small> 
+            </div>
+            <div class="col-6 text-start px-4">
+              <i class="fas fa-fire me-3"></i>
+              {{player.energy.current}}<small>/{{player.energy.maximum}}</small> 
+            </div>
+            <div class="col-6 text-start px-4">
+              <i class="fas fa-crosshairs me-3"></i>
+              {{player.gauge.current}}<small>/{{player.gauge.maximum}}</small> 
+            </div>
+            <div class="col-6 text-start px-4">
+              <i class="fas fa-hand-rock me-3"></i>
+              {{player.damage}}
+            </div>
+          </div>
+          <h4>Cards</h4>
+          <div class="row">
+            <div class="col-2 text-center" v-for="card, cardIndex in shuffledCards" :key="`player_card_${cardIndex}`">{{card}}</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -196,7 +272,19 @@ export default {
     this.player.cards.shuffle();
     this.enemy.cards.shuffle();
   },
+  mounted() {
+    let firstTime = !localStorage.getItem('firstTime');
+    if(firstTime) {
+      this.$refs.helpButton.click();
+      localStorage.setItem('firstTime', true);
+    }
+  },
   computed: {
+    shuffledCards() {
+      let cards = [...this.player.cards];
+      cards.shuffle();
+      return cards;
+    },
     biggestGauge() {
       return this.player.gauge.maximum > this.enemy.gauge.maximum ? this.player.gauge.maximum : this.enemy.gauge.maximum;
     },
