@@ -96,7 +96,7 @@
               :maximum="player.life.maximum"
               :animating="animating"
               className="bg-danger"
-              iconName="fas fa-heartbeat"
+              iconName="fas fa-heart"
               class="mb-3"
               :labelOnTop="true"
             />

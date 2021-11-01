@@ -259,7 +259,7 @@ const Battle = () => ({
         }
         if(!this.enemy.isAlive()) {
             this.player.addExp(this.enemy.exp);
-            this.battle.enemy = this.battle.randomEnemy();
+            this.battle.enemy = randomEnemy();
         }else{
             this.enemy.reset();
         }
