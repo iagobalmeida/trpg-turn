@@ -1,7 +1,7 @@
 <template>
   <!-- Toast -->
   <div :class="`custom-toast container ${toast.show ? 'o-100' : 'o-0'}`">
-    <div class="p-3 rounded border border-2 text-white rounded shadow h-100 mx-auto" v-html="toast.text" style="background-color:#00000095"/>
+    <div class="p-3 rounded border border-2 text-white rounded shadow h-100 mx-auto" v-html="toast.text" style="background-color:#00000099"/>
   </div>
   <!-- Enemy -->
   <div class="container w-md-50 rounded-top">

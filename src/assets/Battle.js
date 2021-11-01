@@ -35,7 +35,7 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
         maximum: life
     },
     energy: {
-        current: (energy/4).toFixed(),
+        current: Math.round(energy/4),
         maximum: energy
     },
     // Methods
@@ -64,8 +64,14 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
         this.life.current = this.life.current >= this.life.maximum ? this.life.maximum : this.life.current;
     },
     addEnergy: function(value) {
-        this.energy.current += value;
+        // let pre = this.energy.current;
+        this.energy.current = parseFloat(this.energy.current) + value;
         this.energy.current = this.energy.current >= this.energy.maximum ? this.energy.maximum : this.energy.current;
+        // console.table({
+        //     'pre': pre,
+        //     'value': value,
+        //     'current': this.energy.current,
+        // });
     },
     setStatus: function(status) {
         this.status = status;
@@ -156,8 +162,10 @@ const gaugeDifference = (player, enemy) => {
 
 const animationBuffer = 500;
 
+let storagePlayer = localStorage.getItem('player');
+
 const Battle = () => ({
-    player:     createPlayer('Tidus', 1, 12, 50, 50, 5),
+    player:     storagePlayer ? JSON.parse(storagePlayer) : createPlayer('Tidus', 1, 12, 50, 50, 5),
     enemy:      randomEnemy(),
     animating:  false,
     // Handle player input
@@ -232,8 +240,8 @@ const Battle = () => ({
         this.enemy.addLife(playerWins   ?  -(result.diff * this.player.damage) : 0);
         this.player.addLife(!playerWins ?  -(result.diff * this.enemy.damage)  : 0);
         // Adding energy to entitites
-        let enemyEnergy  = !playerWins ? (result.diff * (this.enemy.energy.maximum * 0.1))  : (result.winner == 'draft' ? (this.enemy.energy.maximum * 0.1) : 0);
-        let playerEnergy = playerWins  ? (result.diff * (this.player.energy.maximum * 0.1)) : (result.winner == 'draft' ? (this.player.energy.maximum * 0.1) : 0);
+        let enemyEnergy  = !playerWins ? (result.diff * (this.enemy.energy.maximum/10))  : (result.winner == 'draft' ? (this.enemy.energy.maximum/10) : 0);
+        let playerEnergy = playerWins  ? (result.diff * (this.player.energy.maximum/10)) : (result.winner == 'draft' ? (this.player.energy.maximum/10) : 0);
         this.enemy.addEnergy(enemyEnergy);
         this.player.addEnergy(playerEnergy);
         // this.enemy.addEnergy(!playerWins ? result.diff* (this.enemy.energy.maximum * 0.02).toFixed(1) : (result.winner == 'draft' ? (this.enemy.energy.maximum * 0.01).toFixed(1) : 0));
@@ -264,6 +272,7 @@ const Battle = () => ({
         }else{
             this.enemy.reset();
         }
+        localStorage.setItem('player', JSON.stringify(this.player));
         //Checking if any one died
         this.animating = false;
     }
