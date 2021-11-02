@@ -150,6 +150,7 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
         if(this.abilityCards.length == 0){
             this.abilityCards = [abilityCards[28],abilityCards[36],abilityCards[0],abilityCards[10]];
         }
+        return this.status == 'standing';
     },
     reset: function(resetLife = false) {
         this.resetGauge();
@@ -188,7 +189,7 @@ const loadStoragePlayer = () => {
     let storagePlayer = localStorage.getItem('player');
     if(storagePlayer) {
         let playerData = JSON.parse(storagePlayer);
-        return { ...createPlayer('Tidus', 1, 12, 50, 50, 5), ...playerData, abilityCards: [abilityCards[28],abilityCards[36],abilityCards[0],abilityCards[10]]};
+        return { ...createPlayer('Tidus', 1, 12, 50, 50, 5), ...playerData, statusEffects: [], abilityCards: [abilityCards[28],abilityCards[36],abilityCards[0],abilityCards[10]]};
     }else{
         return createPlayer('Tidus', 1, 12, 50, 50, 5);
     }

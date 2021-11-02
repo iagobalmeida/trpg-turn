@@ -7,9 +7,9 @@
   <div class="container w-md-50 rounded-top">
     <div class="background" :style="`background-image:url(${require('@/assets/backgrounds/Cemetery.png')});`"></div>
     <!-- Enemy Card -->
-    <div class="mb-3 px-2 px-md-0">
-      <!-- Name -->
-      <h5 class="text-white mb-3"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
+    <div class="mb-3 px-2 px-md-0 position-relative">
+        <!-- Name -->
+        <h5 class="text-white mb-3"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
         <!-- Life -->
         <ProgressBar 
           :current="Math.round(enemy.life.current)"
@@ -27,6 +27,14 @@
           className="bg-info"
           iconName="fas fa-fire"
         />
+        <div class="position-absolute w-100 d-flex justify-content-center align-items-center" v-if="enemy.statusEffects.length" style="bottom:-30px;">
+          <span class="px-2 py-1 bg-white rounded-pill border border-2 shadow-sm"
+            v-for="enemyStatus, enemyStatusIndex in enemy.statusEffects"
+            :key="`playerStatus_${enemyStatusIndex}`"
+            >
+            <i :class="`${enemyStatus.icon}`"></i> {{enemyStatus.modifier}}<small class="text-muted">/{{enemyStatus.turns}}</small>
+          </span>
+        </div>
     </div>
     <img class="mx-auto monster-img" :src="require(`@/assets/enemies/${enemy.image}`)" v-if="enemy.image">
   </div>

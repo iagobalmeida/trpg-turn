@@ -28,8 +28,7 @@ const Battle = () => ({
             return true;
           // Use gauge modifier
           case 'abilityCard':
-            this.player.useAbilityCard(cardIndex, this.enemy);
-            return false;
+            return this.player.useAbilityCard(cardIndex, this.enemy);
           case 'stand':
             this.player.setStatus('standing');
             return true;
