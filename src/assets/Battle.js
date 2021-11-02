@@ -1,66 +1,70 @@
 import Entities from './Entities';
 
-const animationBuffer = 500;
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 const Battle = () => ({
     player:     Entities.loadStoragePlayer(),
     enemy:      Entities.randomEnemy(),
     animating:  false,
     // Handle player input
-    handlePlayerAction: function (action, toastFunction, cardIndex=null) {
+    handlePlayerAction: async function (action, toastFunction, cardIndex=null) {
+        this.animating = true;
         this.toastFunction = toastFunction;
         // Executing player turn
-        let enemyNext = this.playerTurn(action, cardIndex);
+        let enemyNext = await this.playerTurn(action, cardIndex);
         // Executing enemy turn
         if(enemyNext){
-            this.animating = true;
-            setTimeout(() => {this.enemyTurn()}, animationBuffer);
+            await this.enemyTurn();
         }else{
             this.checkStatus();
         }
+        this.animating = false;
     },
     // Player Turn
-    playerTurn: function (action, cardIndex=null) {
+    playerTurn: async function (action, cardIndex=null) {
         switch(action) {
-          // Draw a card
-          case 'drawCard':
-            this.player.drawCard();
-            return true;
-          // Use gauge modifier
-          case 'abilityCard':
-            return this.player.useAbilityCard(cardIndex, this.enemy);
-          case 'stand':
-            this.player.setStatus('standing');
-            return true;
+            // Draw a card
+            case 'drawCard':
+                await this.player.drawCard();
+                return true;
+            // Use abilityCard
+            case 'abilityCard':
+                return await this.player.useAbilityCard(cardIndex, this.enemy);
+            case 'discardCard':
+                await this.player.discardAbilityCard(cardIndex);
+                return false;
+            case 'stand':
+                this.player.setStatus('standing');
+                return true;
         }
     },
     // Enemy Turn
-    enemyTurn: function() {
+    enemyTurn: async function() {
         // If enemy is not 'standing'
-        if(!this.player.isBursted && this.enemy.status == 'drawing'){
-            this.enemy.drawCard()
-            if(this.player.status == 'standing' && this.enemy.status == 'drawing') {
-            setTimeout(() => {this.enemyTurn()}, animationBuffer);
+        if(this.enemy.status == 'drawing'){
+            await this.enemy.drawCard()
+            if(this.player.status == 'standing' && this.enemy.status == 'drawing' && !this.enemy.isBursted) {
+                await sleep(215);
+                await this.enemyTurn();
             }
             // Enemy draw cards while is 'drawing'
         }
-        this.animating = false;
         // Checking the result
-        this.checkStatus();
+        await this.checkStatus();
     },
     // Check Status
-    checkStatus: function () {
+    checkStatus: async function () {
         // Check if its time to check the results
-        let bursted = this.player.isBursted || this.enemy.isBursted;
-        if(bursted || (this.player.status == 'standing' && this.enemy.status == 'standing')){
-            this.animating = true;
-            setTimeout(()=>{this.checkResults()}, animationBuffer);
+        if((this.player.status == 'standing' && this.enemy.status == 'standing')){
+            await this.checkResults();
         }
     },
     // Check Results
-    checkResults: function () {
+    checkResults: async function () {
         // Getting result
-        let result = Entities.gaugeDifference(this.player, this.enemy);
+        let result = await Entities.gaugeDifference(this.player, this.enemy);
         let playerWins = result.winner == this.player.name;
         // Applying damage to entities
         this.enemy.addLife(playerWins   ?  -(result.diff * this.player.damage) : 0);
@@ -74,21 +78,28 @@ const Battle = () => ({
         // this.player.addEnergy(playerWins ? result.diff* (this.player.energy.maximum * 0.02).toFixed(1) : (result.winner == 'draft' ? (this.player.energy.maximum * 0.01).toFixed(1) : 0));
         // Showing result
         let energy = `<b class="text-info">${playerEnergy.toFixed(2)} <i class="fas fa-fire"></i> energy</b> gained`;
-        let damage = `${(result.diff * ( playerWins ? this.player.damage : this.enemy.damage).toFixed(2) )} <i class="fas fa-crosshairs"></i> <small>(${result.diff}x${playerWins ? this.player.damage : this.enemy.damage})</small>`;
+        let damage = `${(result.diff * ( playerWins ? this.player.damage : this.enemy.damage).toFixed(2) )} <i class="fas fa-crosshairs"></i> <small>( ${result.diff} x ${playerWins ? this.player.damage : this.enemy.damage} )</small>`;
         this.toastFunction(
             result.winner != 'draft' ?
-            `<b>${result.winner}</b> wins!<br><b class="text-primary">${damage} damage</b> dealt!<br>${energy}`
+            `<b>${result.winner}</b> wins by <b>${result.diff}</b>!<br><b class="text-primary">${damage} damage</b> dealt!<br>${energy}`
             :
             `<b>Draft!</b><br>${energy}`
         );
         // Reseting entities gauge
-        setTimeout(()=>{this.reset()}, 1750)
+        await sleep(2000);
+        await this.reset();
     },
     // Reset
-    reset: function() {
+    reset: async function() {
+        this.player.discardCost = 6;
+
         // If player is dead, hard reset and change enemy ELSE soft reset
         if(!this.player.isAlive()){
             this.player.reset(true);
+            this.toastFunction(
+                `<b>Player died!</b>`
+            );
+            await sleep(2000);
             this.enemy = Entities.randomEnemy();
         }else{
             this.player.reset(false);
@@ -97,6 +108,10 @@ const Battle = () => ({
         // If enemy is dead, addExp and change enemy ELSE enemy soft reset
         if(!this.enemy.isAlive()) {
             this.player.addExp(this.enemy.exp);
+            this.toastFunction(
+                `<b>Enemy died!</b>`
+            );
+            await sleep(2000);
             this.enemy = Entities.randomEnemy();
         }else{
             this.enemy.reset();

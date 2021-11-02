@@ -1,20 +1,40 @@
 <template>
     <div class="col" style="position: relative;">
         <button
-        :class="`abilityCard m-0 btn p-0 w-100 border-4 border  btn-light ${cost > current || forceDisable ? 'o-50 bg-secondary border-secondary' : 'border-white  bg-white'}`"
-        v-on:click="!(cost > current || forceDisable) ? $emit('handleClick') : () => {}"
-        draggable="true"
+        class="abilityCard m-0 btn p-0 w-100 border-4 border border-primary bg-primary bg-gradient"
+        :disabled="(cost > current) || forceDisable"
+        draggable="false"
         >
-            <div class="w-100 abilityCard-img" :style="`background-image:url(${loadedImage});`">
-                <small :class="`position-absolute px-2 py-1 ${cost > current || forceDisable ? 'bg-secondary border-secondary text-dark' : 'bg-white text-primary'}`">
+            <div
+            class="w-100 abilityCard-img text-primary"
+            :style="`background-image:url(${loadedImage});`"
+            v-on:click="!((cost > current) || forceDisable) ? $emit('handleClick') : () => {}"
+            >
+                <small
+                :class="`d-none d-md-block left position-absolute px-2 py-1 bg-white`"
+                v-if="keymap != null">
+                    {{keymap}}
+                </small> 
+                <small
+                :class="`right position-absolute px-2 py-1 bg-white`">
                     {{cost}}
-                    <i :class="`fas fa-fire ${cost > current || forceDisable ? 'text-dark' : 'text-primary'}`"></i>
+                    <i class="fas fa-fire me-1"></i>
+                    <i class="fas fa-arrow-up fa-xs"></i> 
                 </small> 
             </div>
-            <div class="py-2 px-1 d-flex justify-content-between align-items-center">
-                <b>{{name}}</b>
+            <div class="text-white">
+              <div class="p-2 text-start">
+                  <b>{{name}}</b>
+                  <p class="mb-0">{{description}}</p>
+              </div>
+              <b class="text-center w-100" 
+                v-on:click="!((cost > current) || forceDisable) ? $emit('handleDiscard') : () => {}"
+                v-if="discardCost">
+                  {{discardCost}}
+                  <i class="fas fa-fire me-1"></i> 
+                  <i class="fas fa-arrow-down fa-xs"></i> 
+              </b> 
             </div>
-            <p>{{description}}</p>
         </button>
     </div>
 </template>
@@ -66,12 +86,14 @@ const images = () => {
 export default {
   name: 'AbilityCard',
   props: {
+    keymap: { type: Number, default: null },
     name: String,
     cost: Number,
     current: Number,
     description: String,
     image: String,
-    forceDisable: Boolean
+    forceDisable: Boolean,
+    discardCost: { type: Number, default: null }
   },
   data() { 
     return {
@@ -88,7 +110,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.o-50 {
+.o-50 img {
   filter: grayscale(1);
 }
 .abilityCard {
@@ -98,7 +120,8 @@ export default {
   transition: all 175ms ease-in-out;
 }
 .abilityCard *{
-  transition: all 175ms ease-in-out;
+  transition: background-color 175ms ease-in-out;
+  padding-bottom: 6px;
 }
 
 .abilityCard-img {
@@ -110,10 +133,16 @@ export default {
   transition-duration: 0s;
 }
 
-.abilityCard-img small {
+.abilityCard-img small.left {
   border-bottom-right-radius: 15px;
-  left: -1px;
   top: -1px;
+  left: -1px;
+}
+
+.abilityCard-img small.right {
+  border-bottom-left-radius: 15px;
+  top: -1px;
+  right: -1px;
 }
 
 p {

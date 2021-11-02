@@ -1,7 +1,7 @@
 <template>
   <!-- Toast -->
   <div :class="`custom-toast container ${toast.show ? 'o-100' : 'o-0'}`">
-    <div class="p-3 rounded border border-2 text-white rounded shadow h-100 mx-auto" v-html="toast.text" style="background-color:#00000099"/>
+    <div class="p-3 rounded border border-2 text-white rounded shadow h-100 mx-auto" v-html="toast.text" style="background-color:black"/>
   </div>
   <!-- Enemy -->
   <div class="container w-md-50 rounded-top">
@@ -9,7 +9,7 @@
     <!-- Enemy Card -->
     <div class="mb-3 px-2 px-md-0 position-relative">
         <!-- Name -->
-        <h5 class="text-white mb-3"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
+        <h5 class="text-white text-shadow mb-3"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
         <!-- Life -->
         <ProgressBar 
           :current="Math.round(enemy.life.current)"
@@ -63,18 +63,23 @@
   <!-- Player Actions -->
   <div class="container w-md-50 abilityCard-container position-relative">
     <div class="row pb-3 flex-nowrap align-items-stretch" v-on:dragStart="console.log($event)">
-      <AbilityCard
-        :name="card.name"
-        :cost="card.cost"
-        :current="player.energy.current"
-        :description="card.description"
-        :image="card.image"
-        :forceDisable="animating" 
-        v-on:handleClick="handlePlayerAction('abilityCard', cardIndex)"
-        v-for="card, cardIndex in player.abilityCards"
-        :key="`card_${cardIndex}`"
-        class="col-6 col-md-3"
-      />
+      <transition-group name="fadeCards">
+        <AbilityCard
+          :name="card.name"
+          :cost="card.cost"
+          :current="player.energy.current"
+          :description="card.description"
+          :image="card.image"
+          :forceDisable="animating || player.status == 'standing'" 
+          v-on:handleClick="handlePlayerAction('abilityCard', cardIndex)"
+          v-on:handleDiscard="handlePlayerAction('discardCard', cardIndex)"
+          :discardCost="player.discardCost"
+          v-for="card, cardIndex in player.abilityCards"
+          :key="`card_${cardIndex}`"
+          class="col-6 col-md-3"
+          :keymap="cardIndex+1"
+        />
+      </transition-group>
       <div class="position-absolute w-100 bottom-0 d-flex justify-content-center align-items-center" v-if="player.statusEffects.length">
         <span class="px-2 py-1 bg-white rounded-pill border border-2 shadow-sm"
           v-for="playerStatus, playerStatusIndex in player.statusEffects"
@@ -101,7 +106,7 @@
                 {{player.cards.length}}
                 <i class="far fa-caret-square-up fa-lg"></i>
               </span>
-              <small style="font-size:70%">Draw Card</small>
+              <small><b>D</b>raw Card</small>
             </div>
           </button>
         </div>
@@ -155,7 +160,7 @@
               <span>
                 <i class="far fa-caret-square-down fa-lg"></i>
               </span>
-              <small>Stand</small>
+              <small><b>S</b>tand</small>
             </div>
           </button>
         </div>
@@ -296,6 +301,20 @@
           <h5>Equipments</h5>
           <p class="text-muted">No equipment found yet.</p>
 
+          <h5>In the pile</h5>
+          <div class="row g-3 pb-3 align-items-stretch" v-on:dragStart="console.log($event)">
+            <AbilityCard
+              :name="card.name"
+              :cost="card.cost"
+              :current="card.cost"
+              :description="card.description"
+              :image="card.image"
+              v-for="card, cardIndex in player.abilityDeck"
+              :key="`card_${cardIndex}`"
+              class="col-6 col-md-4"
+            />
+          </div>
+
           <h5>Abilities</h5>
           <div class="row g-3 pb-3 align-items-stretch" v-on:dragStart="console.log($event)">
             <AbilityCard
@@ -304,7 +323,7 @@
               :current="card.cost"
               :description="card.description"
               :image="card.image"
-              v-for="card, cardIndex in [abilityCards[28],abilityCards[36],abilityCards[0],abilityCards[10]]"
+              v-for="card, cardIndex in player.abilityDeckBase"
               :key="`card_${cardIndex}`"
               class="col-6 col-md-4"
             />
@@ -372,7 +391,30 @@ export default {
   }),
   created: function() {
     this.player.cards.shuffle();
+    this.player.drawAbilityCards();
     this.enemy.cards.shuffle();
+    window.addEventListener('keydown', (e) => {
+      if(this.player.status == 'drawing' && !this.animating){
+        if(e.key == 'd' || e.key == 'D') {
+          this.handlePlayerAction('drawCard');
+        }
+        if(e.key == 's' || e.key == 'S') {
+          this.handlePlayerAction('stand');
+        }
+        if(e.key == 1) {
+          this.handlePlayerAction('abilityCard', 0)
+        }
+        if(e.key == 2) {
+          this.handlePlayerAction('abilityCard', 1)
+        }
+        if(e.key == 3) {
+          this.handlePlayerAction('abilityCard', 2)
+        }
+        if(e.key == 4) {
+          this.handlePlayerAction('abilityCard', 3)
+        }
+      }
+    })
   },
   mounted() {
     let firstTime = !localStorage.getItem('firstTime');
@@ -419,7 +461,17 @@ export default {
 
 </script>
 
-<style>/* Hide scrollbar for Chrome, Safari and Opera */
+<style>
+.fadeCards-enter-active,
+.fadeCards-leave-active {
+  transition: all 1s ease;
+}
+.fadeCards-enter-from,
+.fadeCards-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
 *::-webkit-scrollbar {
   display: none;
 }
@@ -536,7 +588,7 @@ h4{
   }
 }
 
-.text-white {
+.text-shadow {
   text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
 }
 
@@ -559,7 +611,7 @@ h4{
   left: 0;
   right: 0;
   z-index: -1;
-  filter:brightness(0.7);
+  filter:hue-rotate(45deg) brightness(0.5);
 }
 
 @media screen and (min-width: 700px) {

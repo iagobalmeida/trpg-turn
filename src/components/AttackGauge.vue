@@ -2,9 +2,17 @@
   <div class="g-0 row mb-3 align-items-center">
     <div
     class="col mx-1"
-    v-for="gauge, gaugeIndex in biggestGauge"
+    v-for="gauge, gaugeIndex in maximum"
     :key="`gauge_${gaugeIndex}`"
     :class="`rounded-pill border border-2 gauge border-2 ` + getClass(gauge)"
+     style="height:15px"
+    >
+    </div>
+    <div
+    class="col mx-1"
+    v-for="emptyGauge, emptyGaugeIndex in biggestGauge - maximum"
+    :key="`emptyGauge_${emptyGaugeIndex}`"
+    :class="`rounded-pill border border-2 gauge border-2 o-0`"
      style="height:15px"
     >
     </div>
@@ -30,10 +38,7 @@ export default {
     getClass(value) {
       if(value > this.current) {
         if(this.bursted) {
-          return 'bg-warning border-danger';
-        }
-        if(value > this.maximum) {
-          return `bg-light`;
+          return 'bg-dark border-warning';
         }
         if(value >= this.threshold) {
           return `bg-secondary`;
