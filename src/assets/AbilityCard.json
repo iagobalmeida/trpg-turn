@@ -3,32 +3,325 @@
         "type": "life",
         "cost": 15,
         "modifier": 10,
-        "name": "Curative I",
-        "image": "wound",
+        "name": "Pills I",
+        "image": "pill.png",
         "description": "Heal 10 HP"
     },
     {
         "type": "life",
-        "cost": 30,
+        "cost": 20,
         "modifier": 20,
-        "name": "Curative II",
-        "image": "wound",
+        "name": "Pills II",
+        "image": "medicines.png",
         "description": "Heal 20 HP"
     },
     {
-        "type": "modifier",
-        "cost": 25,
-        "modifier": 6,
+        "type": "life",
+        "cost": 30,
+        "modifier": 35,
+        "name": "Pills III",
+        "image": "overdose.png",
+        "description": "Heal 35 HP"
+    },
+    {
+        "type": "life",
+        "cost": 45,
+        "modifier": 55,
+        "name": "Pills IV",
+        "image": "medicine-pills.png",
+        "description": "Heal 55 HP"
+    },
+    {
+        "type": "lifePercentage",
+        "cost": 60,
+        "modifier": 60,
+        "name": "Pills V",
+        "image": "miracle-medecine.png",
+        "description": "Heal 60% HP"
+    },
+    {
+        "type": "life",
+        "cost": 65,
+        "modifier": 55,
+        "name": "Rejuvenation",
+        "image": "nested-hearts.png",
+        "description": "Avoid death for this round"
+    },
+
+    {
+        "type": "gauge",
+        "cost": 15,
+        "modifier": 1,
         "name": "Overcharge I",
-        "image": "writhe",
+        "image": "battery-50.png",
+        "description": "Add 1 to your attack gauge"
+    },
+    {
+        "type": "gauge",
+        "cost": 10,
+        "modifier": 2,
+        "name": "Overcharge II",
+        "image": "battery-75.png",
+        "description": "Add 2 to your attack gauge"
+    },
+    {
+        "type": "gauge",
+        "cost": 15,
+        "modifier": 4,
+        "name": "Overcharge III",
+        "image": "battery-50.png",
+        "description": "Add 4 to your attack gauge"
+    },
+    {
+        "cost": 20,
+        "type": "gaugeDefined",
+        "modifier": 6,
+        "name": "Overcharge IV",
+        "image": "battery-75.png",
         "description": "Add 6 to your attack gauge"
     },
     {
-        "type": "modifier",
+        "cost": 5,
+        "type": "gaugeChoose",
+        "min": 1,
+        "max": 3,
+        "name": "Luckcharge I",
+        "image": "battery-minus.png",
+        "description": "Add 1 or 3 to your attack gauge"
+    },
+    {
+        "cost": 15,
+        "type": "gaugeChoose",
+        "min": 5,
+        "max": 10,
+        "name": "Luckcharge II",
+        "image": "battery-minus.png",
+        "description": "Add 5 or 10 to your attack gauge"
+    },
+    {
+        "cost": 20,
+        "type": "gaugeChoose",
+        "min": 8,
+        "max": 10,
+        "name": "Luckcharge III",
+        "image": "battery-minus.png",
+        "description": "Add 8 or 11 to your attack gauge"
+    },
+
+    {
+        "type": "life",
+        "cost": 0,
+        "modifier": 10,
+        "name": "Concentrate I",
+        "image": "prayer.png",
+        "description": "Raise your current energy by 15%"
+    },
+    {
+        "type": "life",
+        "cost": 0,
+        "modifier": 20,
+        "name": "Concentrate II",
+        "image": "meditation.png",
+        "description": "Raise your current energy by 30%"
+    },
+    {
+        "type": "life",
+        "cost": 20,
+        "modifier": 35,
+        "name": "Resonance",
+        "image": "resonance.png",
+        "description": "Double the energy gained in this round"
+    },
+    {
+        "type": "life",
+        "cost": 20,
+        "modifier": 55,
+        "name": "Chi Punch",
+        "image": "slap.png",
+        "description": "Cause half your energy in damage and set your energy to 0"
+    },
+    {
+        "type": "life",
+        "cost": 15,
+        "modifier": 55,
+        "name": "Energy Grab",
+        "image": "glowing-hands.png",
+        "description": "Regenerate all the spent energy at the end of the turn"
+    },
+
+
+    {
+        "type": "life",
+        "cost": 30,
+        "modifier": 10,
+        "name": "Inner Strength",
+        "image": "mighty-force.png",
+        "description": "Double your damage for the rest of the turn"
+    },
+    {
+        "type": "life",
+        "cost": 30,
+        "modifier": 10,
+        "name": "Hard Skin",
+        "image": "scale-mail.png",
+        "description": "Double your armor for the rest of the turn"
+    },
+    {
+        "type": "life",
+        "cost": 20,
+        "modifier": 10,
+        "name": "Sequence I",
+        "image": "pointy-sword.png",
+        "description": "Deal 1 aditional attack this turn"
+    },
+    {
+        "type": "life",
+        "cost": 45,
+        "modifier": 10,
+        "name": "Sequence II",
+        "image": "pointy-sword.png",
+        "description": "Deal 2 aditional attack this turn"
+    },
+    {
+        "type": "life",
+        "cost": 65,
+        "modifier": 10,
+        "name": "Sequence III",
+        "image": "pointy-sword.png",
+        "description": "Deal 3 aditional attack this turn"
+    },
+    {
+        "type": "life",
+        "cost": 85,
+        "modifier": 10,
+        "name": "Sequence IV",
+        "image": "pointy-sword.png",
+        "description": "Deal 50% more attacks this turn"
+    },
+    {
+        "type": "life",
+        "cost": 110,
+        "modifier": 10,
+        "name": "Sequence V",
+        "image": "pointy-sword.png",
+        "description": "Deal 100% more attacks this turn"
+    },
+    
+    {
+        "type": "life",
+        "cost": 30,
+        "modifier": 10,
+        "name": "Prepare",
+        "image": "swordman.png",
+        "description": "Stand and receive half damage this turn"
+    },
+    {
+        "type": "life",
+        "cost": 45,
+        "modifier": 10,
+        "name": "Totem",
+        "image": "holy-symbol.png",
+        "description": "Remove all negative effects"
+    },
+    {
+        "cost": 15,
+        "type": "statusEffect",
+        "target": "self",
+        "statusName": "regeneration",
+        "turns": 3,
+        "modifier": 5,
+        "name": "Blessing I",
+        "image": "holy-grail.png",
+        "description": "Regenerate 5 HP for 3 rounds"
+    },
+    {
+        "cost": 30,
+        "type": "statusEffect",
+        "target": "self",
+        "statusName": "regeneration",
+        "turns": 3,
+        "modifier": 10,
+        "name": "Blessing II",
+        "image": "holy-grail.png",
+        "description": "Regenerate 10 HP for 3 rounds"
+    },
+    {
+        "cost": 45,
+        "type": "statusEffect",
+        "target": "self",
+        "statusName": "regeneration",
+        "turns": 3,
+        "modifier": 15,
+        "name": "Blessing III",
+        "image": "holy-grail.png",
+        "description": "Regenerate 15 HP for 3 rounds"
+    },
+    {
+        "cost": 70,
+        "type": "statusEffect",
+        "target": "self",
+        "statusName": "regeneration",
+        "turns": 3,
+        "modifier": 25,
+        "name": "Blessing IV",
+        "image": "holy-grail.png",
+        "description": "Regenerate 25 HP for 3 rounds"
+    },
+
+
+    {
+        "type": "life",
         "cost": 35,
         "modifier": 10,
-        "name": "Overcharge II",
-        "image": "writhe",
-        "description": "Add 10 to your attack gauge"
+        "name": "Blindness",
+        "image": "blindfold.png",
+        "description": "Your enemy cand see his gauge for the rest of the turn"
+    },
+    {
+        "type": "life",
+        "cost": 35,
+        "modifier": 10,
+        "name": "Fracture",
+        "image": "broken-bone.png",
+        "description": "Your next attack will cause triple damage"
+    },
+    {
+        "type": "life",
+        "cost": 35,
+        "modifier": 10,
+        "name": "Knockout",
+        "image": "knockout.png",
+        "description": "Your enemy cant stand for the rest of the turn"
+    },
+    {
+        "type": "life",
+        "cost": 35,
+        "modifier": 10,
+        "name": "Unbalance",
+        "image": "misdirection.png",
+        "description": "Double your enemie deck cards value for the rest of the turn"
+    },
+    {
+        "cost": 45,
+        "type": "statusEffect",
+        "target": "enemy",
+        "statusName": "poison",
+        "turns": 3,
+        "modifier": 5,
+        "name": "Poison",
+        "image": "potion-of-madness.png",
+        "description": "Your next attack will poison the enemy, causing the round damage for 3 rounds"
+    },
+    {
+        "cost": 45,
+        "type": "statusEffect",
+        "target": "enemy",
+        "statusName": "despair",
+        "turns": 1,
+        "modifier": 10,
+        "name": "Despair",
+        "image": "despair.png",
+        "description": "Force your oponent to instantly stand"
     }
+
 ]

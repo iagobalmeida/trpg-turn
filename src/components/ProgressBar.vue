@@ -50,4 +50,7 @@ export default {
   -webkit-filter: drop-shadow(1px 8px 8px #00000060);
   -moz-filter: drop-shadow(1px 8px 8px #00000060);
 }
+.row {
+  font-size: 14px;
+}
 </style>

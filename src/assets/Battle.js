@@ -1,186 +1,16 @@
-import enemies from './enemies.json';
-import abilityCards from './AbilityCard.json';
-
-Array.prototype.shuffle = function() {
-    for (var i = this.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = this[i];
-        this[i] = this[j];
-        this[j] = temp;
-    }
-}
-
-const baseDeck = (gaugeSize) => {
-    let deck = new Array(gaugeSize * 2);
-    for(let i = 0; i < gaugeSize/2; i++) {
-        deck.fill(i+1, i*4, i*4+4);
-    }
-    return deck;
-}
-
-const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
-    // Attributes
-    name:       name,
-    level:      level,
-    cards:      [...baseDeck(gaugeSize)],
-    status:     'drawing',
-    isBursted:  false,
-    damage:     damage,
-    gauge: {
-        current: 0,
-        maximum: gaugeSize
-    },
-    life: {
-        current: life,
-        maximum: life
-    },
-    energy: {
-        current: Math.round(energy/4),
-        maximum: energy
-    },
-    // Methods
-    isAlive: function() {
-        return this.life.current > 0;
-    },
-    resetGauge: function() {
-        this.gauge.current = 0;
-    },
-    addGauge: function(value) {
-        this.gauge.current += value;
-        if(this.gauge.threshold && this.gauge.current >= this.gauge.threshold) {
-        this.status = 'standing';
-        }
-        if(this.gauge.current > this.gauge.maximum) {
-        this.status         = 'standing';
-        this.isBursted      = true;
-        this.gauge.current  = Math.floor(this.gauge.maximum/2);
-        }
-        if(this.gauge.current == this.gauge.maximum) {
-        this.status = 'standing';
-        }
-    },
-    addLife: function(value) {
-        this.life.current += value;
-        this.life.current = this.life.current >= this.life.maximum ? this.life.maximum : this.life.current;
-    },
-    addEnergy: function(value) {
-        // let pre = this.energy.current;
-        this.energy.current = parseFloat(this.energy.current) + value;
-        this.energy.current = this.energy.current >= this.energy.maximum ? this.energy.maximum : this.energy.current;
-        // console.table({
-        //     'pre': pre,
-        //     'value': value,
-        //     'current': this.energy.current,
-        // });
-    },
-    setStatus: function(status) {
-        this.status = status;
-    },
-    drawCard: function() {
-        let nextCard = this.cards.shift();
-        this.addGauge(nextCard);
-        if(this.cards.length == 0){
-        this.cards = [...baseDeck(this.gauge.maximum)];
-        this.cards.shuffle();
-        }
-    },
-    reset: function(resetLife = false) {
-        this.resetGauge();
-        this.status = 'drawing';
-        this.isBursted = false;
-        if(resetLife) {
-        this.cards = [...baseDeck(this.gauge.maximum)];
-        this.cards.shuffle();
-        this.life.current = this.life.maximum;
-        }
-    }
-});
-
-const createPlayer = (name, level, gaugeSize, life, energy, damage) => ({
-    ...createEntity(name, level, gaugeSize, life, energy, damage),
-    abilityCards: abilityCards,
-    exp: {
-        current: 0,
-        next: 100
-    },
-    addExp: function (exp) {
-        this.exp.current += exp;
-        if(this.exp.current >= this.exp.next){
-        this.level += 1;
-        this.damage += 4;
-        this.life.maximum = Math.ceil(this.life.maximum * 1.3);
-        this.life.current = this.life.maximum;
-        this.energy.maximum = Math.ceil(this.energy.maximum * 1.05);
-        this.energy.current = this.energy.maximum;
-        this.exp.current -= this.exp.next;
-        this.exp.next += 35;  
-        }
-    },
-});
-
-const createEnemy = (name, level, gaugeSize, life, energy, damage, threshold, image, exp) => ({
-    ...createEntity(name, level, gaugeSize, life, energy, damage),
-    image:      image,
-    exp:        exp,
-    gauge: {
-        current: 0,
-        maximum: gaugeSize,
-        threshold: threshold
-    }
-})
-
-const randomEnemy = () => {
-    let enemyId = Math.floor(Math.random()*enemies.length);
-    let enemy = enemies[enemyId];
-    return createEnemy(enemy.name, enemy.level, enemy.gaugeSize, enemy.life, enemy.energy, enemy.damage, enemy.threshold, enemy.image, enemy.exp);
-}
-
-const gaugeDifference = (player, enemy) => {
-  if(player.isBursted){
-    return {
-      winner: enemy.name,
-      diff: enemy.gauge.current/2
-    };
-  }
-  if(enemy.isBursted) {
-    return {
-      winner: player.name,
-      diff: player.gauge.current/2
-    };
-  }
-  if(player.gauge.current == enemy.gauge.current) {
-    return {
-      winner: 'draft',
-      diff: 0
-    }
-  }
-  return {
-    winner: player.gauge.current > enemy.gauge.current ? player.name : enemy.name,
-    diff: Math.abs(player.gauge.current - enemy.gauge.current)
-  };
-}
+import Entities from './Entities';
 
 const animationBuffer = 500;
 
-const loadStoragePlayer = () => {
-    let storagePlayer = localStorage.getItem('player');
-    if(storagePlayer) {
-        let playerData = JSON.parse(storagePlayer);
-        return { ...createPlayer('Tidus', 1, 12, 50, 50, 5), ...playerData };
-    }else{
-        return createPlayer('Tidus', 1, 12, 50, 50, 5);
-    }
-}
-
 const Battle = () => ({
-    player:     loadStoragePlayer(),
-    enemy:      randomEnemy(),
+    player:     Entities.loadStoragePlayer(),
+    enemy:      Entities.randomEnemy(),
     animating:  false,
     // Handle player input
-    handlePlayerAction: function (action, modifier, cost, toastFunction) {
+    handlePlayerAction: function (action, toastFunction, cardIndex=null) {
         this.toastFunction = toastFunction;
         // Executing player turn
-        let enemyNext = this.playerTurn(action, modifier, cost);
+        let enemyNext = this.playerTurn(action, cardIndex);
         // Executing enemy turn
         if(enemyNext){
             this.animating = true;
@@ -190,27 +20,16 @@ const Battle = () => ({
         }
     },
     // Player Turn
-    playerTurn: function (action, modifier, cost) {
+    playerTurn: function (action, cardIndex=null) {
         switch(action) {
           // Draw a card
           case 'drawCard':
             this.player.drawCard();
             return true;
           // Use gauge modifier
-          case 'modifier':
-            if(this.player.energy.current >= cost) {
-              this.player.energy.current -= cost;
-              this.player.addGauge(modifier);
-            }
-            return this.player.status == 'standing';
-          // Use life modifier
-          case 'life' :
-            if(this.player.energy.current >= cost) {
-              this.player.energy.current -= cost;
-              this.player.addLife(modifier);
-            }
+          case 'abilityCard':
+            this.player.useAbilityCard(cardIndex, this.enemy);
             return false;
-          // Stand
           case 'stand':
             this.player.setStatus('standing');
             return true;
@@ -242,7 +61,7 @@ const Battle = () => ({
     // Check Results
     checkResults: function () {
         // Getting result
-        let result = gaugeDifference(this.player, this.enemy);
+        let result = Entities.gaugeDifference(this.player, this.enemy);
         let playerWins = result.winner == this.player.name;
         // Applying damage to entities
         this.enemy.addLife(playerWins   ?  -(result.diff * this.player.damage) : 0);
@@ -268,20 +87,30 @@ const Battle = () => ({
     },
     // Reset
     reset: function() {
+        // If player is dead, hard reset and change enemy ELSE soft reset
         if(!this.player.isAlive()){
             this.player.reset(true);
-            this.enemy = randomEnemy();
+            this.enemy = Entities.randomEnemy();
         }else{
             this.player.reset(false);
         }
+
+        // If enemy is dead, addExp and change enemy ELSE enemy soft reset
         if(!this.enemy.isAlive()) {
             this.player.addExp(this.enemy.exp);
-            this.enemy = randomEnemy();
+            this.enemy = Entities.randomEnemy();
         }else{
             this.enemy.reset();
         }
+
+        // Apllying starting round status
+        this.player.apllyStatusEffect('TURN_START');
+        this.enemy.apllyStatusEffect('TURN_START');
+
+        // Save localData
         localStorage.setItem('player', JSON.stringify(this.player));
-        //Checking if any one died
+        
+        // Enable input
         this.animating = false;
     }
 });

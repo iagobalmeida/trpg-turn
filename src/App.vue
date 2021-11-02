@@ -53,7 +53,7 @@
     />
   </div>
   <!-- Player Actions -->
-  <div class="container w-md-50 abilityCard-container">
+  <div class="container w-md-50 abilityCard-container position-relative">
     <div class="row pb-3 flex-nowrap align-items-stretch" v-on:dragStart="console.log($event)">
       <AbilityCard
         :name="card.name"
@@ -62,11 +62,19 @@
         :description="card.description"
         :image="card.image"
         :forceDisable="animating" 
-        v-on:handleClick="handlePlayerAction(card.type, card.modifier, card.cost)"
+        v-on:handleClick="handlePlayerAction('abilityCard', cardIndex)"
         v-for="card, cardIndex in player.abilityCards"
         :key="`card_${cardIndex}`"
         class="col-6 col-md-3"
       />
+      <div class="position-absolute w-100 bottom-0 d-flex justify-content-center align-items-center" v-if="player.statusEffects.length">
+        <span class="px-2 py-1 bg-white rounded-pill border border-2 shadow-sm"
+          v-for="playerStatus, playerStatusIndex in player.statusEffects"
+          :key="`playerStatus_${playerStatusIndex}`"
+          >
+          <i :class="`${playerStatus.icon}`"></i> {{playerStatus.modifier}}<small class="text-muted">/{{playerStatus.turns}}</small>
+        </span>
+      </div>
     </div>
   </div>
   <!-- Player Actions -->
@@ -175,7 +183,7 @@
 
   <!-- Modal Help -->
   <div class="modal fade" id="modalHelp" tabindex="-1" aria-labelledby="modalHelpLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="modalHelpLabel"><i class="fa fa-info me-2"></i>Help</h5>
@@ -191,6 +199,20 @@
           <p>Your deck is made of 4 cards of each integer between 1 and half of your gauge size.</p>
           <p>[1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, ...]<br><small><i>Example Deck</i></small></p>
           <p>When you run out of cards, a new deck is shuffled for you.</p>
+
+          <h5>Card list</h5>
+          <div class="row g-3 pb-3 align-items-stretch" v-on:dragStart="console.log($event)">
+            <AbilityCard
+              :name="card.name"
+              :cost="card.cost"
+              :current="card.cost"
+              :description="card.description"
+              :image="card.image"
+              v-for="card, cardIndex in abilityCards"
+              :key="`card_${cardIndex}`"
+              class="col-6 col-md-4"
+            />
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -199,7 +221,7 @@
     </div>
   </div>
 
-  <!-- Modal Plyer -->
+  <!-- Modal Player -->
   <div class="modal fade" id="modalPlayer" tabindex="-1" aria-labelledby="modalPlayerLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -276,7 +298,7 @@
               :image="card.image"
               v-for="card, cardIndex in player.abilityCards"
               :key="`card_${cardIndex}`"
-              class="col-6"
+              class="col-6 col-md-4"
             />
           </div>
         </div>
@@ -322,6 +344,7 @@ import ProgressBar from './components/ProgressBar.vue';
 import AttackGauge from './components/AttackGauge.vue';
 import AbilityCard from './components/AbilityCard.vue';
 import Battle from './assets/Battle.js';
+import abilityCards from './assets/AbilityCard.json';
 
 export default {
   name: "App",
@@ -332,6 +355,7 @@ export default {
   },
   data: () => ({
     battle: Battle(),
+    abilityCards,
     toast: {
       show: false,
       text: '',
@@ -348,6 +372,7 @@ export default {
       this.$refs.helpButton.click();
       localStorage.setItem('firstTime', true);
     }
+    this.handlePlayerAction('',0,0);
   },
   computed: {
     shuffledCards() {
@@ -378,8 +403,8 @@ export default {
       }, duration);
     },
 
-    handlePlayerAction(action, modifier, cost) {
-      this.battle.handlePlayerAction(action, modifier, cost, this.showToast);
+    handlePlayerAction(action, cardId=null) {
+      this.battle.handlePlayerAction(action, this.showToast, cardId);
     },
   }
 };
@@ -577,6 +602,12 @@ h4{
   92% {
     opacity: 0.4;
   }
+}
+
+.modal-content {
+  background-color: #000000;
+  color: white;
+  border: 2px solid white;
 }
 
 
