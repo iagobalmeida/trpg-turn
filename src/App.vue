@@ -304,7 +304,7 @@
               :current="card.cost"
               :description="card.description"
               :image="card.image"
-              v-for="card, cardIndex in player.abilityCards"
+              v-for="card, cardIndex in [abilityCards[28],abilityCards[36],abilityCards[0],abilityCards[10]]"
               :key="`card_${cardIndex}`"
               class="col-6 col-md-4"
             />
