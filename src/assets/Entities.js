@@ -232,9 +232,9 @@ const loadStoragePlayer = () => {
     let storagePlayer = localStorage.getItem('player');
     if(storagePlayer) {
         let playerData = JSON.parse(storagePlayer);
-        return { ...createPlayer('Tidus', 1, 6, 50, 50, 5), ...playerData, statusEffects: [], abilityCards: []};
+        return { ...createPlayer('Tidus', 1, 12, 50, 50, 5), ...playerData, statusEffects: [], abilityCards: []};
     }else{
-        return createPlayer('Tidus', 1, 6, 50, 50, 5);
+        return createPlayer('Tidus', 1, 12, 50, 50, 5);
     }
 }
 

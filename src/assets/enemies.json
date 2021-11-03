@@ -3,51 +3,51 @@
         "name":         "Mimic",
         "image":        "Mimic.png",
         "level":        2,
-        "gaugeSize":    7,
+        "gaugeSize":    10,
         "life":         50,
         "energy":       10,
         "damage":       3,
         "exp":          60,
-        "threshold":    6
+        "threshold":    8
     },
     {
         "name":         "Sand Slime",
         "image":        "Sand Slime.png",
         "level":        2,
-        "gaugeSize":    6,
+        "gaugeSize":    11,
         "life":         60,
         "energy":       10,
         "damage":       4,
         "exp":          60,
-        "threshold":    4
+        "threshold":    9
     },
     {
         "name":         "Wave Slime",
         "image":        "Wave Slime.png",
         "level":        2,
-        "gaugeSize":    6,
+        "gaugeSize":    11,
         "life":         40,
         "energy":       10,
         "damage":       6,
         "exp":          60,
-        "threshold":    4
+        "threshold":    9
     },
     {
         "name":         "Sun Slime",
         "image":        "Sun Slime.png",
         "level":        2,
-        "gaugeSize":    6,
+        "gaugeSize":    11,
         "life":         50,
         "energy":       10,
         "damage":       5,
         "exp":          60,
-        "threshold":    4
+        "threshold":    9
     },
     {
         "name":         "Behemoth",
         "image":        "Behemoth.png",
-        "level":        4,
-        "gaugeSize":    8,
+        "level":        6,
+        "gaugeSize":    13,
         "life":         120,
         "energy":       30,
         "damage":       10,
