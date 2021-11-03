@@ -7,7 +7,7 @@
   <div class="container w-md-50 rounded-top">
     <div class="background" :style="`background-image:url(${require('@/assets/backgrounds/Cemetery.png')});`"></div>
     <!-- Enemy Card -->
-    <div class="mb-3 px-2 px-md-0 position-relative">
+    <div class="mb-3 px-2 px-md-0 position-relative monster-img" :style="`background-image:url(${require(`@/assets/enemies/${enemy.image}`)});background-size:${50 + (enemy.size * 50)}px;`">
         <!-- Name -->
         <h5 class="text-white text-shadow mb-3"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
         <!-- Life -->
@@ -36,7 +36,6 @@
           </span>
         </div>
     </div>
-    <img class="mx-auto monster-img" :src="require(`@/assets/enemies/${enemy.image}`)" v-if="enemy.image">
   </div>
   <!-- Gauges -->
   <div class="container w-md-50" style="z-index:98;">
@@ -648,28 +647,13 @@ h4{
 }
 
 .monster-img {
-  filter: drop-shadow(0px 30px 25px #00000085);
-  -webkit-filter: drop-shadow(0px 30px 25px #00000085);
-  -moz-filter: drop-shadow(0px 30px 25px #00000085);
-  max-height: 125px;
-  animation: monsterBreath 1.5s ease-in-out infinite alternate;
+  height: 230px;
   transform-origin: bottom;
-  margin-top: 50px;
-  margin-bottom: 25px;
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-position-y: bottom;
 }
-@media screen and (max-width:410px) {
-  .monster-img {
-    max-height: 125px;
-  }
-}
-@keyframes monsterBreath {
-  0% {
-    transform: scale(1.0) ;
-  }
-  100% {
-    transform: scaleX(1.02) scaleY(1.025) ;
-  }
-}
+
 
 .text-shadow {
   text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;

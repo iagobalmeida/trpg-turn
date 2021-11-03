@@ -67,3 +67,5 @@ despair.png - Tired
 misdirection.png - Unbalanced
 blindfold.png - Blindness
 broken-bone.png - Fracture
+
+CREDITS to Aekashics/Ækashics for the enemies sprites

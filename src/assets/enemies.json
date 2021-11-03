@@ -1,7 +1,8 @@
 [
     {
-        "name":         "Mimic",
-        "image":        "Mimic.png",
+        "name":         "Slime",
+        "image":        "slimes/slime.png",
+        "size":         1,
         "level":        2,
         "gaugeSize":    10,
         "life":         50,
@@ -11,8 +12,9 @@
         "threshold":    8
     },
     {
-        "name":         "Sand Slime",
-        "image":        "Sand Slime.png",
+        "name":         "Slimore",
+        "image":        "slimes/slimore.png",
+        "size":         1,
         "level":        2,
         "gaugeSize":    11,
         "life":         60,
@@ -22,8 +24,9 @@
         "threshold":    9
     },
     {
-        "name":         "Wave Slime",
-        "image":        "Wave Slime.png",
+        "name":         "Slime Warrior",
+        "image":        "slimes/slimeWarrior.png",
+        "size":         2,
         "level":        2,
         "gaugeSize":    11,
         "life":         40,
@@ -33,8 +36,9 @@
         "threshold":    9
     },
     {
-        "name":         "Sun Slime",
-        "image":        "Sun Slime.png",
+        "name":         "Slime Hero",
+        "image":        "slimes/slimeHero.png",
+        "size":         2,
         "level":        2,
         "gaugeSize":    11,
         "life":         50,
@@ -44,8 +48,9 @@
         "threshold":    9
     },
     {
-        "name":         "Behemoth",
-        "image":        "Behemoth.png",
+        "name":         "Slime King",
+        "image":        "slimes/slimeKing.png",
+        "size":         3,
         "level":        6,
         "gaugeSize":    13,
         "life":         120,

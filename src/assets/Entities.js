@@ -31,27 +31,29 @@ const baseDeck = (gaugeSize) => {
     return deck;
 }
 
+const baseAbilityDeck = (shuffle = true) => {
+    let ret = [
+        abilityCards[0], abilityCards[0], abilityCards[0],
+        abilityCards[6], abilityCards[7], abilityCards[10],
+        abilityCards[28],abilityCards[36]
+    ]
+    if(shuffle) { ret.shuffle(); }
+    return ret;
+}
+
 const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
     // Attributes
-    name:           name,
-    level:          level,
-    cards:          [...baseDeck(gaugeSize)],
-    abilityDeckBase: [
-        abilityCards[0], abilityCards[0], abilityCards[0],
-        abilityCards[6], abilityCards[7], abilityCards[10],
-        abilityCards[28],abilityCards[36]
-    ],
-    abilityDeck:    [
-        abilityCards[0], abilityCards[0], abilityCards[0],
-        abilityCards[6], abilityCards[7], abilityCards[10],
-        abilityCards[28],abilityCards[36]
-    ],
-    abilityCards:   [],
-    discardCost:    6, 
-    status:         'drawing',
-    statusEffects:  [],
-    isBursted:      false,
-    damage:         damage,
+    name:               name,
+    level:              level,
+    cards:              [...baseDeck(gaugeSize)],
+    abilityDeckBase:    baseAbilityDeck(false),
+    abilityDeck:        baseAbilityDeck(),
+    abilityCards:       [],
+    discardCost:        6, 
+    status:             'drawing',
+    statusEffects:      [],
+    isBursted:          false,
+    damage:             damage,
     gauge: {
         current: 0,
         maximum: gaugeSize
@@ -124,6 +126,7 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
             this.abilityCards.push(randomCard);
             if(this.abilityDeck.length == 0) {
                 this.abilityDeck = [...this.abilityDeckBase];
+                this.abilityDeck.shuffle();
             }
         }
     },
@@ -232,16 +235,17 @@ const loadStoragePlayer = () => {
     let storagePlayer = localStorage.getItem('player');
     if(storagePlayer) {
         let playerData = JSON.parse(storagePlayer);
-        return { ...createPlayer('Tidus', 1, 12, 50, 50, 5), ...playerData, statusEffects: [], abilityCards: []};
+        return { ...createPlayer('Tidus', 1, 12, 50, 50, 5), ...playerData, statusEffects: []};
     }else{
         return createPlayer('Tidus', 1, 12, 50, 50, 5);
     }
 }
 
-const createEnemy = (name, level, gaugeSize, life, energy, damage, threshold, image, exp) => ({
+const createEnemy = (name, level, size, gaugeSize, life, energy, damage, threshold, image, exp) => ({
     ...createEntity(name, level, gaugeSize, life, energy, damage),
     image:      image,
     exp:        exp,
+    size:       size,
     gauge: {
         current: 0,
         maximum: gaugeSize,
@@ -252,7 +256,7 @@ const createEnemy = (name, level, gaugeSize, life, energy, damage, threshold, im
 const randomEnemy = () => {
     let enemyId = Math.floor(Math.random()*enemies.length);
     let enemy = enemies[enemyId];
-    return createEnemy(enemy.name, enemy.level, enemy.gaugeSize, enemy.life, enemy.energy, enemy.damage, enemy.threshold, enemy.image, enemy.exp);
+    return createEnemy(enemy.name, enemy.level, enemy.size, enemy.gaugeSize, enemy.life, enemy.energy, enemy.damage, enemy.threshold, enemy.image, enemy.exp);
 }
 
 const gaugeDifference = async (player, enemy) => {
