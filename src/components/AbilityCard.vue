@@ -21,12 +21,12 @@
                     <i class="fas fa-arrow-up fa-xs"></i> 
                 </small> 
             </div>
-            <div :class="`text-${textColor}`">
-              <div class="p-2 text-start">
+            <div :class="`text-${textColor} pb-0`">
+              <div class="p-1 text-start">
                   <b>{{name}}</b>
-                  <p class="mb-0">{{description}}</p>
+                  <p class="mb-0 pb-0">{{description}}</p>
               </div>
-              <b class="text-center w-100" 
+              <b class="text-center w-100 mb-0 pb-0" 
                 v-on:click="!((discardCost > current) || forceDisable) ? $emit('handleDiscard') : () => {}"
                 v-if="discardCost">
                   {{discardCost}}
@@ -158,7 +158,7 @@ export default {
 }
 
 .abilityCard-img {
-  height: 100px;
+  height: 90px;
   background-position: center;
   background-size: cover;
   z-index: 0;

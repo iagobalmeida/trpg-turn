@@ -1,5 +1,5 @@
 <template>
-  <div class="g-0 row mb-3 align-items-center">
+  <div class="g-0 row align-items-center">
     <div
       class="col mx-1"
       v-for="gauge, gaugeIndex in maximum"

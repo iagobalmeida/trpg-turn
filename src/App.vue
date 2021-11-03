@@ -5,7 +5,7 @@
   </div>
   <!-- Enemy -->
   <div class="container w-md-50 rounded-top">
-    <div class="background" :style="`background-image:url(${require('@/assets/backgrounds/Cemetery.png')});`"></div>
+    <div class="background" style="background-image:url('https://i.pinimg.com/originals/ca/46/86/ca46864b637063b1dceb81d4f47e5ea5.jpg')"></div>
     <!-- Enemy Card -->
     <div class="mb-3 px-2 px-md-0 position-relative monster-img" :style="`background-image:url(${require(`@/assets/enemies/${enemy.image}`)});background-size:${50 + (enemy.size * 50)}px;`">
         <!-- Name -->
@@ -38,7 +38,7 @@
     </div>
   </div>
   <!-- Gauges -->
-  <div class="container w-md-50" style="z-index:98;">
+  <div class="container w-md-50 mb-3" style="z-index:98;">
     <!-- Enemy Gauge -->
     <AttackGauge 
     :current="enemy.gauge.current"
@@ -666,27 +666,21 @@ h4{
 .background {
   background-size:cover;-webkit-box-shadow: inset 5px 5px 50px 30px #000000; 
   border-radius: 100%;
-  box-shadow: inset 5px 5px 50px 30px #000000;
+  box-shadow: inset 5px 5px 20px 10px #000000;
   background-position:center;
   position: absolute;
   /* top: -10%;
   bottom: 30%;
   right: 30%;
   left: 30%; */
+  left: 50%;
+  transform: translateX(-50%);
+  height: 350px;
+  width: 350px;
   top: 0;
-  bottom: 50%;
-  left: 0;
-  right: 0;
+  background-size: cover;
   z-index: -1;
   filter:hue-rotate(45deg) brightness(0.5);
-}
-
-@media screen and (min-width: 700px) {
-  .background {
-    left: 30%;
-    right: 30%;
-    bottom: 30%;
-  }
 }
 
 @keyframes dungeonTorches {
