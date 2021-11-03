@@ -123,7 +123,7 @@
 
     {
         "id": 13,
-        "type": "life",
+        "type": "energy",
         "cost": 0,
         "modifier": 10,
         "name": "Concentrate I",
@@ -132,7 +132,7 @@
     },
     {
         "id": 14,
-        "type": "life",
+        "type": "energy",
         "cost": 0,
         "modifier": 20,
         "name": "Concentrate II",
@@ -141,7 +141,7 @@
     },
     {
         "id": 15,
-        "type": "life",
+        "type": "energy",
         "cost": 20,
         "modifier": 35,
         "name": "Resonance",
@@ -150,7 +150,7 @@
     },
     {
         "id": 16,
-        "type": "life",
+        "type": "energy",
         "cost": 20,
         "modifier": 55,
         "name": "Chi Punch",
@@ -159,7 +159,7 @@
     },
     {
         "id": 17,
-        "type": "life",
+        "type": "energy",
         "cost": 15,
         "modifier": 55,
         "name": "Energy Grab",
@@ -170,7 +170,8 @@
 
     {
         "id": 18,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "self",
         "cost": 30,
         "modifier": 10,
         "name": "Inner Strength",
@@ -179,7 +180,8 @@
     },
     {
         "id": 19,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "self",
         "cost": 30,
         "modifier": 10,
         "name": "Hard Skin",
@@ -188,7 +190,8 @@
     },
     {
         "id": 20,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "self",
         "cost": 20,
         "modifier": 10,
         "name": "Sequence I",
@@ -197,7 +200,8 @@
     },
     {
         "id": 21,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "self",
         "cost": 45,
         "modifier": 10,
         "name": "Sequence II",
@@ -206,7 +210,8 @@
     },
     {
         "id": 22,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "self",
         "cost": 65,
         "modifier": 10,
         "name": "Sequence III",
@@ -215,7 +220,8 @@
     },
     {
         "id": 23,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "self",
         "cost": 85,
         "modifier": 10,
         "name": "Sequence IV",
@@ -224,7 +230,8 @@
     },
     {
         "id": 24,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "self",
         "cost": 110,
         "modifier": 10,
         "name": "Sequence V",
@@ -234,7 +241,8 @@
     
     {
         "id": 25,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "self",
         "cost": 30,
         "modifier": 10,
         "name": "Prepare",
@@ -243,7 +251,8 @@
     },
     {
         "id": 26,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "self",
         "cost": 45,
         "modifier": 10,
         "name": "Totem",
@@ -302,7 +311,8 @@
 
     {
         "id": 31,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "enemy",
         "cost": 35,
         "modifier": 10,
         "name": "Blindness",
@@ -311,7 +321,8 @@
     },
     {
         "id": 32,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "enemy",
         "cost": 35,
         "modifier": 10,
         "name": "Fracture",
@@ -320,7 +331,8 @@
     },
     {
         "id": 33,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "enemy",
         "cost": 35,
         "modifier": 10,
         "name": "Knockout",
@@ -329,7 +341,8 @@
     },
     {
         "id": 34,
-        "type": "life",
+        "type": "statusEffect",
+        "target": "enemy",
         "cost": 35,
         "modifier": 10,
         "name": "Unbalance",

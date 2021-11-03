@@ -77,11 +77,11 @@ const Battle = () => ({
         // this.enemy.addEnergy(!playerWins ? result.diff* (this.enemy.energy.maximum * 0.02).toFixed(1) : (result.winner == 'draft' ? (this.enemy.energy.maximum * 0.01).toFixed(1) : 0));
         // this.player.addEnergy(playerWins ? result.diff* (this.player.energy.maximum * 0.02).toFixed(1) : (result.winner == 'draft' ? (this.player.energy.maximum * 0.01).toFixed(1) : 0));
         // Showing result
-        let energy = `<b class="text-info">${playerEnergy.toFixed(2)} <i class="fas fa-fire"></i> energy</b> gained`;
+        let energy = `<b class="text-info">+${playerEnergy.toFixed(2)} <i class="fas fa-fire"></i></b>`;
         let damage = `${(result.diff * ( playerWins ? this.player.damage : this.enemy.damage).toFixed(2) )} <i class="fas fa-crosshairs"></i> <small>( ${result.diff} x ${playerWins ? this.player.damage : this.enemy.damage} )</small>`;
         this.toastFunction(
             result.winner != 'draft' ?
-            `<b>${result.winner}</b> wins by <b>${result.diff}</b>!<br><b class="text-primary">${damage} damage</b> dealt!<br>${energy}`
+            `<b>${result.winner}</b> wins by <b>${result.diff}</b>!<br><b class="text-warning">${damage} </b>damage dealt!<br>${energy}`
             :
             `<b>Draft!</b><br>${energy}`
         );

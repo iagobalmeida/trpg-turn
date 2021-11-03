@@ -65,6 +65,8 @@
     <div class="row pb-3 flex-nowrap align-items-stretch" v-on:dragStart="console.log($event)">
       <transition-group name="fadeCards">
         <AbilityCard
+          :type="card.type"
+          :target="card.target"
           :name="card.name"
           :cost="card.cost"
           :current="player.energy.current"
@@ -214,8 +216,10 @@
           <p>When you run out of cards, a new deck is shuffled for you.</p>
 
           <h5>Card list</h5>
-          <div class="row g-3 pb-3 align-items-stretch" v-on:dragStart="console.log($event)">
+          <div class="row g-3 pb-3 align-items-stretch">
             <AbilityCard
+              :type="card.type"
+              :target="card.target"
               :name="card.name"
               :cost="card.cost"
               :current="card.cost"
@@ -304,6 +308,8 @@
           <h5>In the pile</h5>
           <div class="row g-3 pb-3 align-items-stretch" v-on:dragStart="console.log($event)">
             <AbilityCard
+              :type="card.type"
+              :target="card.target"
               :name="card.name"
               :cost="card.cost"
               :current="card.cost"
@@ -318,6 +324,8 @@
           <h5>Abilities</h5>
           <div class="row g-3 pb-3 align-items-stretch" v-on:dragStart="console.log($event)">
             <AbilityCard
+              :type="card.type"
+              :target="card.target"
               :name="card.name"
               :cost="card.cost"
               :current="card.cost"

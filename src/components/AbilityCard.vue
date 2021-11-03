@@ -1,7 +1,7 @@
 <template>
     <div class="col" style="position: relative;">
         <button
-        class="abilityCard m-0 btn p-0 w-100 border-4 border border-primary bg-primary bg-gradient"
+        :class="`abilityCard m-0 btn p-0 w-100 border-4 border border-${className} bg-${className} bg-gradient`"
         :disabled="(cost > current) || forceDisable"
         draggable="false"
         >
@@ -11,18 +11,18 @@
             v-on:click="!((cost > current) || forceDisable) ? $emit('handleClick') : () => {}"
             >
                 <small
-                :class="`d-none d-md-block left position-absolute px-2 py-1 bg-white`"
+                :class="`d-none d-md-block left position-absolute px-2 py-1 bg-${className} text-${textColor}`"
                 v-if="keymap != null">
                     {{keymap}}
                 </small> 
                 <small
-                :class="`right position-absolute px-2 py-1 bg-white`">
+                :class="`right position-absolute px-2 py-1 bg-${className} text-${textColor}`">
                     {{cost}}
                     <i class="fas fa-fire me-1"></i>
                     <i class="fas fa-arrow-up fa-xs"></i> 
                 </small> 
             </div>
-            <div class="text-white">
+            <div :class="`text-${textColor}`">
               <div class="p-2 text-start">
                   <b>{{name}}</b>
                   <p class="mb-0">{{description}}</p>
@@ -87,22 +87,55 @@ export default {
   name: 'AbilityCard',
   props: {
     keymap: { type: Number, default: null },
+    target: { type: String, default: 'self' },
     name: String,
     cost: Number,
     current: Number,
     description: String,
     image: String,
     forceDisable: Boolean,
+    type: String,
     discardCost: { type: Number, default: null }
   },
   data() { 
     return {
-      images: images()
+      images: images(),
     }
   },
   computed: {
     loadedImage() {
       return this.images[this.image];
+    },
+    textColor() {
+      if(this.type.includes('status')){
+        switch(this.target) {
+          case 'enemy':
+            return 'dark';
+          case 'self':
+            return 'white';
+        }
+      }
+      return (this.type.includes('energy') ? 'dark' : 'white');
+    },
+    className() {
+      if(this.type.includes('gauge')) {
+        return 'primary';
+      }
+      if(this.type.includes('life')) {
+        return 'danger';
+      }
+      if(this.type.includes('energy')) {
+        return 'info';
+      }
+      if(this.type.includes('status')){
+        switch(this.target) {
+          case 'enemy':
+            return 'warning';
+          case 'self':
+            return 'success';
+        }
+      }
+      return 'primary';
     }
   }
 }
