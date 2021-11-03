@@ -1,8 +1,7 @@
 <template>
     <div class="col" style="position: relative;">
         <button
-        :class="`abilityCard m-0 btn p-0 w-100 border-4 border border-${className} bg-${className} bg-gradient`"
-        :disabled="(cost > current) || forceDisable"
+        :class="`abilityCard m-0 btn p-0 w-100 border-4 border border-${className} bg-${className} bg-gradient o-${(cost > current) || forceDisable ? '50' : '100'}`"
         draggable="false"
         >
             <div
@@ -28,7 +27,7 @@
                   <p class="mb-0">{{description}}</p>
               </div>
               <b class="text-center w-100" 
-                v-on:click="!((cost > current) || forceDisable) ? $emit('handleDiscard') : () => {}"
+                v-on:click="!((discardCost > current) || forceDisable) ? $emit('handleDiscard') : () => {}"
                 v-if="discardCost">
                   {{discardCost}}
                   <i class="fas fa-fire me-1"></i> 
@@ -143,8 +142,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.o-50 img {
+.o-50 {
   filter: grayscale(1);
+  opacity: 0.75;
 }
 .abilityCard {
   position: inherit;

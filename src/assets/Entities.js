@@ -20,9 +20,13 @@ Array.prototype.shuffle = function() {
 }
 
 const baseDeck = (gaugeSize) => {
-    let deck = new Array(gaugeSize * 2);
-    for(let i = 0; i < gaugeSize/2; i++) {
-        deck.fill(i+1, i*4, i*4+4);
+    let minimum = Math.floor(gaugeSize/4);
+    console.log('\ngaugeSize', gaugeSize);
+    console.log('minimum', minimum);
+
+    let deck = new Array(16);
+    for(let i = 0; i <= 16; i++) {
+        deck.fill(minimum+i, i*4, i*4+4);
     }
     return deck;
 }
@@ -228,9 +232,9 @@ const loadStoragePlayer = () => {
     let storagePlayer = localStorage.getItem('player');
     if(storagePlayer) {
         let playerData = JSON.parse(storagePlayer);
-        return { ...createPlayer('Tidus', 1, 12, 50, 50, 5), ...playerData, statusEffects: [], abilityCards: []};
+        return { ...createPlayer('Tidus', 1, 6, 50, 50, 5), ...playerData, statusEffects: [], abilityCards: []};
     }else{
-        return createPlayer('Tidus', 1, 12, 50, 50, 5);
+        return createPlayer('Tidus', 1, 6, 50, 50, 5);
     }
 }
 

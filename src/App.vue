@@ -201,21 +201,106 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalHelpLabel"><i class="fa fa-info me-2"></i>Help</h5>
+          <h5 class="modal-title" id="modalHelpLabel"><i class="fa fa-info me-2"></i>How to Play</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-start">
-          <h5>How to Play</h5>
+          <h5>Attack Gauge</h5>
           <p>Both your enemy and you have an attack gauge that can be filled by drawing cards.</p>
-          <p>The one who have the most filled attack gauge wins the round, causing a number of attacks equivalent to the difference of the gauges.</p>
-          <p>If you or your enemy overchages the attack gauge, the gauge is set to half of it maximum value and the oponnent instantly wins the round.</p>
-
+          <AttackGauge 
+          :current="7"
+          :maximum="12"
+          :biggestGauge="12"
+          :standing="false"
+          :bursted="false"
+          className="danger"
+          />
+          <AttackGauge 
+          :current="11"
+          :maximum="12"
+          :biggestGauge="12"
+          :standing="false"
+          :bursted="false"
+          className="primary"
+          />
+          <p>At each turn, you can either <b class="px-2 py-1 bg-white rounded text-primary">Draw Card</b>, <b class="px-2 py-1 bg-white rounded text-primary">Stand</b> or use <b class="text-primary">Ability Cards</b></p>
+          <p>If you chosse to draw a card, your draw a card from your cards deck and add its value to your attack gauge, then your turn is over.</p>
+          <p>If you chosse to stand, your attack gauge is locked and you cant play until the end of the round.</p>
+          <p>Using ability cards does not ends your turn, unless the card effect affects yours turn.</p>
+          <hr>
+          <h5>Round Results</h5>
+          <p>When both you and your enemy stands, both gauges lock and the result is computed by subtrating 1 from both gauges until one of them reach 0.</p>
+          <AttackGauge 
+          :current="0"
+          :maximum="12"
+          :biggestGauge="12"
+          :standing="true"
+          :bursted="false"
+          className="danger"
+          />
+          <AttackGauge 
+          :current="4"
+          :maximum="12"
+          :biggestGauge="12"
+          :standing="true"
+          :bursted="false"
+          className="primary"
+          />
+          <small><i class="text-muted">You can identify if the gauge is locked or not by the color of the value at the right, if its colored, then the gauge is locked.</i></small>
+          <p></p>
+          <p>After computing the difference between the gauges, the winner deals a number of attacks equals to the value in his gauge. There is a message at the end of the round to tell the results.</p>
+          <div class="p-3 rounded border border-2 text-white rounded shadow h-100 mx-auto text-center mb-3" style="background-color:black">
+            <b>Player</b> wins by <b>4</b>!
+            <br><b class="text-warning"> 20 <i class="fas fa-crosshairs"></i><small>( 5 x 4 )</small> </b> damage dealt!
+            <br><b class="text-info">+24 <i class="fas fa-fire"></i></b>
+          </div>
+          <p><small><i class="text-muted">The damage(20) is composed by the base damage(5) multiplied by the gauges difference(4).</i></small></p>
+          <hr>
+          <h5>Bursting</h5>
+          <p>Whenever an attack gauge is overcharged, its owner instantly becomes bursted and stands, and the gauge value is set to the difference between the maximum and the current value.</p>
+          
+          <p class="text-center">
+            Gauge is value is 9 and its maximum value is 12
+          </p>
+          <AttackGauge 
+          :current="9"
+          :maximum="12"
+          :biggestGauge="12"
+          :standing="false"
+          :bursted="false"
+          className="primary"
+          />
+          <p class="text-center">
+            Card with value 5 is drawn.
+          </p>
+          <p class="text-center">
+            <b><span class="text-primary">9</span> + 5 = <span class="text-warning">14</span></b>
+            <i class="fa fa-arrow-right mx-3"></i>
+            <b class="text-warning">Bursted! (14 > 12)</b>
+            <i class="fa fa-arrow-right mx-3"></i>
+            <b><span class="text-warning">14</span> - 12 = <span class="text-primary">2</span></b>
+          </p>
+          <AttackGauge 
+          :current="2"
+          :maximum="12"
+          :biggestGauge="12"
+          :standing="true"
+          :bursted="true"
+          className="primary"
+          />
+          <p><small><i class="text-muted">The gauge is set to the difference(2) between the maximum(12) and the overcharged value(14) and the owner stands, so it cant play until the end of the round.</i></small></p>
+          <hr>
           <h5>Your Deck</h5>
           <p>Your deck is made of 4 cards of each integer between 1 and half of your gauge size.</p>
-          <p>[1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, ...]<br><small><i>Example Deck</i></small></p>
+          <div class="row">
+            <div class="col-1 text-center my-3" v-for="card, cardIndex in shuffledCards" :key="`player_card_${cardIndex}`">
+              <span class="px-2 py-2 shadow-sm border rounded text-primary">{{card}}</span>
+            </div>
+          </div>
+          <p><small><i class="text-muted">Your Current Deck.</i></small></p>
           <p>When you run out of cards, a new deck is shuffled for you.</p>
-
-          <h5>Card list</h5>
+          <hr>
+          <h5>Ability Cards list</h5>
           <div class="row g-3 pb-3 align-items-stretch">
             <AbilityCard
               :type="card.type"
@@ -478,16 +563,6 @@ export default {
 .fadeCards-leave-to {
   opacity: 0;
   transform: translateY(30px);
-}
-/* Hide scrollbar for Chrome, Safari and Opera */
-*::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-* {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
 }
 #app {
   height: 100vh;

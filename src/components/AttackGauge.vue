@@ -1,19 +1,19 @@
 <template>
   <div class="g-0 row mb-3 align-items-center">
     <div
-    class="col mx-1"
-    v-for="gauge, gaugeIndex in maximum"
-    :key="`gauge_${gaugeIndex}`"
-    :class="`rounded-pill border border-2 gauge border-2 ` + getClass(gauge)"
-     style="height:15px"
+      class="col mx-1"
+      v-for="gauge, gaugeIndex in maximum"
+      :key="`gauge_${gaugeIndex}`"
+      :class="`rounded-pill border border-2 gauge border-2 ` + getClass(gauge)"
+      style="height:15px"
     >
-    </div>
+    </div> 
     <div
-    class="col mx-1"
-    v-for="emptyGauge, emptyGaugeIndex in biggestGauge - maximum"
-    :key="`emptyGauge_${emptyGaugeIndex}`"
-    :class="`rounded-pill border border-2 gauge border-2 o-0`"
-     style="height:15px"
+      class="col mx-1"
+      v-for="emptyGauge, emptyGaugeIndex in biggestGauge - maximum"
+      :key="`emptyGauge_${emptyGaugeIndex}`"
+      :class="`rounded-pill border border-2 gauge border-2 o-0`"
+      style="height:15px"
     >
     </div>
     <div :class="`col-2 ${standing ? `text-${className}` : 'text-light'}`">
