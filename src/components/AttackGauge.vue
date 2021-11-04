@@ -4,7 +4,7 @@
       class="col mx-1"
       v-for="gauge, gaugeIndex in maximum"
       :key="`gauge_${gaugeIndex}`"
-      :class="`rounded-pill border border-2 gauge border-2 ` + getClass(gauge)"
+      :class="`rounded-pill border border-2 gauge  ` + getClass(gauge)"
       style="height:15px"
     >
     </div> 
@@ -12,11 +12,11 @@
       class="col mx-1"
       v-for="emptyGauge, emptyGaugeIndex in biggestGauge - maximum"
       :key="`emptyGauge_${emptyGaugeIndex}`"
-      :class="`rounded-pill border border-2 gauge border-2 o-0`"
+      :class="`rounded-pill border border-2 border-dark gauge  o-0`"
       style="height:15px"
     >
     </div>
-    <div :class="`col-2 ${standing ? `text-${className}` : 'text-light'}`">
+    <div :class="`col-2 text-shadow ${standing ? `text-${className}` : 'text-light'}`">
       <i class="fas fa-crosshairs mx-1 d-none d-md-inline"></i> <b>{{current}}</b>
     </div>
   </div>
@@ -46,7 +46,7 @@ export default {
         return `bg-dark`;
       }
       if(this.standing){
-        return `bg-${this.className} border-${this.className}`;
+        return `bg-${this.className} border-dark`;
       }else{
         return `bg-${this.className} o-50 border-light`;
       }

@@ -3,6 +3,9 @@
         <button
         :class="`abilityCard m-0 btn p-0 w-100 border-4 border border-${className} bg-${className} bg-gradient o-${(cost > current) || forceDisable ? '50' : '100'}`"
         draggable="false"
+        v-on:mouseover="handleHover"
+        v-on:mouseleave="handleLeave"
+        ref="button"
         >
             <div
             class="w-100 abilityCard-img text-primary"
@@ -87,6 +90,8 @@ export default {
   props: {
     keymap: { type: Number, default: null },
     target: { type: String, default: 'self' },
+    animated:  { type: Boolean, default: true },
+    discardCost: { type: Number, default: null },
     name: String,
     cost: Number,
     current: Number,
@@ -94,7 +99,6 @@ export default {
     image: String,
     forceDisable: Boolean,
     type: String,
-    discardCost: { type: Number, default: null }
   },
   data() { 
     return {
@@ -136,6 +140,25 @@ export default {
       }
       return 'primary';
     }
+  },
+  methods: {
+    handleHover(e) {
+      if(this.animated) {
+        let inCardY = e.y - this.$refs.button.getBoundingClientRect().top;
+        console.log(inCardY);
+        let discard   = inCardY >= 120;
+        let translate = discard ? (this.discardCost <= this.current ? '10px' : '') : (this.cost <= this.current) ? '-15px' : '';
+        let brightness = discard ? (this.discardCost <= this.current ? '0.5' : '') : (this.cost <= this.current) ? '1.2' : '';
+        this.$refs.button.style.transform = `translateY(${translate})`;
+        if(!this.$refs.button.classList.contains('o-50')){
+          this.$refs.button.style.filter = `brightness(${brightness})`;
+        }
+      }
+    },
+    handleLeave() {
+      this.$refs.button.style.transform = '';
+      this.$refs.button.style.filter = '';
+    }
   }
 }
 </script>
@@ -152,6 +175,7 @@ export default {
   box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
   transition: all 175ms ease-in-out;
 }
+
 .abilityCard *{
   transition: background-color 175ms ease-in-out;
   padding-bottom: 6px;

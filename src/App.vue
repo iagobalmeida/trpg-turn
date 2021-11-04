@@ -5,7 +5,7 @@
   </div>
   <!-- Enemy -->
   <div class="container w-md-50 rounded-top">
-    <div class="background" style="background-image:url('https://i.pinimg.com/originals/ca/46/86/ca46864b637063b1dceb81d4f47e5ea5.jpg')"></div>
+    <div class="background" :style="`background-image:url(${require(`@/assets/backgrounds/Hills.png`)})`"></div>
     <!-- Enemy Card -->
     <div class="mb-3 px-2 px-md-0 position-relative monster-img" :style="enemy.image ? `background-image:url(${require(`@/assets/enemies/${enemy.image}`)});background-size:${50 + (enemy.size * 50)}px;` : ''">
         <!-- Name -->
@@ -18,7 +18,6 @@
           className="bg-danger"
           iconName="fas fa-heart"
           class="mb-3"
-          :labelOnTop="false"
         />
         <ProgressBar 
           :current="Math.round(enemy.energy.current)"
@@ -32,8 +31,8 @@
             v-for="enemyStatus, enemyStatusIndex in enemy.statusEffects"
             :key="`playerStatus_${enemyStatusIndex}`"
           >
-            <i :class="`${enemyStatus.icon}`"></i>
             {{enemyStatus.modifier}}
+            <i :class="`${enemyStatus.icon}`"></i>
             <small class="text-muted">/{{enemyStatus.turns}}</small>
           </span>
         </div>
@@ -84,11 +83,12 @@
         />
       </transition-group>
       <div class="position-absolute w-100 bottom-0 d-flex justify-content-center align-items-center" v-if="player.statusEffects.length">
-        <span class="px-2 py-1 bg-white rounded-pill border border-2 shadow-sm"
+        <span class="px-3 py-1 bg-white rounded-pill border border-2 shadow-sm d-flex justify-content-center align-items-center"
           v-for="playerStatus, playerStatusIndex in player.statusEffects"
           :key="`playerStatus_${playerStatusIndex}`"
           >
-          <i :class="`${playerStatus.icon}`"></i> {{playerStatus.modifier}}<small class="text-muted">/{{playerStatus.turns}}</small>
+          {{playerStatus.modifier}} <i :class="`${playerStatus.icon} mx-1`"></i>
+          <small class="text-muted d-flex-inline justify-content-center align-items-center">/ {{playerStatus.turns}}<i class="fa fa-sync ms-1 fa-xs"></i></small>
         </span>
       </div>
     </div>
@@ -146,8 +146,9 @@
                 :maximum="Math.round(player.exp.next)"
                 :animating="true"
                 className="bg-primary"
-                iconName="fa fa-arrow-up"
                 class="mb-3"
+                :customLabel="`Lvl. ${player.level}`"
+                :labelOnTop="true"
               />
             </div>
           </div>
@@ -171,11 +172,11 @@
 
       <!-- Player -->
       <div class="row">
-        <h5 class="mb-0 text-white col" style="align-self:center;">
+        <h5 class="mb-3 md-md-0 text-white col" style="align-self:center;">
           {{player.name}} 
           <small class="text-muted d-none d-md-inline" style="font-size:12px;">Lvl. {{player.level}}</small>
         </h5>
-        <div class="col-9">
+        <div class="col-10 col-md-9">
           <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalHelp" ref="helpButton">
             <i class="fa fa-info me-md-2"></i>
             <span class="d-none d-md-inline">Ajuda</span>
@@ -334,6 +335,7 @@
               class="col-6 col-md-4"
               :discardCost="6"
               :keymap="cardIndex"
+              :animated="false"
             />
           </div>
         </div>
@@ -418,12 +420,13 @@
               :target="card.target"
               :name="card.name"
               :cost="card.cost"
-              :current="card.cost"
+              :current="card.cost*2"
               :description="card.description"
               :image="card.image"
               v-for="card, cardIndex in player.abilityDeck"
               :key="`card_${cardIndex}`"
               class="col-6 col-md-4"
+              :animated="false"
             />
           </div>
 
@@ -434,12 +437,13 @@
               :target="card.target"
               :name="card.name"
               :cost="card.cost"
-              :current="card.cost"
+              :current="card.cost*2"
               :description="card.description"
               :image="card.image"
               v-for="card, cardIndex in player.abilityDeckBase"
               :key="`card_${cardIndex}`"
               class="col-6 col-md-4"
+              :animated="false"
             />
           </div>
         </div>
@@ -459,16 +463,16 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-start">
-          <button class="btn border-2 border-white rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url('https://i.pinimg.com/originals/ca/46/86/ca46864b637063b1dceb81d4f47e5ea5.jpg'); background-size: cover; background-position:center;`">
+          <button class="btn border-2 border-white rounded bg-cover w-100 py-3 px-2 shadow mb-3"  :style="`background-image:url(${require('@/assets/backgrounds/Hills.png')}); background-size: cover;`">
             <h5 class="text-white text-shadow">Slime Hill</h5>
-          </button>
-          <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Church.png')}); background-size: cover;filter:grayscale(1)`">
-            <h5 class="text-white text-shadow">???</h5>
           </button>
           <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Forest.png')}); background-size: cover;filter:grayscale(1)`">
             <h5 class="text-white text-shadow">???</h5>
           </button>
-          <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Mansion.png')}); background-size: cover;filter:grayscale(1)`">
+          <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/DeepWoods.png')}); background-size: cover;filter:grayscale(1)`">
+            <h5 class="text-white text-shadow">???</h5>
+          </button>
+          <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Swamp.png')}); background-size: cover;filter:grayscale(1)`">
             <h5 class="text-white text-shadow">???</h5>
           </button>
         </div>
@@ -688,63 +692,18 @@ h4{
 .background {
   background-size:cover;-webkit-box-shadow: inset 5px 5px 50px 30px #000000; 
   border-radius: 100%;
-  box-shadow: inset 5px 5px 20px 10px #000000;
+  box-shadow: inset 5px 5px 20px 0px #00000;
   background-position:center;
   position: absolute;
-  /* top: -10%;
-  bottom: 30%;
-  right: 30%;
-  left: 30%; */
   left: 50%;
   transform: translateX(-50%);
-  height: 350px;
-  width: 350px;
+  width: 100%;
+  height: 50%;
+  max-width: 690px;
   top: 0;
-  background-size: cover;
+  background-size: 650px 650px;
   z-index: -1;
-  filter:hue-rotate(45deg) brightness(0.5);
-}
-
-@keyframes dungeonTorches {
-  0% {
-    opacity: 0.4;
-  }
-  5% {
-    opacity: 0.38;
-  }
-  10% {
-    opacity: 0.4;
-  }
-
-  30% {
-    opacity: 0.4;
-  }
-  37% {
-    opacity: 0.38;
-  }
-  42% {
-    opacity: 0.4;
-  }
-  
-  60% {
-    opacity: 0.4;
-  }
-  67% {
-    opacity: 0.38;
-  }
-  62% {
-    opacity: 0.4;
-  }
-  
-  90% {
-    opacity: 0.4;
-  }
-  97% {
-    opacity: 0.38;
-  }
-  92% {
-    opacity: 0.4;
-  }
+  filter: saturate(3);
 }
 
 .modal-content {

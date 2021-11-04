@@ -1,10 +1,13 @@
 <template>
   <div class="row d-flex">
-    <div :class="`col${labelOnTop ? '-12 mb-1' : ''} text d-flex text-white justify-content-start align-items-center`" v-if="!hideLabel">
+    <div :class="`col${labelOnTop ? '-12 mb-1' : ''} text d-flex text-white text-shadow justify-content-start align-items-center`" v-if="!hideLabel">
       <!--
       <i :class="`${iconName} ${className} d-flex h-100 align-items-center justify-content-center  rounded-pill  text-dark border border-2 border-white`"></i>
       -->
-      <i :class="`${iconName} me-3`"></i>
+      <i :class="`${iconName} me-3`" v-if="!customLabel"></i>
+      <label class="me-3" v-else>
+        <b>{{customLabel}}</b>
+      </label>
       {{current}}&nbsp;<small>/{{maximum}}</small> 
     </div>
     <div :class="`col${labelOnTop ? '-12' : ''} flex-grow`">
@@ -32,7 +35,8 @@ export default {
     className: String,
     iconName: String,
     labelOnTop: { type: Boolean, default: false },
-    hideLabel: { type: Boolean, default: false }
+    hideLabel: { type: Boolean, default: false },
+    customLabel: { type: String, default: null }
   }
 }
 </script>
@@ -46,9 +50,9 @@ export default {
   min-width: 130px;
 }
 .progress {
-  filter: drop-shadow(1px 8px 8px #00000060);
-  -webkit-filter: drop-shadow(1px 8px 8px #00000060);
-  -moz-filter: drop-shadow(1px 8px 8px #00000060);
+  filter: drop-shadow(0px 0px 5px #00000090);
+  -webkit-filter: drop-shadow(0px 0px 5px #00000090);
+  -moz-filter: drop-shadow(0px 0px 5px #00000090);
 }
 .row {
   font-size: 14px;
