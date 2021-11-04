@@ -7,7 +7,7 @@
   <div class="container w-md-50 rounded-top">
     <div class="background" style="background-image:url('https://i.pinimg.com/originals/ca/46/86/ca46864b637063b1dceb81d4f47e5ea5.jpg')"></div>
     <!-- Enemy Card -->
-    <div class="mb-3 px-2 px-md-0 position-relative monster-img" :style="`background-image:url(${require(`@/assets/enemies/${enemy.image}`)});background-size:${50 + (enemy.size * 50)}px;`">
+    <div class="mb-3 px-2 px-md-0 position-relative monster-img" :style="enemy.image ? `background-image:url(${require(`@/assets/enemies/${enemy.image}`)});background-size:${50 + (enemy.size * 50)}px;` : ''">
         <!-- Name -->
         <h5 class="text-white text-shadow mb-3"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
         <!-- Life -->
@@ -31,8 +31,10 @@
           <span class="px-2 py-1 bg-white rounded-pill border border-2 shadow-sm"
             v-for="enemyStatus, enemyStatusIndex in enemy.statusEffects"
             :key="`playerStatus_${enemyStatusIndex}`"
-            >
-            <i :class="`${enemyStatus.icon}`"></i> {{enemyStatus.modifier}}<small class="text-muted">/{{enemyStatus.turns}}</small>
+          >
+            <i :class="`${enemyStatus.icon}`"></i>
+            {{enemyStatus.modifier}}
+            <small class="text-muted">/{{enemyStatus.turns}}</small>
           </span>
         </div>
     </div>
@@ -41,22 +43,22 @@
   <div class="container w-md-50 mb-3" style="z-index:98;">
     <!-- Enemy Gauge -->
     <AttackGauge 
-    :current="enemy.gauge.current"
-    :maximum="enemy.gauge.maximum"
-    :biggestGauge="biggestGauge"
-    :threshold="enemy.gauge.threshold"
-    :standing="enemy.status == 'standing'"
-    :bursted="enemy.isBursted"
-    className="danger"
+      :current="enemy.gauge.current"
+      :maximum="enemy.gauge.maximum"
+      :biggestGauge="biggestGauge"
+      :threshold="enemy.gauge.threshold"
+      :standing="enemy.status == 'standing'"
+      :bursted="enemy.isBursted"
+      className="danger"
     />
     <!-- Player Gauge -->
     <AttackGauge 
-    :current="player.gauge.current"
-    :maximum="player.gauge.maximum"
-    :biggestGauge="biggestGauge"
-    :standing="player.status == 'standing'"
-    :bursted="player.isBursted"
-    className="primary"
+      :current="player.gauge.current"
+      :maximum="player.gauge.maximum"
+      :biggestGauge="biggestGauge"
+      :standing="player.status == 'standing'"
+      :bursted="player.isBursted"
+      className="primary"
     />
   </div>
   <!-- Player Actions -->
@@ -107,7 +109,7 @@
                 {{player.cards.length}}
                 <i class="far fa-caret-square-up fa-lg"></i>
               </span>
-              <small><b>D</b>raw Card</small>
+              <small>Pescar Carta</small>
             </div>
           </button>
         </div>
@@ -161,7 +163,7 @@
               <span>
                 <i class="far fa-caret-square-down fa-lg"></i>
               </span>
-              <small><b>S</b>tand</small>
+              <small>Parar</small>
             </div>
           </button>
         </div>
@@ -171,24 +173,24 @@
       <div class="row">
         <h5 class="mb-0 text-white col" style="align-self:center;">
           {{player.name}} 
-          <small class="text-muted d-none d-md-inline">Lvl. {{player.level}}</small>
+          <small class="text-muted d-none d-md-inline" style="font-size:12px;">Lvl. {{player.level}}</small>
         </h5>
         <div class="col-9">
           <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalHelp" ref="helpButton">
             <i class="fa fa-info me-md-2"></i>
-            <span class="d-none d-md-inline">Help</span>
+            <span class="d-none d-md-inline">Ajuda</span>
           </small>
           <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalPlayer">
             <i class="fa fa-user me-md-2"></i>
-            <span class="d-none d-md-inline">Player</span>
+            <span class="d-none d-md-inline">Jogador</span>
           </small>
           <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalMap">
             <i class="fas fa-map me-md-2"></i>
-            <span class="d-none d-md-inline">Map</span>
+            <span class="d-none d-md-inline">Mapa</span>
           </small>
           <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalBackPack">
             <i class="fas fa-box me-md-2"></i>
-            <span class="d-none d-md-inline">Backpack</span>
+            <span class="d-none d-md-inline">Mochila</span>
           </small>
         </div>
       </div>
@@ -200,106 +202,115 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalHelpLabel"><i class="fa fa-info me-2"></i>How to Play</h5>
+          <h5 class="modal-title" id="modalHelpLabel"><i class="fa fa-info me-2"></i>Como Jogar</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-start">
-          <h5>Attack Gauge</h5>
-          <p>Both your enemy and you have an attack gauge that can be filled by drawing cards.</p>
+          <h5>Barra de Ataque</h5>
+          <p>Você e seu inimigo possuem uma barra de ataque, que pode ser preenchida pescando cartas da pilha de cartas da ataque.</p>
           <AttackGauge 
-          :current="7"
-          :maximum="12"
-          :biggestGauge="12"
-          :standing="false"
-          :bursted="false"
-          className="danger"
+            :current="7"
+            :maximum="12"
+            :biggestGauge="12"
+            :standing="false"
+            :bursted="false"
+            className="danger"
           />
+          <small><i class="text-muted">A barra de ataque do inimigo é vermelha.</i></small>
           <AttackGauge 
-          :current="11"
-          :maximum="12"
-          :biggestGauge="12"
-          :standing="false"
-          :bursted="false"
-          className="primary"
+            :current="11"
+            :maximum="12"
+            :biggestGauge="12"
+            :standing="false"
+            :bursted="false"
+            className="primary"
           />
-          <p>At each turn, you can either <b class="px-2 py-1 bg-white rounded text-primary">Draw Card</b>, <b class="px-2 py-1 bg-white rounded text-primary">Stand</b> or use <b class="text-primary">Ability Cards</b></p>
-          <p>If you chosse to draw a card, your draw a card from your cards deck and add its value to your attack gauge, then your turn is over.</p>
-          <p>If you chosse to stand, your attack gauge is locked and you cant play until the end of the round.</p>
-          <p>Using ability cards does not ends your turn, unless the card effect affects yours turn.</p>
+          <small><i class="text-muted">A sua barra de ataque é azul.</i></small>
+          <p>Para ganhar o round, você precisa encher sua barra de ataque o máximo possível, mas sem passar do seu limite!</p>
+          <p>Em cada turno, você pode <b class="px-2 py-1 bg-white rounded text-primary">Pescar uma carta</b>, <b class="px-2 py-1 bg-white rounded text-primary">Parar</b> ou usar uma <b class="text-primary">Carta de Habilidade</b></p>
+          <p>Ao pescar, o valor da carta pescada é adicionado a sua barra de ataque e seu turno acaba.</p>
+          <p>Se você escolher parar, você trava sua barra de ataque no valor atual e espera até que seu inimigo pare também.</p>
+          <p>Usar uma <b class="text-primary">Carta de Habilidade</b> não afeta a passage de turno a não ser que isso faça parte de seu efeito.</p>
           <hr>
-          <h5>Round Results</h5>
-          <p>When both you and your enemy stands, both gauges lock and the result is computed by subtrating 1 from both gauges until one of them reach 0.</p>
+          <h5>Resultados do Round</h5>
+          <p>Assim que você e seu inimigo pararem, o resultado do round é calculado, subtraíndo 1 das duas barras até que alguma atinja o valor 0</p>
           <AttackGauge 
-          :current="0"
-          :maximum="12"
-          :biggestGauge="12"
-          :standing="true"
-          :bursted="false"
-          className="danger"
+            :current="0"
+            :maximum="12"
+            :biggestGauge="12"
+            :standing="true"
+            :bursted="false"
+            className="danger"
           />
           <AttackGauge 
-          :current="4"
-          :maximum="12"
-          :biggestGauge="12"
-          :standing="true"
-          :bursted="false"
-          className="primary"
+            :current="4"
+            :maximum="12"
+            :biggestGauge="12"
+            :standing="true"
+            :bursted="false"
+            className="primary"
           />
-          <small><i class="text-muted">You can identify if the gauge is locked or not by the color of the value at the right, if its colored, then the gauge is locked.</i></small>
-          <p></p>
-          <p>After computing the difference between the gauges, the winner deals a number of attacks equals to the value in his gauge. There is a message at the end of the round to tell the results.</p>
+          <p>Depois de calcular o resultado, o vencedor irá causar um número ataques igual ao valor restante em sua barra de ataque. Em seguida, uma mensagem é exibida exibindo os valores resultantes daquele round.</p>
           <div class="p-3 rounded border border-2 text-white rounded shadow h-100 mx-auto text-center mb-3" style="background-color:black">
-            <b>Player</b> wins by <b>4</b>!
-            <br><b class="text-warning"> 20 <i class="fas fa-crosshairs"></i><small>( 5 x 4 )</small> </b> damage dealt!
+            <b>Jogador</b> venceu por <b>4</b>!
+            <br><b class="text-warning"> 20 <i class="fas fa-crosshairs"></i><small>( 5 x 4 )</small> </b> de dano causado!
             <br><b class="text-info">+24 <i class="fas fa-fire"></i></b>
           </div>
-          <p><small><i class="text-muted">The damage(20) is composed by the base damage(5) multiplied by the gauges difference(4).</i></small></p>
+          <p><small><i class="text-muted">O dano causado(20) é composto pelo dano base(5) multiplicado pelo número de ataques(4).</i></small></p>
           <hr>
-          <h5>Bursting</h5>
-          <p>Whenever an attack gauge is overcharged, its owner instantly becomes bursted and stands, and the gauge value is set to the difference between the maximum and the current value.</p>
+          <h5>Estouro</h5>
+          <p>Quando uma barra de ataque passa de seu valor máximo, ela se torna <b class="text-warning">Estourada</b>. Uma barra de ataque estourada obriga seu possessor a parar instantaneamente</p>
           
           <p class="text-center">
-            Gauge is value is 9 and its maximum value is 12
+            Barra de ataque com valor 9 e valor máximo 12.
           </p>
           <AttackGauge 
-          :current="9"
-          :maximum="12"
-          :biggestGauge="12"
-          :standing="false"
-          :bursted="false"
-          className="primary"
+            :current="9"
+            :maximum="12"
+            :biggestGauge="12"
+            :standing="false"
+            :bursted="false"
+            className="primary"
           />
           <p class="text-center">
-            Card with value 5 is drawn.
+            Uma carta com valor 5 é pescada.
           </p>
           <p class="text-center">
             <b><span class="text-primary">9</span> + 5 = <span class="text-warning">14</span></b>
             <i class="fa fa-arrow-right mx-3"></i>
-            <b class="text-warning">Bursted! (14 > 12)</b>
+            <b class="text-warning">Estouro! (14 > 12)</b>
             <i class="fa fa-arrow-right mx-3"></i>
             <b><span class="text-warning">14</span> - 12 = <span class="text-primary">2</span></b>
           </p>
           <AttackGauge 
-          :current="2"
-          :maximum="12"
-          :biggestGauge="12"
-          :standing="true"
-          :bursted="true"
-          className="primary"
+            :current="2"
+            :maximum="12"
+            :biggestGauge="12"
+            :standing="true"
+            :bursted="true"
+            className="primary"
           />
-          <p><small><i class="text-muted">The gauge is set to the difference(2) between the maximum(12) and the overcharged value(14) and the owner stands, so it cant play until the end of the round.</i></small></p>
+          <p><small><i class="text-muted">O valor da barra é definido pela diferença(2) entre o valor máximo(12) e o valor de estouro(14).</i></small></p>
           <hr>
-          <h5>Your Deck</h5>
-          <p>Your deck is made of 4 cards of each integer between 1 and half of your gauge size.</p>
+          <h5>Baralho de Ataque</h5>
+          <p>Seu baralho de ataque é composto de um total de 24 cartas. Com valores de <i>N/2 - 5</i> á <i>N/2</i>, sendo <i>N</i> o valor total da sua barra de ataque.</p>
+          <p>Se você tem uma barra com tamanho 12, você tera cartas de (12/2 - 5) á (12/2), ou seja, de 1 á 6.</p>
           <div class="row">
             <div class="col-1 text-center my-3" v-for="card, cardIndex in shuffledCards" :key="`player_card_${cardIndex}`">
               <span class="px-2 py-2 shadow-sm border rounded text-primary">{{card}}</span>
             </div>
           </div>
-          <p><small><i class="text-muted">Your Current Deck.</i></small></p>
-          <p>When you run out of cards, a new deck is shuffled for you.</p>
+          <p><small><i class="text-muted">Seu baralho atual.</i></small></p>
+          <p>Quando as cartas acabam, um novo baralho já embaralho é disponibilizado.</p>
           <hr>
-          <h5>Ability Cards list</h5>
+          <h5>Cartas de Habilidade</h5>
+          <p>Você pode utilizar <b class="text-primary">Cartas de Habilidade</b> para te auxiliarem no combate, elas possuem efeitos diversos como: aumentar sua barra de ataque, obrigar o inimigo a parar, recuperar vida, etc.</p>
+          <p>Cada carta tem um custo de <b class="text-info">energia <i class="fas fa-fire"></i></b> para ser utilizada. Essa energia pode ser adquirida em duas situações durante o combate: quando você vence um round ou quando um round empata.</p>
+          <p><i>Vitória - </i> <b class="text-info">10% da energia máxima * Número de ataques <i class="fas fa-fire"></i></b></p>
+          <p><i>Empate - </i> <b class="text-info">10% da energia máxima <i class="fas fa-fire"></i></b></p>
+          <p>Você pode ter até 4 cartas em sua mão ao mesmo tempo, quando uma carta é utilizada, uma nova carta é inserida em sua mão.</p>
+          <p>Para <b>Usar <i class="fa fa-arrow-up"></i></b> uma carta, clique no parte SUPERIOR da mesma.</p>          
+          <p>Para <b>Descarar <i class="fa fa-arrow-down"></i></b> uma carta, clique no parte INFERIOR da mesma.</p>          
           <div class="row g-3 pb-3 align-items-stretch">
             <AbilityCard
               :type="card.type"
@@ -312,11 +323,13 @@
               v-for="card, cardIndex in abilityCards"
               :key="`card_${cardIndex}`"
               class="col-6 col-md-4"
+              :discardCost="6"
+              :keymap="cardIndex"
             />
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
         </div>
       </div>
     </div>
@@ -327,7 +340,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalPlayerLabel"><i class="fa fa-user me-2"></i>Player</h5>
+          <h5 class="modal-title" id="modalPlayerLabel"><i class="fa fa-user me-2"></i>Jogador</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-start">
@@ -341,7 +354,7 @@
             :hideLabel="true"
             class="mb-3"
           />
-          <h4>Atributes</h4>
+          <h4>Atributos</h4>
           <div class="row container">
             <div class="col-6 text-start px-4">
               <i class="fas fa-heart me-3"></i>
@@ -360,18 +373,18 @@
               {{Math.round(player.damage)}}
             </div>
           </div>
-          <h4>Cards</h4>
+          <h4>Baralho</h4>
           <div class="container">
             <div class="row">
               <div class="col-1 text-center my-3" v-for="card, cardIndex in shuffledCards" :key="`player_card_${cardIndex}`">
                 <span class="px-2 py-2 shadow-sm border rounded text-primary">{{card}}</span>
               </div>
             </div>
-            <small class="text-muted"><i>The cards are not in the same order as in the current deck</i></small>
+            <small class="text-muted"><i>As cartas acima não se encontram na mesma ordem que seu baralho!</i></small>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
         </div>
       </div>
     </div>
@@ -382,14 +395,14 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalBackPackLabel"><i class="fa fa-box me-2"></i>Backpack</h5>
+          <h5 class="modal-title" id="modalBackPackLabel"><i class="fa fa-box me-2"></i>Mochila</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-start">
-          <h5>Equipments</h5>
-          <p class="text-muted">No equipment found yet.</p>
+          <h5>Equipamentos</h5>
+          <p class="text-muted">Nenhum equipamento encontrado ainda.</p>
 
-          <h5>In the pile</h5>
+          <h5>Habilidades no Baralho</h5>
           <div class="row g-3 pb-3 align-items-stretch" v-on:dragStart="console.log($event)">
             <AbilityCard
               :type="card.type"
@@ -405,7 +418,7 @@
             />
           </div>
 
-          <h5>Abilities</h5>
+          <h5>Todas suas Habilidades</h5>
           <div class="row g-3 pb-3 align-items-stretch" v-on:dragStart="console.log($event)">
             <AbilityCard
               :type="card.type"
@@ -422,7 +435,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
         </div>
       </div>
     </div>
@@ -433,25 +446,25 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalMapLabel"><i class="fa fa-map me-2"></i>Map</h5>
+          <h5 class="modal-title" id="modalMapLabel"><i class="fa fa-map me-2"></i>Mapa</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-start">
-          <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Cemetery.png')}); background-size: cover;`">
-            <h5 class="text-white">Cemitery</h5>
+          <button class="btn border-2 border-white rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url('https://i.pinimg.com/originals/ca/46/86/ca46864b637063b1dceb81d4f47e5ea5.jpg'); background-size: cover; background-position:center;`">
+            <h5 class="text-white text-shadow">Slime Hill</h5>
           </button>
           <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Church.png')}); background-size: cover;filter:grayscale(1)`">
-            <h5 class="text-white">Church</h5>
+            <h5 class="text-white text-shadow">???</h5>
           </button>
           <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Forest.png')}); background-size: cover;filter:grayscale(1)`">
-            <h5 class="text-white">Forest</h5>
+            <h5 class="text-white text-shadow">???</h5>
           </button>
           <button class="btn rounded bg-cover w-100 py-3 px-2 shadow mb-3" :style="`background-image:url(${require('@/assets/backgrounds/Mansion.png')}); background-size: cover;filter:grayscale(1)`">
-            <h5 class="text-white">Mansion</h5>
+            <h5 class="text-white text-shadow">???</h5>
           </button>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
         </div>
       </div>
     </div>
@@ -656,7 +669,7 @@ h4{
 
 
 .text-shadow {
-  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .container {

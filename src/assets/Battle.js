@@ -81,9 +81,9 @@ const Battle = () => ({
         let damage = `${(result.diff * ( playerWins ? this.player.damage : this.enemy.damage).toFixed(2) )} <i class="fas fa-crosshairs"></i> <small>( ${result.diff} x ${playerWins ? this.player.damage : this.enemy.damage} )</small>`;
         this.toastFunction(
             result.winner != 'draft' ?
-            `<b>${result.winner}</b> wins by <b>${result.diff}</b>!<br><b class="text-warning">${damage} </b>damage dealt!<br>${energy}`
+            `<b>${result.winner}</b> venceu por <b>${result.diff}</b>!<br><b class="text-warning">${damage} </b> de dano causado!<br>${energy}`
             :
-            `<b>Draft!</b><br>${energy}`
+            `<b>Empate!</b><br>${energy}`
         );
         // Reseting entities gauge
         await sleep(2000);
@@ -97,7 +97,7 @@ const Battle = () => ({
         if(!this.player.isAlive()){
             this.player.reset(true);
             this.toastFunction(
-                `<b>Player died!</b>`
+                `<b>Jogador morreu!</b>`
             );
             await sleep(2000);
             this.enemy = Entities.randomEnemy();
@@ -108,8 +108,9 @@ const Battle = () => ({
         // If enemy is dead, addExp and change enemy ELSE enemy soft reset
         if(!this.enemy.isAlive()) {
             this.player.addExp(this.enemy.exp);
+            this.enemy.image = null;
             this.toastFunction(
-                `<b>Enemy died!</b>`
+                `<b>${this.enemy.name} morreu!</b>`
             );
             await sleep(2000);
             this.enemy = Entities.randomEnemy();

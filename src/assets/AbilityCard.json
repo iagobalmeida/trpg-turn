@@ -4,54 +4,54 @@
         "type": "life",
         "cost": 15,
         "modifier": 10,
-        "name": "Pills I",
+        "name": "Pílulas I",
         "image": "pill.png",
-        "description": "Heal 10 HP"
+        "description": "Recupera 10 HP"
     },
     {
         "id": 1,
         "type": "life",
         "cost": 20,
         "modifier": 20,
-        "name": "Pills II",
+        "name": "Pílulas II",
         "image": "medicines.png",
-        "description": "Heal 20 HP"
+        "description": "Recupera 20 HP"
     },
     {
         "id": 2,
         "type": "life",
         "cost": 30,
         "modifier": 35,
-        "name": "Pills III",
+        "name": "Pílulas III",
         "image": "overdose.png",
-        "description": "Heal 35 HP"
+        "description": "Recupera 35 HP"
     },
     {
         "id": 3,
         "type": "life",
         "cost": 45,
         "modifier": 55,
-        "name": "Pills IV",
+        "name": "Pílulas IV",
         "image": "medicine-pills.png",
-        "description": "Heal 55 HP"
+        "description": "Recupera 55 HP"
     },
     {
         "id": 4,
         "type": "lifePercentage",
         "cost": 60,
         "modifier": 60,
-        "name": "Pills V",
+        "name": "Pílulas V",
         "image": "miracle-medecine.png",
-        "description": "Heal 60% HP"
+        "description": "Recupera 60% HP"
     },
     {
         "id": 5,
         "type": "life",
         "cost": 65,
         "modifier": 55,
-        "name": "Rejuvenation",
+        "name": "Rejuvenescer",
         "image": "nested-hearts.png",
-        "description": "Avoid death for this round"
+        "description": "Evita a morte nesse turno"
     },
 
     {
@@ -59,36 +59,36 @@
         "type": "gaugeDefined",
         "cost": 15,
         "modifier": 1,
-        "name": "Overcharge I",
+        "name": "Sobrecarga I",
         "image": "battery-25.png",
-        "description": "Add 1 to your attack gauge"
+        "description": "Adiciona 1 a sua barra de ataque"
     },
     {
         "id": 7,
         "type": "gaugeDefined",
         "cost": 10,
         "modifier": 2,
-        "name": "Overcharge II",
+        "name": "Sobrecarga II",
         "image": "battery-50.png",
-        "description": "Add 2 to your attack gauge"
+        "description": "Adiciona 2 a sua barra de ataque"
     },
     {
         "id": 8,
         "type": "gaugeDefined",
         "cost": 15,
         "modifier": 4,
-        "name": "Overcharge III",
+        "name": "Sobrecarga III",
         "image": "battery-75.png",
-        "description": "Add 4 to your attack gauge"
+        "description": "Adiciona 4 a sua barra de ataque"
     },
     {
         "id": 9,
         "cost": 20,
         "type": "gaugeDefined",
         "modifier": 6,
-        "name": "Overcharge IV",
+        "name": "Sobrecarga IV",
         "image": "battery-100.png",
-        "description": "Add 6 to your attack gauge"
+        "description": "Adiciona 6 a sua barra de ataque"
     },
     {
         "id": 10,
@@ -96,9 +96,9 @@
         "type": "gaugeChoose",
         "min": 1,
         "max": 3,
-        "name": "Luckcharge I",
+        "name": "Sortecarga I",
         "image": "battery-minus.png",
-        "description": "Add 1 or 3 to your attack gauge"
+        "description": "Adiciona 1 OU 3 a sua barra de ataque"
     },
     {
         "id": 11,
@@ -106,9 +106,9 @@
         "type": "gaugeChoose",
         "min": 5,
         "max": 10,
-        "name": "Luckcharge II",
+        "name": "Sortecarga II",
         "image": "battery-minus.png",
-        "description": "Add 5 or 10 to your attack gauge"
+        "description": "Adiciona 5 OU 10 a sua barra de ataque"
     },
     {
         "id": 12,
@@ -116,9 +116,9 @@
         "type": "gaugeChoose",
         "min": 8,
         "max": 10,
-        "name": "Luckcharge III",
+        "name": "Sortecarga III",
         "image": "battery-minus.png",
-        "description": "Add 8 or 11 to your attack gauge"
+        "description": "Adiciona 8 OU 11 a sua barra de ataque"
     },
 
     {
@@ -126,218 +126,216 @@
         "type": "energy",
         "cost": 0,
         "modifier": 10,
-        "name": "Concentrate I",
+        "name": "Concentrar I",
         "image": "prayer.png",
-        "description": "Raise your current energy by 15%"
+        "description": "Recupera 15% de energia"
     },
     {
         "id": 14,
         "type": "energy",
         "cost": 0,
         "modifier": 20,
-        "name": "Concentrate II",
+        "name": "Concentrar II",
         "image": "meditation.png",
-        "description": "Raise your current energy by 30%"
+        "description": "Recupera 30% de energia"
     },
     {
         "id": 15,
         "type": "energy",
         "cost": 20,
         "modifier": 35,
-        "name": "Resonance",
+        "name": "Ressonância",
         "image": "resonance.png",
-        "description": "Double the energy gained in this round"
+        "description": "Ganha o dobro de energia até o fim dessa rodada"
     },
     {
         "id": 16,
         "type": "energy",
         "cost": 20,
         "modifier": 55,
-        "name": "Chi Punch",
+        "name": "Soco de Chi I",
         "image": "slap.png",
-        "description": "Cause half your energy in damage and set your energy to 0"
+        "description": "Esvazia sua energia, a cada 2 pontos de energia, causa 1 de dano ao inimigo"
     },
     {
         "id": 17,
         "type": "energy",
-        "cost": 15,
+        "cost": 35,
         "modifier": 55,
-        "name": "Energy Grab",
-        "image": "glowing-hands.png",
-        "description": "Regenerate all the spent energy at the end of the turn"
+        "name": "Soco de Chi II",
+        "image": "slap.png",
+        "description": "Esvazia sua energia, a cada 2 pontos de energia, causa 2 de dano ao inimigo"
     },
-
-
     {
         "id": 18,
-        "type": "statusEffect",
-        "target": "self",
-        "cost": 30,
-        "modifier": 10,
-        "name": "Inner Strength",
-        "image": "mighty-force.png",
-        "description": "Double your damage for the rest of the turn"
+        "type": "energy",
+        "cost": 55,
+        "modifier": 55,
+        "name": "Soco de Chi III",
+        "image": "slap.png",
+        "description": "Esvazia sua energia, a cada 3 pontos de energia, causa 7 de dano ao inimigo"
     },
     {
         "id": 19,
-        "type": "statusEffect",
-        "target": "self",
-        "cost": 30,
-        "modifier": 10,
-        "name": "Hard Skin",
-        "image": "scale-mail.png",
-        "description": "Double your armor for the rest of the turn"
+        "type": "energy",
+        "cost": 15,
+        "modifier": 55,
+        "name": "Absorção",
+        "image": "glowing-hands.png",
+        "description": "Recupera toda a energia gasta durante esse turno"
     },
+
+
     {
         "id": 20,
         "type": "statusEffect",
         "target": "self",
-        "cost": 20,
+        "cost": 30,
         "modifier": 10,
-        "name": "Sequence I",
-        "image": "pointy-sword.png",
-        "description": "Deal 1 aditional attack this turn"
+        "name": "Força Interior",
+        "image": "mighty-force.png",
+        "description": "Dobra seu dano até o fim do turno"
     },
     {
         "id": 21,
         "type": "statusEffect",
         "target": "self",
-        "cost": 45,
+        "cost": 30,
         "modifier": 10,
-        "name": "Sequence II",
-        "image": "pointy-sword.png",
-        "description": "Deal 2 aditional attack this turn"
+        "name": "Pele de Aço",
+        "image": "scale-mail.png",
+        "description": "Dobra sua armadura até o fim do turno"
     },
     {
         "id": 22,
         "type": "statusEffect",
         "target": "self",
-        "cost": 65,
+        "cost": 20,
         "modifier": 10,
-        "name": "Sequence III",
+        "name": "Sequência I",
         "image": "pointy-sword.png",
-        "description": "Deal 3 aditional attack this turn"
+        "description": "Cause 1 ataque adicional nesse turno"
     },
     {
         "id": 23,
         "type": "statusEffect",
         "target": "self",
-        "cost": 85,
+        "cost": 45,
         "modifier": 10,
-        "name": "Sequence IV",
+        "name": "Sequência II",
         "image": "pointy-sword.png",
-        "description": "Deal 50% more attacks this turn"
+        "description": "Cause 1 ataque adicional nesse turno"
     },
     {
         "id": 24,
         "type": "statusEffect",
         "target": "self",
-        "cost": 110,
+        "cost": 65,
         "modifier": 10,
-        "name": "Sequence V",
+        "name": "Sequência III",
         "image": "pointy-sword.png",
-        "description": "Deal 100% more attacks this turn"
+        "description": "Cause 1 ataque adicional nesse turno"
     },
-    
     {
         "id": 25,
         "type": "statusEffect",
         "target": "self",
-        "cost": 30,
+        "cost": 85,
         "modifier": 10,
-        "name": "Prepare",
-        "image": "swordman.png",
-        "description": "Stand and receive half damage this turn"
+        "name": "Sequência IV",
+        "image": "pointy-sword.png",
+        "description": "Casue 50% ataques a mais nesse turno"
     },
     {
         "id": 26,
+        "type": "statusEffect",
+        "target": "self",
+        "cost": 110,
+        "modifier": 10,
+        "name": "Sequência V",
+        "image": "pointy-sword.png",
+        "description": "Casue o dobro de ataques nesse turno"
+    },
+    
+    {
+        "id": 27,
+        "type": "statusEffect",
+        "target": "self",
+        "cost": 30,
+        "modifier": 10,
+        "name": "Preparação",
+        "image": "swordman.png",
+        "description": "Pare instantaneamente e recebe metade do dano nesse turno"
+    },
+    {
+        "id": 28,
         "type": "statusEffect",
         "target": "self",
         "cost": 45,
         "modifier": 10,
         "name": "Totem",
         "image": "holy-symbol.png",
-        "description": "Remove all negative effects"
+        "description": "Remove todos os efeitos negativos"
     },
     {
-        "id": 27,
+        "id": 29,
         "cost": 15,
         "type": "statusEffect",
         "target": "self",
         "statusName": "regeneration",
         "turns": 3,
         "modifier": 5,
-        "name": "Blessing I",
+        "name": "Benção I",
         "image": "holy-grail.png",
-        "description": "Regenerate 5 HP for 3 rounds"
+        "description": "Recupera 5 HP no começo do turno, durante 3 turnos"
     },
     {
-        "id": 28,
+        "id": 30,
         "cost": 30,
         "type": "statusEffect",
         "target": "self",
         "statusName": "regeneration",
         "turns": 3,
         "modifier": 10,
-        "name": "Blessing II",
+        "name": "Benção II",
         "image": "holy-grail.png",
-        "description": "Regenerate 10 HP for 3 rounds"
+        "description": "Recupera 10 HP no começo do turno, durante 3 turnos"
     },
     {
-        "id": 29,
+        "id": 31,
         "cost": 45,
         "type": "statusEffect",
         "target": "self",
         "statusName": "regeneration",
         "turns": 3,
         "modifier": 15,
-        "name": "Blessing III",
+        "name": "Benção III",
         "image": "holy-grail.png",
-        "description": "Regenerate 15 HP for 3 rounds"
+        "description": "Recupera 15 HP no começo do turno, durante 3 turnos"
     },
     {
-        "id": 30,
+        "id": 32,
         "cost": 70,
         "type": "statusEffect",
         "target": "self",
         "statusName": "regeneration",
         "turns": 3,
         "modifier": 25,
-        "name": "Blessing IV",
+        "name": "Benção IV",
         "image": "holy-grail.png",
-        "description": "Regenerate 25 HP for 3 rounds"
+        "description": "Recupera 25 HP no começo do turno, durante 3 turnos"
     },
 
 
-    {
-        "id": 31,
-        "type": "statusEffect",
-        "target": "enemy",
-        "cost": 35,
-        "modifier": 10,
-        "name": "Blindness",
-        "image": "blindfold.png",
-        "description": "Your enemy cand see his gauge for the rest of the turn"
-    },
-    {
-        "id": 32,
-        "type": "statusEffect",
-        "target": "enemy",
-        "cost": 35,
-        "modifier": 10,
-        "name": "Fracture",
-        "image": "broken-bone.png",
-        "description": "Your next attack will cause triple damage"
-    },
     {
         "id": 33,
         "type": "statusEffect",
         "target": "enemy",
         "cost": 35,
         "modifier": 10,
-        "name": "Knockout",
-        "image": "knockout.png",
-        "description": "Your enemy cant stand for the rest of the turn"
+        "name": "Cegueira",
+        "image": "blindfold.png",
+        "description": "O oponente não consegue ver sua barra de ataque até o fim do turno"
     },
     {
         "id": 34,
@@ -345,33 +343,53 @@
         "target": "enemy",
         "cost": 35,
         "modifier": 10,
-        "name": "Unbalance",
-        "image": "misdirection.png",
-        "description": "Double your enemie deck cards value for the rest of the turn"
+        "name": "Fratura",
+        "image": "broken-bone.png",
+        "description": "Seu próximo ataque causa o triplo de dano e aplica FRATURA no oponente"
     },
     {
         "id": 35,
+        "type": "statusEffect",
+        "target": "enemy",
+        "cost": 35,
+        "modifier": 10,
+        "name": "Atordoamento",
+        "image": "knockout.png",
+        "description": "O oponente não pode PARAR durante esse turno"
+    },
+    {
+        "id": 36,
+        "type": "statusEffect",
+        "target": "enemy",
+        "cost": 35,
+        "modifier": 10,
+        "name": "Tontura",
+        "image": "misdirection.png",
+        "description": "Todas as cartas do oponente tem o dobro do valor durante esse turno"
+    },
+    {
+        "id": 37,
         "cost": 45,
         "type": "statusEffect",
         "target": "enemy",
         "statusName": "poison",
         "turns": 3,
         "modifier": 5,
-        "name": "Poison",
+        "name": "Envenenamento",
         "image": "potion-of-madness.png",
-        "description": "Your next attack will poison the enemy, causing the round damage for 3 rounds"
+        "description": "Seu próximo ataque irá causar ENVENENAMENTO, aplicando metade do dano causado durante 3 turnos"
     },
     {
-        "id": 36,
+        "id": 38,
         "cost": 45,
         "type": "statusEffect",
         "target": "enemy",
         "statusName": "despair",
         "turns": 1,
         "modifier": 10,
-        "name": "Despair",
+        "name": "Desespero",
         "image": "despair.png",
-        "description": "Force your oponent to instantly stand"
+        "description": "Obrigue o oponente a PARAR imediatamente."
     }
 
 ]

@@ -20,12 +20,12 @@ Array.prototype.shuffle = function() {
 }
 
 const baseDeck = (gaugeSize) => {
-    let minimum = Math.floor(gaugeSize/4);
+    let minimum = Math.floor(gaugeSize/2 - 5);
     console.log('\ngaugeSize', gaugeSize);
     console.log('minimum', minimum);
 
-    let deck = new Array(16);
-    for(let i = 0; i <= 16; i++) {
+    let deck = new Array(24);
+    for(let i = 0; i <= 24; i++) {
         deck.fill(minimum+i, i*4, i*4+4);
     }
     return deck;
@@ -33,9 +33,10 @@ const baseDeck = (gaugeSize) => {
 
 const baseAbilityDeck = (shuffle = true) => {
     let ret = [
-        abilityCards[0], abilityCards[0], abilityCards[0],
-        abilityCards[6], abilityCards[7], abilityCards[10],
-        abilityCards[28],abilityCards[36]
+        abilityCards[0],    abilityCards[0],    abilityCards[0],
+        abilityCards[6],    abilityCards[7],    abilityCards[10],
+        abilityCards[9],    abilityCards[11],   abilityCards[12],
+        abilityCards[29],   abilityCards[38]
     ]
     if(shuffle) { ret.shuffle(); }
     return ret;
@@ -235,9 +236,9 @@ const loadStoragePlayer = () => {
     let storagePlayer = localStorage.getItem('player');
     if(storagePlayer) {
         let playerData = JSON.parse(storagePlayer);
-        return { ...createPlayer('Tidus', 1, 12, 50, 50, 5), ...playerData, statusEffects: []};
+        return { ...createPlayer('Jogador', 1, 12, 50, 50, 5), ...playerData, statusEffects: []};
     }else{
-        return createPlayer('Tidus', 1, 12, 50, 50, 5);
+        return createPlayer('Jogador', 1, 12, 50, 50, 5);
     }
 }
 
