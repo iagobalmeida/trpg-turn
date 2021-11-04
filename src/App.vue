@@ -231,6 +231,15 @@
           <p>Ao pescar, o valor da carta pescada é adicionado a sua barra de ataque e seu turno acaba.</p>
           <p>Se você escolher parar, você trava sua barra de ataque no valor atual e espera até que seu inimigo pare também.</p>
           <p>Usar uma <b class="text-primary">Carta de Habilidade</b> não afeta a passage de turno a não ser que isso faça parte de seu efeito.</p>
+          <p><b>Hotkeys</b></p>
+          <ul class="list-group ">
+            <li class="list-group-item bg-dark text-white"><span class="bg-white px-2 py-1 rounded text-dark shadow me-2">D</span>Pescar carta</li>
+            <li class="list-group-item bg-dark text-white"><span class="bg-white px-2 py-1 rounded text-dark shadow me-2">S</span>Parar</li>
+            <li class="list-group-item bg-dark text-white"><span class="bg-white px-2 py-1 rounded text-dark shadow me-2">1</span>Usar carta de habilidade "1"</li>
+            <li class="list-group-item bg-dark text-white"><span class="bg-white px-2 py-1 rounded text-dark shadow me-2">2</span>Usar carta de habilidade "2"</li>
+            <li class="list-group-item bg-dark text-white"><span class="bg-white px-2 py-1 rounded text-dark shadow me-2">3</span>Usar carta de habilidade "3"</li>
+            <li class="list-group-item bg-dark text-white"><span class="bg-white px-2 py-1 rounded text-dark shadow me-2">4</span>Usar carta de habilidade "4"</li>
+          </ul>
           <hr>
           <h5>Resultados do Round</h5>
           <p>Assim que você e seu inimigo pararem, o resultado do round é calculado, subtraíndo 1 das duas barras até que alguma atinja o valor 0</p>
