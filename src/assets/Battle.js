@@ -64,25 +64,37 @@ const Battle = () => ({
         // Getting result
         let result = await Entities.gaugeDifference(this.player, this.enemy);
         let playerWins = result.winner == this.player.name;
+        // let playerEnergy = (playerWins ? result.diff : 1) * this.player.energy.maximum/10;
+        // let energyText = `<b class="text-info">+${playerEnergy.toFixed(2)} <i class="fas fa-fire"></i></b>`;
+        // let damageText = `${(result.diff * ( playerWins ? this.player.damage : this.enemy.damage).toFixed(2) )} <i class="fas fa-crosshairs"></i> <small>( ${result.diff} x ${playerWins ? this.player.damage : this.enemy.damage} )</small>`;
+        // let toastText = result.winner !=  'draft' ?
+        // `<b>${result.winner}</b> venceu por <b>${result.diff}</b>!<br><b class="text-warning">${damageText} </b> de dano causado!<br>${energyText}`
+        // :
+        // `<b>Empate!</b><br>${energyText}`;
         // Applying damage to entities
-        this.enemy.life.add(playerWins   ?  -(result.diff * this.player.damage) : 0);
-        this.player.life.add(!playerWins ?  -(result.diff * this.enemy.damage)  : 0);
-        // Adding energy to entitites
-        let enemyEnergy  = !playerWins ? (result.diff * (this.enemy.energy.maximum/10))  : (result.winner == 'draft' ? (this.enemy.energy.maximum/10) : 0);
-        let playerEnergy = playerWins  ? (result.diff * (this.player.energy.maximum/10)) : (result.winner == 'draft' ? (this.player.energy.maximum/10) : 0);
-        this.enemy.energy.add(enemyEnergy);
-        this.player.energy.add(playerEnergy);
-        // Showing result
-        let energy = `<b class="text-info">+${playerEnergy.toFixed(2)} <i class="fas fa-fire"></i></b>`;
-        let damage = `${(result.diff * ( playerWins ? this.player.damage : this.enemy.damage).toFixed(2) )} <i class="fas fa-crosshairs"></i> <small>( ${result.diff} x ${playerWins ? this.player.damage : this.enemy.damage} )</small>`;
-        this.toastFunction(
-            result.winner != 'draft' ?
-            `<b>${result.winner}</b> venceu por <b>${result.diff}</b>!<br><b class="text-warning">${damage} </b> de dano causado!<br>${energy}`
-            :
-            `<b>Empate!</b><br>${energy}`
-        );
+        if(result.diff == 0){
+            this.player.energy.addPercentage(10);
+            this.enemy.energy.addPercentage(10);
+        }else{
+            while(result.diff > 0) {
+                this.player.life.add(!playerWins ?  -(this.enemy.damage)  : 0);
+                this.player.energy.addPercentage(playerWins ? 10 : 0);
+                this.player.attack.add(-1);
+                this.enemy.life.add(playerWins   ?  -(this.player.damage) : 0);
+                this.enemy.energy.addPercentage(!playerWins ? 10 : 0);
+                this.enemy.attack.add(-1);
+                result.diff -= 1;
+                await sleep(2.5);
+            }
+        }
+        await sleep(5);
+        // this.toastFunction(toastText);
+        if(!this.enemy.compIsAlive()) {
+            await sleep(3.2);
+            this.enemy.image = 'Loot.png';
+            await sleep(3.2);
+        }
         // Reseting entities gauge
-        await sleep(20);
         await this.reset();
     },
     // Reset
@@ -96,6 +108,8 @@ const Battle = () => ({
                 `<b>Jogador morreu!</b>`
             );
             await sleep(20);
+            this.enemy.image = null;
+            await sleep(2);
             this.enemy = Entities.randomEnemy();
         }else{
             this.player.reset(false);
@@ -103,12 +117,13 @@ const Battle = () => ({
 
         // If enemy is dead, addExp and change enemy ELSE enemy soft reset
         if(!this.enemy.compIsAlive()) {
-            this.player.exp.add(this.enemy.exp.current);
-            this.enemy.image = null;
+            this.player.addExp(this.enemy.exp.maximum);
             this.toastFunction(
-                `<b>${this.enemy.name} morreu!</b>`
+                `<b>${this.enemy.name} morreu!</b><br><b class="text-warning">+${this.enemy.gold} <i class="fa fa-coins"></i></b>`
             );
             await sleep(20);
+            this.enemy.image = null;
+            await sleep(2);
             this.enemy = Entities.randomEnemy();
         }else{
             this.enemy.reset();

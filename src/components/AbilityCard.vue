@@ -143,7 +143,8 @@ export default {
   },
   methods: {
     handleHover(e) {
-      if(this.animated) {
+      let w = window.innerWidth;
+      if(this.animated && w >= 768) {
         let inCardY = e.y - this.$refs.button.getBoundingClientRect().top;
         let discard   = inCardY >= 120;
         let translate = discard ? (this.discardCost <= this.current ? '10px' : '') : (this.cost <= this.current) ? '-15px' : '';
@@ -168,6 +169,7 @@ export default {
   filter: grayscale(1);
   opacity: 0.75;
 }
+
 .abilityCard {
   position: inherit;
   transform-origin: center;

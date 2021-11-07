@@ -42,6 +42,7 @@ const createGauge = (current, maximum, addHandler = null) => ({
     },
     add: addHandler || function (value) {
         this.current = Math.min(this.maximum, this.current + parseFloat(value));
+        this.current = Math.max(this.current, 0);
         return this.current == this.maximum;
     },
     addPercentage: function (value) {
@@ -152,6 +153,7 @@ const createEntity = ({ name, type, level, gaugeSize, threshold, life, energy, d
         energy: createGauge(energy, energy),
         attack: createGauge(0, gaugeSize, function (value) {
             this.current += value;
+            this.current = Math.max(this.current, 0);
             return this.current > this.maximum;
         }),
         threshold,
@@ -201,7 +203,7 @@ const createEntity = ({ name, type, level, gaugeSize, threshold, life, energy, d
                     case 'gaugeDefined':
                         await this.addAttack(card.modifier);
                         break;
-                    case 'gaugeChosse':
+                    case 'gaugeChoose':
                         await this.addAttack(Math.random() >= 0.5 ? card.max : card.min);
                         break;
                     case 'life':
@@ -238,6 +240,15 @@ const createEntity = ({ name, type, level, gaugeSize, threshold, life, energy, d
                 this.discardCost = Math.floor(this.discardCost*1.5);
             }
         },
+        addExp: async function(value) {
+            if(this.exp.add(value)) {
+                this.exp.current -= this.exp.maximum;
+                this.exp.maximum *= 1.2;
+                this.level += 1;
+                this.damage += 1;
+                this.attack.maximum = 6 + Math.floor(this.level/10);
+            }
+        }
     }
 };
 

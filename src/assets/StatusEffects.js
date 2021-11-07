@@ -14,13 +14,13 @@ const createStatus = (moment, name, icon, turns, modifier, handler) => ({
 
 const Status = {
     "poison": (turns, modifier) => (createStatus('start', 'poison', 'fas fa-skull-crossbones', turns, modifier, (target) => {
-        target.addLife(-modifier);
+        target.life.add(-modifier);
     })),
     "regeneration": (turns, modifier) => (createStatus('start', 'regeneration', 'fas fa-heart', turns, modifier, (target) => {
-        target.addLife(modifier);
+        target.life.add(modifier);
     })),
     "despair": () => (createStatus('instant', 'despair', 'fa fa-times', 1, 0, (target) => {
-        target.setStatus('standing');
+        target.isStanding = true;
     }))
 }
 

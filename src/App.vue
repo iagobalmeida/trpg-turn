@@ -7,7 +7,7 @@
   <div class="container w-md-50 rounded-top">
     <div class="background" :style="`background-image:url(${require(`@/assets/backgrounds/Hills.png`)})`"></div>
     <!-- Enemy Card -->
-    <div class="mb-3 px-2 px-md-0 position-relative monster-img" :style="enemy.image ? `background-image:url(${require(`@/assets/enemies/${enemy.image}`)});background-size:${50 + (enemy.size * 50)}px;` : ''">
+    <div class="mb-3 px-2 px-md-0 position-relative">
         <!-- Name -->
         <h5 class="text-white text-shadow mb-3"><b>{{enemy.name}}</b> <small>Lvl. {{enemy.level}}</small></h5>
         <!-- Life -->
@@ -26,6 +26,15 @@
           className="bg-info"
           iconName="fas fa-fire"
         />
+        <div
+          class="monster-img"
+          :style="`
+          opacity:${enemy.compIsAlive() || enemy.image == 'Loot.png' ?'1':'0'};
+          background-image:url(${tryEnemyImage});
+          background-size:${50 + (enemy.size * 50)}px;
+          `
+          ">
+        </div>
         <div class="position-absolute w-100 d-flex justify-content-center align-items-center" v-if="enemy.compAllStatusEffects().length" style="bottom:-30px;">
           <span class="px-2 py-1 bg-white rounded-pill border border-2 shadow-sm"
             v-for="enemyStatus, enemyStatusIndex in enemy.compAllStatusEffects()"
@@ -62,7 +71,7 @@
   </div>
   <!-- Player Actions -->
   <div class="container w-md-50 abilityCard-container position-relative">
-    <div class="row pb-3 flex-nowrap align-items-stretch" v-on:dragStart="console.log($event)">
+    <div class="row pb-3 flex-nowrap align-items-stretch" v-on:dragStart="console.log($event)" style="min-height: 230px;">
       <transition-group name="fadeCards">
         <AbilityCard
           :type="card.type"
@@ -551,6 +560,13 @@ export default {
     },
     animating() {
       return this.battle.animating;
+    },
+    tryEnemyImage() {
+      try {
+        return require(`@/assets/entities/${this.enemy.image}`);
+      }catch(ex) {
+        return null;
+      }
     }
   },
   methods: {
@@ -665,12 +681,13 @@ h4{
 }
 
 .monster-img {
-  height: 230px;
+  height: 130px;
   transform-origin: bottom;
   background-repeat: no-repeat;
   background-position-x: center;
   background-position-y: bottom;
-  transform: translateY(10px);
+  /* transform: translateY(10px); */
+  transition: opacity .2s ease-in-out;
 }
 
 
