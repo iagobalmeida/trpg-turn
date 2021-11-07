@@ -252,9 +252,9 @@ const createEntity = ({ name, type, level, gaugeSize, threshold, life, energy, d
     }
 };
 
-const loadStoragePlayer = () => {
+const loadStoragePlayer = (load = true) => {
     let storageDataJSON = localStorage.getItem('player');
-    let storageData = storageDataJSON ? JSON.parse(storageDataJSON) : null;
+    let storageData = load && storageDataJSON ? JSON.parse(storageDataJSON) : null;
     return createEntity(storageData || { name: 'Player', type: 'player' });
 }
 

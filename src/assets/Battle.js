@@ -3,7 +3,7 @@ import Entities from './Entities';
 const sleep = (factor) => { return new Promise(resolve => setTimeout(resolve, 125 * factor)); }
 
 const Battle = () => ({
-    player:     Entities.loadStoragePlayer(),
+    player:     Entities.loadStoragePlayer(false),
     enemy:      Entities.randomEnemy(),
     animating:  false,
     // Handle player input
