@@ -1,295 +1,277 @@
 import enemies from './enemies.json';
-import abilityCards from './AbilityCard.json';
+import abilityCardsList from './AbilityCard.json';
 import Status from './StatusEffects';
-const APPLIANCES = {
-    START:  'TURN_START',
-    END:    'TURN_END',
+
+const startingAbilityCards = [6,6,7,7,8,10,11,13,29,38,0,0,1];
+
+const sleep = (factor) => { return new Promise(resolve => setTimeout(resolve, 125 * factor)); }
+
+Array.prototype.shuffle = function () {
+    this.every((item, curr) => {
+        let rand = Math.floor(Math.random() * this.length);
+        this[curr] = this[rand];
+        this[rand] = item;
+    });
 }
 
-const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-Array.prototype.shuffle = function() {
-    for (var i = this.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = this[i];
-        this[i] = this[j];
-        this[j] = temp;
+const createAttackDeck = (gaugeSize) => {
+    let minimum = Math.max(1, Math.floor(gaugeSize / 2 - 5));
+    let deck = new Array(minimum*4*4);
+    for (let i = 0; i <= (minimum)*4; i++) {
+        deck.fill(Math.min(minimum + i, gaugeSize/2), i * 4, i * 4 + 4);
     }
-}
-
-const baseDeck = (gaugeSize) => {
-    let minimum = Math.floor(gaugeSize/2 - 5);
-    console.log('\ngaugeSize', gaugeSize);
-    console.log('minimum', minimum);
-
-    let deck = new Array(24);
-    for(let i = 0; i <= 24; i++) {
-        deck.fill(minimum+i, i*4, i*4+4);
-    }
+    deck.shuffle();
     return deck;
 }
 
-const baseAbilityDeck = (shuffle = true) => {
-    let ret = [
-        abilityCards[0],    abilityCards[0],    abilityCards[0],
-        abilityCards[6],    abilityCards[7],    abilityCards[10],
-        abilityCards[9],    abilityCards[11],   abilityCards[12],
-        abilityCards[29],   abilityCards[38]
-    ]
-    if(shuffle) { ret.shuffle(); }
-    return ret;
+const createAbilityDeck = (abilityCards) => {
+    let deck = [];
+    for(let i = 0; i < abilityCards.length; i++){
+        let card = abilityCardsList[abilityCards[i]];
+        deck.push(card);
+    }
+    deck.shuffle();
+    return deck;
 }
 
-const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
-    // Attributes
-    name:               name,
-    level:              level,
-    cards:              [...baseDeck(gaugeSize)],
-    abilityDeckBase:    baseAbilityDeck(false),
-    abilityDeck:        baseAbilityDeck(),
-    abilityCards:       [],
-    discardCost:        6, 
-    status:             'drawing',
-    statusEffects:      [],
-    isBursted:          false,
-    damage:             damage,
-    gauge: {
-        current: 0,
-        maximum: gaugeSize
+const createGauge = (current, maximum, addHandler = null) => ({
+    current,
+    maximum,
+    percentage: function () {
+        return (this.current / this.maximum) * 100;
     },
-    life: {
-        current: life,
-        maximum: life
+    add: addHandler || function (value) {
+        this.current = Math.min(this.maximum, this.current + parseFloat(value));
+        return this.current == this.maximum;
     },
-    energy: {
-        current: Math.round(energy/4),
-        maximum: energy
-    },
-    // Methods
-    isAlive: function() {
-        return this.life.current > 0;
-    },
-    resetGauge: function() {
-        this.gauge.current = 0;
-    },
-    addGauge: async function(value) {
-        let target = this.gauge.current + value;
-        while(this.gauge.current < target){
-            this.gauge.current += 1;
-            if(this.gauge.threshold && this.gauge.current >= this.gauge.threshold) {
-                this.status = 'standing';
-            }
-            if(this.gauge.current > this.gauge.maximum) {
-                this.status         = 'standing';
-                this.isBursted      = true;
-                this.gauge.current  = 0;
-                target = target - this.gauge.maximum;
-            }
-            if(this.gauge.current == this.gauge.maximum) {
-                this.status = 'standing';
-            }
-            await sleep(125);
-        }
-        await sleep(250);
-    },
-    addLife: function(value) {
-        this.life.current += value;
-        this.life.current = this.life.current >= this.life.maximum ? this.life.maximum : this.life.current;
-    },
-    addEnergy: function(value) {
-        // let pre = this.energy.current;
-        this.energy.current = parseFloat(this.energy.current) + value;
-        this.energy.current = this.energy.current >= this.energy.maximum ? this.energy.maximum : this.energy.current;
-        // console.table({
-        //     'pre': pre,
-        //     'value': value,
-        //     'current': this.energy.current,
-        // });
-    },
-    setStatus: function(status) {
-        this.status = status;
-    },
-    drawCard: async function() {
-        let nextCard = this.cards.shift();
-        await this.addGauge(nextCard);
-        if(this.cards.length == 0){
-            this.cards = [...baseDeck(this.gauge.maximum)];
-            this.cards.shuffle();
-        }
-    },
-    drawAbilityCards: async function () {
-        while(this.abilityCards.length < 4) {
-            await sleep(250);
-            let randomAbilityCardIndex = Math.floor(Math.random() * this.abilityDeck.length);
-            let randomCard = this.abilityDeck.splice(randomAbilityCardIndex, 1)[0];
-            this.abilityCards.push(randomCard);
-            if(this.abilityDeck.length == 0) {
-                this.abilityDeck = [...this.abilityDeckBase];
-                this.abilityDeck.shuffle();
-            }
-        }
-    },
-    discardAbilityCard: async function(cardIndex) {
-        if(this.energy.current >= this.discardCost) {
-            this.energy.current -= this.discardCost;
-            this.discardCost = this.discardCost * 1.5;
-            this.abilityCards.splice(cardIndex, 1);
-            await this.drawAbilityCards();
-        }
-    },
-    addStatusEffect: function(statusName, turns, modifier) {
-        let statusEffect = Status[statusName](turns, modifier);
-        if(statusEffect.appliance == 'INSTANT') {
-            statusEffect.apply(this);
-        }else{
-            this.statusEffects.push(statusEffect);
-        }
-    },
-    apllyStatusEffect: function(appliance) {
-        let dels = [];
-        this.statusEffects.forEach((status, index) => {
-            if(status.appliance == appliance) {
-                let rem = status.apply(this);
-                if(rem){
-                    dels.push(index);
-                } 
-            }
-        });
-        dels.forEach((id) => {
-            this.statusEffects.splice(id, 1);
-        })
-    },
-    useAbilityCard: async function(cardIndex, oponnent) {
-        let card = this.abilityCards[cardIndex];
-        if(this.energy.current >= card.cost){
-            this.energy.current -= card.cost;
-            let rand = Math.random();
-            console.log(card.type);
-            switch(card.type) {
-                case 'gaugeDefined':
-                    await this.addGauge(card.modifier);
-                break;
-                case 'gaugeChoose':
-                    await this.addGauge(rand >= 0.5 ? card.max : card.min);
-                break;
-                case 'life':
-                    this.addLife(card.modifier);
-                break;
-                case 'lifePercentage':
-                    this.addLife(this.life.current * card.modifier/100);
-                break;
-                case 'energy':
-                    this.addEnergy(card.modifier);
-                break;
-                case 'statusEffect':
-                    switch(card.target) {
-                        case 'self':
-                            this.addStatusEffect(card.statusName, card.turns || 1, card.modifier || 0);
-                        break;
-                        case 'enemy':
-                            oponnent.addStatusEffect(card.statusName, card.turns || 1, card.modifier || 0);
-                        break;
-                    }
-                break;
-            }
-        }
-        this.abilityCards.splice(cardIndex, 1);
-        await this.drawAbilityCards();
-        return this.status == 'standing';
-    },
-    reset: function(resetLife = false) {
-        this.resetGauge();
-        this.status = 'drawing';
-        this.isBursted = false;
-        if(resetLife) {
-            this.cards = [...baseDeck(this.gauge.maximum)];
-            this.cards.shuffle();
-            this.life.current = this.life.maximum;
-        }
-    }
-});
-
-const createPlayer = (name, level, gaugeSize, life, energy, damage) => ({
-    ...createEntity(name, level, gaugeSize, life, energy, damage),
-    exp: {
-        current: 0,
-        next: 100
-    },
-    addExp: function (exp) {
-        this.exp.current += exp;
-        if(this.exp.current >= this.exp.next){
-        this.level += 1;
-        this.damage += 4;
-        this.life.maximum = Math.ceil(this.life.maximum * 1.3);
-        this.life.current = this.life.maximum;
-        this.energy.maximum = Math.ceil(this.energy.maximum * 1.05);
-        this.energy.current = this.energy.maximum;
-        this.exp.current -= this.exp.next;
-        this.exp.next += 35;  
-        }
-    },
-});
-
-const loadStoragePlayer = () => {
-    let storagePlayer = localStorage.getItem('player');
-    if(storagePlayer) {
-        let playerData = JSON.parse(storagePlayer);
-        return { ...createPlayer('Jogador', 1, 12, 50, 50, 5), ...playerData, statusEffects: []};
-    }else{
-        return createPlayer('Jogador', 1, 12, 50, 50, 5);
-    }
-}
-
-const createEnemy = (name, level, size, gaugeSize, life, energy, damage, threshold, image, exp) => ({
-    ...createEntity(name, level, gaugeSize, life, energy, damage),
-    image:      image,
-    exp:        exp,
-    size:       size,
-    gauge: {
-        current: 0,
-        maximum: gaugeSize,
-        threshold: threshold
+    addPercentage: function (value) {
+        return this.add(this.current * value / 100)
     }
 })
 
+const createEntity = ({ name, type, level, gaugeSize, threshold, life, energy, damage, gold, abilityCards } = {}) => {
+    // Setting default values
+    const altValue = (value, alt) => (value ? value : alt);
+    name = altValue(name, 'Unknown');
+    type = altValue(type, 'Enemy');
+    level = altValue(level, 1);
+    gold = altValue(gold, 10);
+    life = altValue(life, 50);
+    energy = altValue(energy, 30);
+    gaugeSize = altValue(gaugeSize, 6);
+    let baseAttackDeck = createAttackDeck(altValue(gaugeSize, 6));
+    let baseAbilityDeck = createAbilityDeck(altValue(abilityCards, startingAbilityCards));
+    // Factory
+    return {
+        // Logging
+        log: function () { console.log(JSON.stringify(this, null, 2)); },
+        getData: function () {
+            return {
+                name,
+                type,
+                gold,
+                level,
+                life,
+                energy,
+                gaugeSize,
+                baseAttackDeck,
+                baseAbilityDeck
+            }
+        },
+        // Basic Info
+        name,
+        type,
+        gold,
+        discardCost: 6,
+        // Entity Attributes
+        level: altValue(level, 1),
+        damage: altValue(damage, 10),
+        // Status
+        isStanding: false,
+        isBursted: false,
+        isBlind: false,
+        isUnbalanced: false,
+        statusEffects: {
+            start:    [],
+            end:      [],
+            add: function(statusName, turns = 1, modifier = 0) {
+                let status = Status[statusName](turns, modifier);
+                if(status.moment == 'instant') {
+                    status.aplly(this);
+                }else{
+                    this[status.moment].push(status);
+                }
+            },
+            apply: function(moment) {
+                this[moment].every((statusEffect) => {
+                    statusEffect.apply(this);
+                });
+            },
+            reset: function() {
+                this.start = [];
+                this.end = [];
+            }
+        },
+        // Entity Cards
+        attackCards: {
+            base: [...baseAttackDeck],
+            current: [...baseAttackDeck],
+            draw: async function () {
+                let randomCard = this.current.splice(Math.floor(this.current.length * Math.random()), 1);
+                if (this.current.length == 0) this.redraw();
+                return randomCard;
+            },
+            redraw: async function () {
+                this.current = [...this.base];
+            }
+        },
+        // Ability Cards
+        abilityCards: {
+            base: [...baseAbilityDeck],
+            hand: [...(baseAbilityDeck.splice(0, 4))],
+            current: [...baseAbilityDeck],
+            draw: async function () {
+                while (this.hand.length < 4) {
+                    let randomIndex = Math.floor(this.current.length * Math.random());
+                    let randomCard = this.current.splice(randomIndex, 1)[0];
+                    this.hand.push(randomCard);
+                    if (this.current.length == 0) this.current = [...this.base];
+                    await sleep(2);
+                }
+                return;
+            },
+            discard: async function (index) {
+                this.hand.splice(index, 1);
+                await this.draw();
+                return;
+            }
+        },
+        // Entity Gauges
+        exp: createGauge((level - 1) * 0, level * 100),
+        life: createGauge(life, life),
+        energy: createGauge(energy, energy),
+        attack: createGauge(0, gaugeSize, function (value) {
+            this.current += value;
+            return this.current > this.maximum;
+        }),
+        threshold,
+        // Computed properties
+        compIsAlive: function () { return this.life.current > 0 },
+        compShallStand: function () { return this.threshold > -1 && this.attack.current >= this.threshold },
+        compAllStatusEffects: function () { return [...this.statusEffects.start, ...this.statusEffects.end] ;},
+        // Methods
+        reset: async function (dead = false) {
+            this.discardCost    = 6;
+            this.attack.current = 0;
+            this.isStanding     = false;
+            this.isBursted      = false;
+            if (dead) {
+                await this.attackCards.redraw();
+                this.life.current = this.life.maximum;
+                this.energy.current = Math.floor(this.energy.maximum*0.3);
+                this.statusEffects.reset();
+            }else{
+                this.statusEffects.apply('start');
+            }
+        },
+        addAttack: async function (value) {
+            let target = this.attack.current + parseInt(value);
+            while (this.attack.current < target) {
+                if (this.attack.add(1)) {
+                    target = this.attack.current - this.attack.maximum;
+                    this.isBursted = true;
+                    this.isStanding = true;
+                    this.attack.current = 0;
+                }
+                this.isStanding = this.compShallStand() || this.attack.current == this.attack.maximum || this.isBursted;
+                await sleep(1);
+            }
+            await sleep(2);
+            return;
+        },
+        drawAttackCard: async function () {
+            let nextCard = await this.attackCards.draw();
+            await this.addAttack(nextCard);
+        },
+        useAbilityCard: async function (index, oponnent) {
+            let card = this.abilityCards.hand[index];
+            if (this.energy.current >= card.cost) {
+                this.energy.current -= card.cost;
+                switch (card.type) {
+                    case 'gaugeDefined':
+                        await this.addAttack(card.modifier);
+                        break;
+                    case 'gaugeChosse':
+                        await this.addAttack(Math.random() >= 0.5 ? card.max : card.min);
+                        break;
+                    case 'life':
+                        await this.life.add(card.modifier);
+                        break;
+                    case 'lifePercentage':
+                        await this.life.addPercentage(card.modifier)
+                        break;
+                    case 'energy':
+                        await this.energy.add(card.modifier);
+                        break;
+                    case 'energyPercentage':
+                        await this.energy.addPercentage(card.modifier);
+                        break;
+                    case 'statusEffect':
+                        switch (card.target) {
+                            case 'self':
+                                await this.statusEffects.add(card.statusName, card.turns, card.modifier);
+                                break;
+                            case 'enemy':
+                                oponnent.statusEffects.add(card.statusName, card.turns, card.modifier);
+                                break;
+                        }
+                        break;
+                }
+                await this.abilityCards.discard(index);
+            }
+            return this.isStanding;
+        },
+        discardAbilityCard: async function (index) {
+            if (this.energy.current >= this.discardCost) {
+                // this.energy.current -= this.discardCost;
+                await this.abilityCards.discard(index);
+                this.discardCost = Math.floor(this.discardCost*1.5);
+            }
+        },
+    }
+};
+
+const loadStoragePlayer = () => {
+    let storageDataJSON = localStorage.getItem('player');
+    let storageData = storageDataJSON ? JSON.parse(storageDataJSON) : null;
+    return createEntity(storageData || { name: 'Player', type: 'player' });
+}
+
 const randomEnemy = () => {
-    let enemyId = Math.floor(Math.random()*enemies.length);
-    let enemy = enemies[enemyId];
-    return createEnemy(enemy.name, enemy.level, enemy.size, enemy.gaugeSize, enemy.life, enemy.energy, enemy.damage, enemy.threshold, enemy.image, enemy.exp);
+    let enemy = enemies[Math.floor(Math.random() * enemies.length)];
+    return { ...createEntity(enemy), image: enemy.image, size: enemy.size };
 }
 
 const gaugeDifference = async (player, enemy) => {
-    // Aplly Player END status effects
-    player.apllyStatusEffect(APPLIANCES.END);
-    enemy.apllyStatusEffect(APPLIANCES.END);
-    while(player.gauge.current > 0 && enemy.gauge.current > 0){
-        player.gauge.current -= 1;
-        enemy.gauge.current -= 1;
-        await sleep(150);
+    // Aplly Player END status effects]
+    player.statusEffects.apply('end');
+    enemy.statusEffects.apply('end');
+
+    while (player.attack.current > 0 && enemy.attack.current > 0) {
+        player.attack.current -= 1;
+        enemy.attack.current -= 1;
+        await sleep(1);
     }
-    await sleep(500);
-    // Bursted situations
-    player.gauge.current = player.isBursted && player.gauge.current > 0 ? 0 : player.gauge.current;
-    enemy.gauge.current = enemy.isBursted && enemy.gauge.current > 0 ? 0 : enemy.gauge.current;
+    await sleep(3);
     // Compare gauges
-    if(player.gauge.current == enemy.gauge.current) {
-        return {
-            winner: 'draft',
-            diff: 0
-        }
-    }
+    if (player.attack.current == enemy.attack.current)  return { winner: 'draft', diff: 0 }
     return {
-        winner: player.gauge.current > enemy.gauge.current ? player.name : enemy.name,
-        diff: Math.abs(player.gauge.current - enemy.gauge.current)
+        winner: player.attack.current > enemy.attack.current ? player.name : enemy.name,
+        diff:   Math.abs(player.attack.current - enemy.attack.current)
     };
 }
 
 export default {
-    createEntity,
-    createPlayer,
-    createEnemy,
     randomEnemy,
     gaugeDifference,
     loadStoragePlayer

@@ -1,11 +1,5 @@
-const APPLIANCES = {
-    START:  'TURN_START',
-    END:    'TURN_END',
-    INSTANT: 'INSTANT'
-}
-
-const createStatus = (appliance, name, icon, turns, modifier, handler) => ({
-    appliance,
+const createStatus = (moment, name, icon, turns, modifier, handler) => ({
+    moment,
     name,
     icon,
     turns,
@@ -19,13 +13,13 @@ const createStatus = (appliance, name, icon, turns, modifier, handler) => ({
 })
 
 const Status = {
-    "poison": (turns, modifier) => (createStatus(APPLIANCES.START, 'poison', 'fas fa-skull-crossbones', turns, modifier, (target) => {
+    "poison": (turns, modifier) => (createStatus('start', 'poison', 'fas fa-skull-crossbones', turns, modifier, (target) => {
         target.addLife(-modifier);
     })),
-    "regeneration": (turns, modifier) => (createStatus(APPLIANCES.START, 'regeneration', 'fas fa-heart', turns, modifier, (target) => {
+    "regeneration": (turns, modifier) => (createStatus('start', 'regeneration', 'fas fa-heart', turns, modifier, (target) => {
         target.addLife(modifier);
     })),
-    "despair": () => (createStatus(APPLIANCES.INSTANT, 'despair', 'fa fa-times', 1, 0, (target) => {
+    "despair": () => (createStatus('instant', 'despair', 'fa fa-times', 1, 0, (target) => {
         target.setStatus('standing');
     }))
 }

@@ -92,13 +92,13 @@ export default {
     target: { type: String, default: 'self' },
     animated:  { type: Boolean, default: true },
     discardCost: { type: Number, default: null },
-    name: String,
-    cost: Number,
-    current: Number,
-    description: String,
-    image: String,
-    forceDisable: Boolean,
-    type: String,
+    name: { type: String, default: '' },
+    cost: { type: Number, default: 1 },
+    current: { type: Number, default: 0 },
+    description: { type: String, default: '' },
+    image: { type: String, default: '' },
+    forceDisable: { type: Boolean, default: false },
+    type: { type: String, default: '' },
   },
   data() { 
     return {
@@ -145,7 +145,6 @@ export default {
     handleHover(e) {
       if(this.animated) {
         let inCardY = e.y - this.$refs.button.getBoundingClientRect().top;
-        console.log(inCardY);
         let discard   = inCardY >= 120;
         let translate = discard ? (this.discardCost <= this.current ? '10px' : '') : (this.cost <= this.current) ? '-15px' : '';
         let brightness = discard ? (this.discardCost <= this.current ? '0.5' : '') : (this.cost <= this.current) ? '1.2' : '';

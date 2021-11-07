@@ -26,9 +26,9 @@
           className="bg-info"
           iconName="fas fa-fire"
         />
-        <div class="position-absolute w-100 d-flex justify-content-center align-items-center" v-if="enemy.statusEffects.length" style="bottom:-30px;">
+        <div class="position-absolute w-100 d-flex justify-content-center align-items-center" v-if="enemy.compAllStatusEffects().length" style="bottom:-30px;">
           <span class="px-2 py-1 bg-white rounded-pill border border-2 shadow-sm"
-            v-for="enemyStatus, enemyStatusIndex in enemy.statusEffects"
+            v-for="enemyStatus, enemyStatusIndex in enemy.compAllStatusEffects()"
             :key="`playerStatus_${enemyStatusIndex}`"
           >
             {{enemyStatus.modifier}}
@@ -39,23 +39,23 @@
     </div>
   </div>
   <!-- Gauges -->
-  <div class="container w-md-50 mb-3" style="z-index:98;">
+  <div class="container w-md-50 mt-2 mb-3" style="z-index:98;">
     <!-- Enemy Gauge -->
     <AttackGauge 
-      :current="enemy.gauge.current"
-      :maximum="enemy.gauge.maximum"
+      :current="enemy.attack.current"
+      :maximum="enemy.attack.maximum"
       :biggestGauge="biggestGauge"
-      :threshold="enemy.gauge.threshold"
-      :standing="enemy.status == 'standing'"
+      :threshold="enemy.threshold"
+      :standing="enemy.isStanding"
       :bursted="enemy.isBursted"
       className="danger"
     />
     <!-- Player Gauge -->
     <AttackGauge 
-      :current="player.gauge.current"
-      :maximum="player.gauge.maximum"
+      :current="player.attack.current"
+      :maximum="player.attack.maximum"
       :biggestGauge="biggestGauge"
-      :standing="player.status == 'standing'"
+      :standing="player.isStanding"
       :bursted="player.isBursted"
       className="primary"
     />
@@ -76,15 +76,15 @@
           v-on:handleClick="handlePlayerAction('abilityCard', cardIndex)"
           v-on:handleDiscard="handlePlayerAction('discardCard', cardIndex)"
           :discardCost="player.discardCost"
-          v-for="card, cardIndex in player.abilityCards"
+          v-for="card, cardIndex in player.abilityCards.hand"
           :key="`card_${cardIndex}`"
           class="col-6 col-md-3"
           :keymap="cardIndex+1"
         />
       </transition-group>
-      <div class="position-absolute w-100 bottom-0 d-flex justify-content-center align-items-center" v-if="player.statusEffects.length">
+      <div class="position-absolute w-100 bottom-0 d-flex justify-content-center align-items-center" v-if="player.compAllStatusEffects().length">
         <span class="px-3 py-1 bg-white rounded-pill border border-2 shadow-sm d-flex justify-content-center align-items-center"
-          v-for="playerStatus, playerStatusIndex in player.statusEffects"
+          v-for="playerStatus, playerStatusIndex in player.compAllStatusEffects()"
           :key="`playerStatus_${playerStatusIndex}`"
           >
           {{playerStatus.modifier}} <i :class="`${playerStatus.icon} mx-1`"></i>
@@ -106,7 +106,7 @@
           >
             <div class="border border-2 border-primary text-primary rounded w-100 h-100 d-flex justify-content-center align-items-center flex-column">
               <span>
-                {{player.cards.length}}
+                {{player.attackCards.length}}
                 <i class="far fa-caret-square-up fa-lg"></i>
               </span>
               <small>Pescar Carta</small>
@@ -143,7 +143,7 @@
               <!-- Level -->
               <ProgressBar 
                 :current="Math.round(player.exp.current)"
-                :maximum="Math.round(player.exp.next)"
+                :maximum="Math.round(player.exp.maximum)"
                 :animating="true"
                 className="bg-primary"
                 class="mb-3"
@@ -306,7 +306,7 @@
           <p>Seu baralho de ataque é composto de um total de 24 cartas. Com valores de <i>N/2 - 5</i> á <i>N/2</i>, sendo <i>N</i> o valor total da sua barra de ataque.</p>
           <p>Se você tem uma barra com tamanho 12, você tera cartas de (12/2 - 5) á (12/2), ou seja, de 1 á 6.</p>
           <div class="row">
-            <div class="col-1 text-center my-3" v-for="card, cardIndex in shuffledCards" :key="`player_card_${cardIndex}`">
+            <div class="col-1 text-center my-3" v-for="card, cardIndex in player.attackCards.base" :key="`player_card_${cardIndex}`">
               <span class="px-2 py-2 shadow-sm border rounded text-primary">{{card}}</span>
             </div>
           </div>
@@ -358,7 +358,7 @@
           <h5>{{player.name}}<small class="text-muted ms-3">Lvl. {{player.level}}</small></h5>
           <ProgressBar 
             :current="player.exp.current"
-            :maximum="player.exp.next"
+            :maximum="player.exp.maximum"
             :animating="true"
             className="bg-primary"
             iconName="fa fa-arrow-up"
@@ -377,7 +377,7 @@
             </div>
             <div class="col-6 text-start px-4">
               <i class="fas fa-crosshairs me-3"></i>
-              {{Math.round(player.gauge.current)}}<small>/{{Math.round(player.gauge.maximum)}}</small> 
+              {{Math.round(player.attack.current)}}<small>/{{Math.round(player.attack.maximum)}}</small> 
             </div>
             <div class="col-6 text-start px-4">
               <i class="fas fa-hand-rock me-3"></i>
@@ -387,7 +387,7 @@
           <h4>Baralho</h4>
           <div class="container">
             <div class="row">
-              <div class="col-1 text-center my-3" v-for="card, cardIndex in shuffledCards" :key="`player_card_${cardIndex}`">
+              <div class="col-1 text-center my-3" v-for="card, cardIndex in player.attackCards.current" :key="`player_card_${cardIndex}`">
                 <span class="px-2 py-2 shadow-sm border rounded text-primary">{{card}}</span>
               </div>
             </div>
@@ -423,7 +423,7 @@
               :current="card.cost*2"
               :description="card.description"
               :image="card.image"
-              v-for="card, cardIndex in player.abilityDeck"
+              v-for="card, cardIndex in player.abilityCards.current"
               :key="`card_${cardIndex}`"
               class="col-6 col-md-4"
               :animated="false"
@@ -440,7 +440,7 @@
               :current="card.cost*2"
               :description="card.description"
               :image="card.image"
-              v-for="card, cardIndex in player.abilityDeckBase"
+              v-for="card, cardIndex in player.abilityCards.base"
               :key="`card_${cardIndex}`"
               class="col-6 col-md-4"
               :animated="false"
@@ -508,11 +508,8 @@ export default {
     },
   }),
   created: function() {
-    this.player.cards.shuffle();
-    this.player.drawAbilityCards();
-    this.enemy.cards.shuffle();
     window.addEventListener('keydown', (e) => {
-      if(this.player.status == 'drawing' && !this.animating){
+      if(!this.player.isStanding && !this.animating){
         if(e.key == 'd' || e.key == 'D') {
           this.handlePlayerAction('drawCard');
         }
@@ -543,13 +540,8 @@ export default {
     this.handlePlayerAction('',0,0);
   },
   computed: {
-    shuffledCards() {
-      let cards = [...this.player.cards];
-      cards.shuffle();
-      return cards;
-    },
     biggestGauge() {
-      return this.player.gauge.maximum > this.enemy.gauge.maximum ? this.player.gauge.maximum : this.enemy.gauge.maximum;
+      return this.player.attack.maximum > this.enemy.attack.maximum ? this.player.attack.maximum : this.enemy.attack.maximum;
     },
     player() {
       return this.battle.player;
@@ -678,11 +670,15 @@ h4{
   background-repeat: no-repeat;
   background-position-x: center;
   background-position-y: bottom;
+  transform: translateY(10px);
 }
 
 
 .text-shadow {
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  filter: drop-shadow(0px 0px 4px #00000060);
+  -webkit-filter: drop-shadow(0px 0px 4px #00000060);
+  -moz-filter: drop-shadow(0px 0px 4px #00000060);
 }
 
 .container {
@@ -690,18 +686,18 @@ h4{
 }
 
 .background {
-  background-size:cover;-webkit-box-shadow: inset 5px 5px 50px 30px #000000; 
+  -webkit-box-shadow: inset 5px 5px 50px 30px #000000; 
   border-radius: 100%;
-  box-shadow: inset 5px 5px 20px 0px #00000;
-  background-position:center;
+  box-shadow: inset 0px 0px 40px 1px #000000;
+  background-position: center;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
   height: 50%;
-  max-width: 690px;
-  top: 0;
-  background-size: 650px 650px;
+  max-width: 500px;
+  top: 3%;
+  background-size: auto 500px;
   z-index: -1;
   filter: saturate(3);
 }
