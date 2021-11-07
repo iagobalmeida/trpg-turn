@@ -143,6 +143,7 @@ const createEntity = ({ name, type, level, gaugeSize, threshold, life, energy, d
             },
             discard: async function (index) {
                 this.hand.splice(index, 1);
+                await sleep(2);
                 await this.draw();
                 return;
             }
@@ -235,7 +236,7 @@ const createEntity = ({ name, type, level, gaugeSize, threshold, life, energy, d
         },
         discardAbilityCard: async function (index) {
             if (this.energy.current >= this.discardCost) {
-                // this.energy.current -= this.discardCost;
+                this.energy.current -= this.discardCost;
                 await this.abilityCards.discard(index);
                 this.discardCost = Math.floor(this.discardCost*1.5);
             }
