@@ -46,7 +46,7 @@ const createGauge = (current, maximum, addHandler = null) => ({
         return this.current == this.maximum;
     },
     addPercentage: function (value) {
-        return this.add(this.current * value / 100)
+        return this.add(this.maximum * value / 100)
     }
 })
 
@@ -246,6 +246,10 @@ const createEntity = ({ name, type, level, gaugeSize, threshold, life, energy, d
                 this.exp.maximum *= 1.2;
                 this.level += 1;
                 this.damage += 1;
+                this.life.maximum *= 1.2;
+                this.life.current = this.life.maximum;
+                this.energy.maximum *= 1.1;
+                this.energy.current = this.energy.maximum;
                 this.attack.maximum = 6 + Math.floor(this.level/10);
             }
         }
