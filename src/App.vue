@@ -702,6 +702,14 @@ h4{
   filter: saturate(3);
 }
 
+@media screen and (max-width: 700px) {
+  .background {
+    height: 40%;
+    width: 80%;
+    top: 8%;
+  }
+}
+
 .modal-content {
   background-color: #000000;
   color: white;
