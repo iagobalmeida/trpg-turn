@@ -96,14 +96,14 @@ export default {
     target: { type: String, default: 'self' },
     animated:  { type: Boolean, default: true },
     discardCost: { type: Number, default: null },
-    discarted: { type: Boolean, default: false },
-    name: String,
-    cost: Number,
-    current: Number,
-    description: String,
-    image: String,
-    forceDisable: Boolean,
-    type: String,
+    name: { type: String, default: '' },
+    cost: { type: Number, default: 1 },
+    current: { type: Number, default: 0 },
+    description: { type: String, default: '' },
+    image: { type: String, default: '' },
+    forceDisable: { type: Boolean, default: false },
+    type: { type: String, default: '' },
+    discarted: { type: Boolean, default: false }
   },
   data() { 
     return {
@@ -148,10 +148,11 @@ export default {
   },
   methods: {
     handleHover(e) {
-      if(this.animated) {
-        let inCardY    = e.y - this.$refs.button.getBoundingClientRect().top;
-        let discard    = inCardY >= 120;
-        let translate  = discard ? (this.discardCost <= this.current ? '10px' : '') : (this.cost <= this.current) ? '-15px' : '';
+      let w = window.innerWidth;
+      if(this.animated && w >= 768) {
+        let inCardY = e.y - this.$refs.button.getBoundingClientRect().top;
+        let discard   = inCardY >= 120;
+        let translate = discard ? (this.discardCost <= this.current ? '10px' : '') : (this.cost <= this.current) ? '-15px' : '';
         let brightness = discard ? (this.discardCost <= this.current ? '0.5' : '') : (this.cost <= this.current) ? '1.2' : '';
         this.$refs.button.style.transform = `translateY(${translate})`;
         if(!this.$refs.button.classList.contains('o-50')){
@@ -188,6 +189,7 @@ export default {
   filter: grayscale(1);
   opacity: 0.75;
 }
+
 .abilityCard {
   position: inherit;
   transform-origin: center;
@@ -195,7 +197,7 @@ export default {
   transition: all 175ms ease-in-out;
   display: flex;
   height: 100%;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
 }

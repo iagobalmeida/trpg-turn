@@ -4,59 +4,59 @@
         "image":        "slimes/slime.png",
         "size":         1,
         "level":        2,
-        "gaugeSize":    10,
+        "gaugeSize":    5,
         "life":         50,
         "energy":       10,
         "damage":       3,
         "exp":          60,
-        "threshold":    8
+        "threshold":    3
     },
     {
         "name":         "Slimore",
         "image":        "slimes/slimore.png",
         "size":         1,
         "level":        2,
-        "gaugeSize":    11,
+        "gaugeSize":    5,
         "life":         60,
         "energy":       10,
-        "damage":       4,
+        "damage":       3,
         "exp":          60,
-        "threshold":    9
+        "threshold":    3
     },
     {
         "name":         "Slime Warrior",
         "image":        "slimes/slimeWarrior.png",
         "size":         2,
         "level":        2,
-        "gaugeSize":    11,
+        "gaugeSize":    6,
         "life":         40,
         "energy":       10,
         "damage":       6,
         "exp":          60,
-        "threshold":    9
+        "threshold":    3
     },
     {
         "name":         "Slime Hero",
         "image":        "slimes/slimeHero.png",
         "size":         2,
         "level":        2,
-        "gaugeSize":    11,
+        "gaugeSize":    6,
         "life":         50,
         "energy":       10,
         "damage":       5,
         "exp":          60,
-        "threshold":    9
+        "threshold":    4
     },
     {
         "name":         "Slime Queen",
         "image":        "slimes/slimeKing.png",
         "size":         3,
         "level":        6,
-        "gaugeSize":    13,
+        "gaugeSize":    7,
         "life":         120,
         "energy":       30,
         "damage":       10,
         "exp":          200,
-        "threshold":    10
+        "threshold":    5
     }
 ]

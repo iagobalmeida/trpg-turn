@@ -381,7 +381,7 @@
     },
     {
         "id": 38,
-        "cost": 45,
+        "cost": 1,
         "type": "statusEffect",
         "target": "enemy",
         "statusName": "despair",
