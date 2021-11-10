@@ -1,24 +1,26 @@
 <template>
-    <div class="col" style="position: relative;">
+    <div :class="`col ${discarted ? 'discarted':''}`" style="position: relative;">
         <button
         :class="`abilityCard m-0 btn p-0 w-100 border-4 border border-${className} bg-${className} bg-gradient o-${(cost > current) || forceDisable ? '50' : '100'}`"
         draggable="false"
         v-on:mouseover="handleHover"
         v-on:mouseleave="handleLeave"
+        v-on:click="handleClick"
         ref="button"
         >
             <div
             class="w-100 abilityCard-img text-primary"
             :style="`background-image:url(${loadedImage});`"
-            v-on:click="!((cost > current) || forceDisable) ? $emit('handleClick') : () => {}"
             >
                 <small
+                style="font-size: 12px;"
                 :class="`d-none d-md-block left position-absolute px-2 py-1 bg-${className} text-${textColor}`"
                 v-if="keymap != null">
                     {{keymap}}
                 </small> 
                 <small
-                :class="`right position-absolute px-2 py-1 bg-${className} text-${textColor}`">
+                style="font-size: 12px;"
+                :class="`right position-absolute px-2 py-1 bg-${className} text-${textColor}`" >
                     {{cost}}
                     <i class="fas fa-fire me-1"></i>
                     <i class="fas fa-arrow-up fa-xs"></i> 
@@ -26,17 +28,19 @@
             </div>
             <div :class="`text-${textColor} pb-0`">
               <div class="p-1 text-start">
-                  <b>{{name}}</b>
-                  <p class="mb-0 pb-0">{{description}}</p>
+                  <b style="font-size: 12px;">{{name}}</b>
+                  <p class="mb-0 pb-0" style="font-size: 12px;">{{description}}</p>
               </div>
-              <b class="text-center w-100 mb-0 pb-0" 
-                v-on:click="!((discardCost > current) || forceDisable) ? $emit('handleDiscard') : () => {}"
-                v-if="discardCost">
-                  {{discardCost}}
-                  <i class="fas fa-fire me-1"></i> 
-                  <i class="fas fa-arrow-down fa-xs"></i> 
-              </b> 
             </div>
+            <b
+              :class="`text-center w-100 mb-0 pb-0 justify-self-end text-${textColor}`"
+              style="font-size: 12px; margin-top: auto;" 
+              v-if="discardCost"
+            >
+                {{discardCost}}
+                <i class="fas fa-fire me-1"></i> 
+                <i class="fas fa-arrow-down fa-xs"></i> 
+            </b> 
         </button>
     </div>
 </template>
@@ -92,6 +96,7 @@ export default {
     target: { type: String, default: 'self' },
     animated:  { type: Boolean, default: true },
     discardCost: { type: Number, default: null },
+    discarted: { type: Boolean, default: false },
     name: String,
     cost: Number,
     current: Number,
@@ -144,10 +149,9 @@ export default {
   methods: {
     handleHover(e) {
       if(this.animated) {
-        let inCardY = e.y - this.$refs.button.getBoundingClientRect().top;
-        console.log(inCardY);
-        let discard   = inCardY >= 120;
-        let translate = discard ? (this.discardCost <= this.current ? '10px' : '') : (this.cost <= this.current) ? '-15px' : '';
+        let inCardY    = e.y - this.$refs.button.getBoundingClientRect().top;
+        let discard    = inCardY >= 120;
+        let translate  = discard ? (this.discardCost <= this.current ? '10px' : '') : (this.cost <= this.current) ? '-15px' : '';
         let brightness = discard ? (this.discardCost <= this.current ? '0.5' : '') : (this.cost <= this.current) ? '1.2' : '';
         this.$refs.button.style.transform = `translateY(${translate})`;
         if(!this.$refs.button.classList.contains('o-50')){
@@ -158,6 +162,14 @@ export default {
     handleLeave() {
       this.$refs.button.style.transform = '';
       this.$refs.button.style.filter = '';
+    },
+    handleClick() {
+      let currentState = this.$refs.button.style.transform;
+      if(currentState.includes('translateY(-15px)')){
+        this.$emit('handleClick');
+      }else if(currentState.includes('translateY(10px)')){
+        this.$emit('handleDiscard');
+      }
     }
   }
 }
@@ -165,6 +177,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.col {
+  transition: all 125ms ease-in-out;
+}
+.discarted {
+  transform: translateY(15px);
+  opacity: 0;
+}
 .o-50 {
   filter: grayscale(1);
   opacity: 0.75;
@@ -174,6 +193,11 @@ export default {
   transform-origin: center;
   box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
   transition: all 175ms ease-in-out;
+  display: flex;
+  height: 100%;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
 }
 
 .abilityCard *{

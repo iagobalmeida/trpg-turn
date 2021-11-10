@@ -377,7 +377,7 @@
         "modifier": 5,
         "name": "Envenenamento",
         "image": "potion-of-madness.png",
-        "description": "Seu próximo ataque irá causar ENVENENAMENTO, aplicando metade do dano causado durante 3 turnos"
+        "description": "Aplique os ataques desse turno novamente durante 3 turnos"
     },
     {
         "id": 38,

@@ -6,8 +6,8 @@ const APPLIANCES = {
     END:    'TURN_END',
 }
 
-const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (factor) => {
+    return new Promise(resolve => setTimeout(resolve, factor*125));
 }
 
 Array.prototype.shuffle = function() {
@@ -21,8 +21,7 @@ Array.prototype.shuffle = function() {
 
 const baseDeck = (gaugeSize) => {
     let minimum = Math.floor(gaugeSize/2 - 5);
-    console.log('\ngaugeSize', gaugeSize);
-    console.log('minimum', minimum);
+    minimum = minimum > 0 ? minimum : 1;
 
     let deck = new Array(24);
     for(let i = 0; i <= 24; i++) {
@@ -90,23 +89,17 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
             if(this.gauge.current == this.gauge.maximum) {
                 this.status = 'standing';
             }
-            await sleep(125);
+            await sleep(1);
         }
-        await sleep(250);
+        await sleep(2);
     },
     addLife: function(value) {
         this.life.current += value;
         this.life.current = this.life.current >= this.life.maximum ? this.life.maximum : this.life.current;
     },
     addEnergy: function(value) {
-        // let pre = this.energy.current;
         this.energy.current = parseFloat(this.energy.current) + value;
         this.energy.current = this.energy.current >= this.energy.maximum ? this.energy.maximum : this.energy.current;
-        // console.table({
-        //     'pre': pre,
-        //     'value': value,
-        //     'current': this.energy.current,
-        // });
     },
     setStatus: function(status) {
         this.status = status;
@@ -120,22 +113,36 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
         }
     },
     drawAbilityCards: async function () {
-        while(this.abilityCards.length < 4) {
-            await sleep(250);
-            let randomAbilityCardIndex = Math.floor(Math.random() * this.abilityDeck.length);
-            let randomCard = this.abilityDeck.splice(randomAbilityCardIndex, 1)[0];
-            this.abilityCards.push(randomCard);
-            if(this.abilityDeck.length == 0) {
-                this.abilityDeck = [...this.abilityDeckBase];
-                this.abilityDeck.shuffle();
+        for(let abilityCardIndex in this.abilityCards) {
+            let abilityCard = this.abilityCards[abilityCardIndex];
+            if(abilityCard.discarted == true){
+                await sleep(4);
+                let randomAbilityCardIndex = Math.floor(Math.random() * this.abilityDeck.length);
+                let randomCard = this.abilityDeck.splice(randomAbilityCardIndex, 1)[0];
+                this.abilityCards[abilityCardIndex] = randomCard;
+                if(this.abilityDeck.length == 0) {
+                    this.abilityDeck = [...this.abilityDeckBase];
+                    this.abilityDeck.shuffle();
+                }
             }
         }
+        // while(this.abilityCards.length < 4) {
+        //     await sleep(250);
+        //     let randomAbilityCardIndex = Math.floor(Math.random() * this.abilityDeck.length);
+        //     let randomCard = this.abilityDeck.splice(randomAbilityCardIndex, 1)[0];
+        //     this.abilityCards.push(randomCard);
+        //     if(this.abilityDeck.length == 0) {
+        //         this.abilityDeck = [...this.abilityDeckBase];
+        //         this.abilityDeck.shuffle();
+        //     }
+        // }
     },
     discardAbilityCard: async function(cardIndex) {
         if(this.energy.current >= this.discardCost) {
             this.energy.current -= this.discardCost;
             this.discardCost = this.discardCost * 1.5;
-            this.abilityCards.splice(cardIndex, 1);
+            // this.abilityCards.splice(cardIndex, 1);
+            this.abilityCards[cardIndex].discarted = true;
             await this.drawAbilityCards();
         }
     },
@@ -166,7 +173,6 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
         if(this.energy.current >= card.cost){
             this.energy.current -= card.cost;
             let rand = Math.random();
-            console.log(card.type);
             switch(card.type) {
                 case 'gaugeDefined':
                     await this.addGauge(card.modifier);
@@ -195,7 +201,7 @@ const createEntity = (name, level, gaugeSize, life, energy, damage) => ({
                 break;
             }
         }
-        this.abilityCards.splice(cardIndex, 1);
+        this.abilityCards[cardIndex].discarted = true;
         await this.drawAbilityCards();
         return this.status == 'standing';
     },
@@ -217,6 +223,7 @@ const createPlayer = (name, level, gaugeSize, life, energy, damage) => ({
         current: 0,
         next: 100
     },
+    gold: 0,
     addExp: function (exp) {
         this.exp.current += exp;
         if(this.exp.current >= this.exp.next){
@@ -257,7 +264,9 @@ const createEnemy = (name, level, size, gaugeSize, life, energy, damage, thresho
 const randomEnemy = () => {
     let enemyId = Math.floor(Math.random()*enemies.length);
     let enemy = enemies[enemyId];
-    return createEnemy(enemy.name, enemy.level, enemy.size, enemy.gaugeSize, enemy.life, enemy.energy, enemy.damage, enemy.threshold, enemy.image, enemy.exp);
+    let enemyObj = createEnemy(enemy.name, enemy.level, enemy.size, enemy.gaugeSize, enemy.life, enemy.energy, enemy.damage, enemy.threshold, enemy.image, enemy.exp);
+    enemyObj.cards.shuffle();
+    return enemyObj;
 }
 
 const gaugeDifference = async (player, enemy) => {
@@ -267,9 +276,9 @@ const gaugeDifference = async (player, enemy) => {
     while(player.gauge.current > 0 && enemy.gauge.current > 0){
         player.gauge.current -= 1;
         enemy.gauge.current -= 1;
-        await sleep(150);
+        await sleep(1);
     }
-    await sleep(500);
+    await sleep(4);
     // Bursted situations
     player.gauge.current = player.isBursted && player.gauge.current > 0 ? 0 : player.gauge.current;
     enemy.gauge.current = enemy.isBursted && enemy.gauge.current > 0 ? 0 : enemy.gauge.current;

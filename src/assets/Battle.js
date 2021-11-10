@@ -18,7 +18,7 @@ const Battle = () => ({
         if(enemyNext){
             await this.enemyTurn();
         }else{
-            this.checkStatus();
+            await this.checkStatus();
         }
         this.animating = false;
     },
@@ -39,12 +39,18 @@ const Battle = () => ({
                 this.player.setStatus('standing');
                 return true;
         }
+        return true;
     },
     // Enemy Turn
     enemyTurn: async function() {
         // If enemy is not 'standing'
         if(this.enemy.status == 'drawing'){
-            await this.enemy.drawCard()
+            console.log('hmm');
+            let enemyDone = await this.enemy.drawCard();
+            console.log('enemyDone', enemyDone);
+            console.log('playerStatus', this.player.status);
+            console.log('enemyStatus', this.enemy.status);
+            console.log('enemyisBursted', this.enemy.isBursted);
             if(this.player.status == 'standing' && this.enemy.status == 'drawing' && !this.enemy.isBursted) {
                 await sleep(215);
                 await this.enemyTurn();
@@ -93,6 +99,10 @@ const Battle = () => ({
     reset: async function() {
         this.player.discardCost = 6;
 
+        // Apllying starting round status
+        this.player.apllyStatusEffect('TURN_START');
+        this.enemy.apllyStatusEffect('TURN_START');
+
         // If player is dead, hard reset and change enemy ELSE soft reset
         if(!this.player.isAlive()){
             this.player.reset(true);
@@ -118,12 +128,9 @@ const Battle = () => ({
             this.enemy.reset();
         }
 
-        // Apllying starting round status
-        this.player.apllyStatusEffect('TURN_START');
-        this.enemy.apllyStatusEffect('TURN_START');
-
         // Save localData
         localStorage.setItem('player', JSON.stringify(this.player));
+
         
         // Enable input
         this.animating = false;

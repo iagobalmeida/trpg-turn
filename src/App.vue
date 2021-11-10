@@ -1,8 +1,10 @@
 <template>
   <!-- Toast -->
-  <div :class="`custom-toast container ${toast.show ? 'o-100' : 'o-0'}`">
-    <div class="p-3 rounded border border-2 text-white rounded shadow h-100 mx-auto" v-html="toast.text" style="background-color:black"/>
-  </div>
+  <transition name="fadeToast">
+    <div :class="`custom-toast container`" v-if="toast.show">
+      <div class="p-3 rounded border border-2 text-white rounded shadow h-100 mx-auto" v-html="toast.text" style="background-color:black"/>
+    </div>
+  </transition>
   <!-- Enemy -->
   <div class="container w-md-50 rounded-top">
     <div class="background" :style="`background-image:url(${require(`@/assets/backgrounds/Hills.png`)})`"></div>
@@ -80,6 +82,7 @@
           :key="`card_${cardIndex}`"
           class="col-6 col-md-3"
           :keymap="cardIndex+1"
+          :discarted="card.discarted"
         />
       </transition-group>
       <div class="position-absolute w-100 bottom-0 d-flex justify-content-center align-items-center" v-if="player.statusEffects.length">
@@ -172,25 +175,30 @@
 
       <!-- Player -->
       <div class="row">
-        <h5 class="mb-3 md-md-0 text-white col" style="align-self:center;">
-          {{player.name}} 
-          <small class="text-muted d-none d-md-inline" style="font-size:12px;">Lvl. {{player.level}}</small>
-        </h5>
+        <div class="col mb-3 mb-md-0">
+          <h5 class="text-white" style="align-self:center;">
+            {{player.name}} 
+            <small class="text-muted d-none d-md-inline" style="font-size:12px;">Lvl. {{player.level}}</small>
+          </h5>
+          <span class="text-white">
+            {{player.gold}}&nbsp;<i class="fa fa-coins"></i>
+          </span>
+        </div>
         <div class="col-10 col-md-9">
-          <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalHelp" ref="helpButton">
-            <i class="fa fa-info me-md-2"></i>
+          <small class="d-flex justify-content-center align-items-center flex-column float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 py-2 me-2" data-bs-toggle="modal" data-bs-target="#modalHelp" ref="helpButton">
+            <i class="fa fa-info"></i>
             <span class="d-none d-md-inline">Ajuda</span>
           </small>
-          <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalPlayer">
-            <i class="fa fa-user me-md-2"></i>
+          <small class="d-flex justify-content-center align-items-center flex-column float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 py-2 me-2" data-bs-toggle="modal" data-bs-target="#modalPlayer">
+            <i class="fa fa-user"></i>
             <span class="d-none d-md-inline">Jogador</span>
           </small>
-          <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalMap">
-            <i class="fas fa-map me-md-2"></i>
+          <small class="d-flex justify-content-center align-items-center flex-column float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 py-2 me-2" data-bs-toggle="modal" data-bs-target="#modalMap">
+            <i class="fas fa-map"></i>
             <span class="d-none d-md-inline">Mapa</span>
           </small>
-          <small class="float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" data-bs-toggle="modal" data-bs-target="#modalBackPack">
-            <i class="fas fa-box me-md-2"></i>
+          <small class="d-flex justify-content-center align-items-center flex-column float-end border-2 btn btn-sm btn-outline-secondary rounded-pill px-3 py-2 me-2" data-bs-toggle="modal" data-bs-target="#modalBackPack">
+            <i class="fas fa-box"></i>
             <span class="d-none d-md-inline">Mochila</span>
           </small>
         </div>
@@ -580,6 +588,15 @@ export default {
 </script>
 
 <style>
+.fadeToast-enter-active,
+.fadeToast-leave-active {
+  transition: all 1s ease;
+}
+.fadeToast-enter-from,
+.fadeToast-leave-to {
+  opacity: 0;
+}
+
 .fadeCards-enter-active,
 .fadeCards-leave-active {
   transition: all 1s ease;
@@ -690,16 +707,16 @@ h4{
 }
 
 .background {
-  background-size:cover;-webkit-box-shadow: inset 5px 5px 50px 30px #000000; 
-  border-radius: 100%;
-  box-shadow: inset 5px 5px 20px 0px #00000;
+  background-size:cover;
+  -webkit-box-shadow: inset 0px 0px 50px 30px #000000; 
+  box-shadow: inset 0px 0px 50px 30px #000000;
   background-position:center;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
   height: 50%;
-  max-width: 690px;
+  max-width: 650px;
   top: 0;
   background-size: 650px 650px;
   z-index: -1;
